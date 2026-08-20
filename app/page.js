@@ -20,9 +20,21 @@ export default function Home() {
   return (
     <>
       <section className="hero">
+        {/* THE HERO PHOTOGRAPH IS THE LCP ELEMENT, AND IT MEASURED 3.9s.
+            The first version served the full 1600x1600 208KB file to every
+            device. On a throttled mobile profile, 1.6Mbps with 4x CPU, that put
+            Largest Contentful Paint at 3,912ms against a 2.5s bar. The menu
+            page, which has no hero, measured 772ms, which is what said the
+            image was the whole cost.
+
+            srcset lets a 390px phone take the 42KB copy instead. `sizes="100vw"`
+            because this is full bleed at every width. Re-measure with
+            tools/perf-check.mjs after touching any of it. */}
         <img
           className="hero-photo"
-          src="/assets/pjs/reuben.webp"
+          src="/assets/pjs/reuben-1200.webp"
+          srcSet="/assets/pjs/reuben-640.webp 640w, /assets/pjs/reuben-900.webp 900w, /assets/pjs/reuben-1200.webp 1200w, /assets/pjs/reuben.webp 1600w"
+          sizes="100vw"
           width="1600"
           height="1600"
           alt="A hot sandwich on marble rye, cut in half and stacked, with kettle chips and a pickle spear."
@@ -84,7 +96,7 @@ export default function Home() {
           </div>
           <div className="grid g3 stagger" style={{ marginTop: 26 }}>
             <article className="card reveal card-lift">
-              <img src="/assets/pjs/reuben.webp" width="1600" height="1600" alt="A hot pastrami sandwich on rye, cut and stacked." style={{ aspectRatio: "4/3", objectFit: "cover", width: "100%" }} />
+              <img src="/assets/pjs/reuben-640.webp" loading="lazy" width="640" height="640" alt="A hot pastrami sandwich on rye, cut and stacked." style={{ aspectRatio: "4/3", objectFit: "cover", width: "100%" }} />
               <div style={{ padding: 20 }}>
                 <h3>Joe&rsquo;s Famous Hot Pastrami</h3>
                 <p className="small" style={{ marginTop: 8 }}>
@@ -154,8 +166,9 @@ export default function Home() {
             <img
               className="reveal"
               src="/assets/pjs/chips.webp"
-              width="1080"
-              height="1080"
+              width="760"
+              height="760"
+              loading="lazy"
               alt="Bags of Zapp's and Dirty kettle chips in a basket on the counter."
               style={{ borderRadius: 18, border: "1px solid var(--green-line)", width: "100%", aspectRatio: "1/1", objectFit: "cover" }}
             />

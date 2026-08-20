@@ -45,13 +45,43 @@ export default function InquiryForm({ kind = "catering", to = site.email }) {
   }
 
   return (
-    <form className="card" style={{ padding: 22 }} onSubmit={onSubmit}>
+    /*
+     * action, method and enctype are set even though onSubmit calls
+     * preventDefault and never uses them. THEY ARE THE NO-JAVASCRIPT PATH.
+     * Without them the submit button did nothing at all with scripting off:
+     * `glaze/launch.md` requires that every form still submits, and this one
+     * silently did not. The native mailto POST is cruder than the composed one
+     * above, fields as plain text rather than a formatted body, but it reaches
+     * the same mailbox instead of reaching nothing.
+     */
+    <form
+      className="card"
+      style={{ padding: 22 }}
+      onSubmit={onSubmit}
+      action={`mailto:${to}`}
+      method="post"
+      encType="text/plain"
+    >
       <div className="notice" style={{ marginBottom: 18 }}>
         <b>This is a concept build.</b>
         Submitting opens your own mail app with everything filled in, so nothing is
         lost and nothing pretends to have been delivered. On the live site this posts
         straight to the deli.
       </div>
+
+      {/* Scripting off, and a mail client is not a given either. The phone
+          numbers are the fallback that always works, and for a deli they are
+          the better action anyway. */}
+      <noscript>
+        <div className="notice" style={{ marginBottom: 18 }}>
+          <b>Easier to call.</b>
+          {site.locations.map((l) => (
+            <span key={l.slug} style={{ display: "block" }}>
+              {l.name}: <a href={`tel:${l.phone.tel}`}>{l.phone.display}</a>
+            </span>
+          ))}
+        </div>
+      </noscript>
 
       <div className="fields">
         <label>

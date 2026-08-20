@@ -20,17 +20,50 @@ import "./globals.css";
  *
  * Deliberately not Inter, which is on three house sites already.
  */
+/*
+ * `fallback` and `adjustFontFallback` are here for Cumulative Layout Shift, not
+ * for looks. Anton is extremely condensed; the default sans a browser shows
+ * while it downloads is not, so headings wrapped to more lines before the swap
+ * and collapsed after it. On the Marshall location page that measured a CLS of
+ * **0.1148** against a 0.1 bar, as one 68px jump with the whole page below the
+ * headings moving up. Naming condensed faces first gives the pre-swap layout
+ * roughly the right width. Re-measure with tools/perf-check.mjs if you change
+ * the face.
+ */
 const display = Anton({
   subsets: ["latin"],
   weight: "400",
   display: "swap",
   variable: "--font-display",
+  adjustFontFallback: true,
+  fallback: ["Arial Narrow", "Helvetica Neue Condensed Bold", "Impact", "sans-serif"],
 });
 
+/*
+ * `optional` on the body face, `swap` on the display face, and the split is a
+ * measured decision rather than a preference.
+ *
+ * Every webfont swap reflows text, and the body face reflows the most text.
+ * With both on `swap` the Marshall location page measured a CLS of **0.1151**
+ * against a 0.1 bar, on a 1.6Mbps 4x-CPU profile: the button row collapsed from
+ * two wrapped lines to one, every hours row collapsed from two lines to one,
+ * and the whole page below them jumped up 68px. Blocking the font files made it
+ * exactly 0, which is what proved it was the swap and not the layout.
+ *
+ *   both swap        home 0.0149   marshall 0.1151   FAIL
+ *   body optional    home 0.0014   marshall 0.0055   pass
+ *   both optional    home 0        marshall 0        pass
+ *
+ * `optional` on both is the cleanest number and the wrong call: it would drop
+ * Anton on a slow first visit, and Anton is the brand on this site. So the
+ * display face keeps swapping and the body face falls back invisibly on a
+ * connection slow enough to matter. Re-measure with tools/perf-check.mjs if you
+ * change either.
+ */
 const body = Figtree({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800"],
-  display: "swap",
+  display: "optional",
   variable: "--font-body",
 });
 

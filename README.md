@@ -28,15 +28,19 @@ node tools/scrim-check.mjs  --base http://127.0.0.1:4495
 node tools/sticky-check.mjs --base http://127.0.0.1:4495
 node tools/contrast-sweep.mjs
 node tools/motion-check.mjs --base http://127.0.0.1:4495
+node tools/width-check.mjs  --base http://127.0.0.1:4495
+node tools/perf-check.mjs   --base http://127.0.0.1:4495
 node ../glazedweb/glaze/scripts/audit.mjs --base http://127.0.0.1:4495 \
   --routes "/,/menu,/menu?at=marshall,/menu?at=battle-creek,/specials,/order,/catering,/locations,/locations/marshall,/locations/battle-creek,/about,/jobs,/charity,/contact"
 ```
 
-**A clean axe run is not the same as a legible page.** Three of the four faults
-found on this build were invisible to axe: white on white over a background
-image, white on a photograph, and a nav that fitted inside a scroll container
-with the primary button off the right edge. That is what the three extra tools
-are for.
+**A clean axe run is not the same as a legible page, and the house auditor does
+not cover everything `launch.md` asks for.** Faults found on this build that a
+clean run at 390 and 1440 reported nothing about: white on white over a
+background image, white on a photograph at 1.18, a nav that fitted inside a
+scroll container with the primary button off the right edge, a home link with no
+accessible name at 320, a form that did nothing with JavaScript off, an LCP of
+3.9s, and a CLS of 0.115. That is what the extra tools are for. Run all of them.
 
 **Confirm the port is free and the served CSS hash matches `.next/static/css/`
 before believing any audit result.** A stale server on the port serves a build
@@ -80,6 +84,8 @@ tools/
   sticky-check.mjs        the two sticky bars, measured against each other
   contrast-sweep.mjs      every element's computed colour vs its painted ground
   motion-check.mjs        transient overflow during animation, and reduced motion
+  width-check.mjs         320 and 768, which the house auditor does not visit
+  perf-check.mjs          LCP, CLS and JS weight on a throttled mobile profile
 ```
 
 ---
@@ -127,10 +133,17 @@ Their retail menus publish prices for soup, five add-ons and two seasonal items,
 and nothing else. Catering is fully priced and is transcribed complete. Every
 number in this repo is either from their own live page or absent.
 
-A null price renders as an italic "price to come" and the menu page carries a
-counted notice saying how many are missing. The count is computed by
-`missingPrices()`, so it cannot go stale, and `flow-checks.mjs` fails if prices
-are missing and the page stops saying so.
+A null price renders as an em rule with the reason on its `title`, and the menu
+page carries a counted notice saying how many are missing. It was the words
+"price to come" on every row first; fifty-four of them made a finished page scan
+as a broken one, so the loud version of the fact lives once, at the top, where
+the count is. The count is computed by `missingPrices()`, so it cannot go stale,
+and `flow-checks.mjs` fails if prices are missing and the notice stops saying so.
+
+**Those em rules are the one place this repo knowingly breaks a house rule.**
+`glaze.md` says no em dashes. That rule is about prose, and this is a table's
+empty-value glyph, 139 of them across the menu and the two location pages. If
+Kevin wants it gone the change is one line in `components/MenuList.jsx`.
 
 A placeholder price on another site in this account was served to real customers.
 Do not fill these in from a third-party menu; allmenus.com has a complete priced
@@ -231,6 +244,44 @@ forearms are one 3,998-character `d` string. There is no arm to raise. A wave
 means drawing a new arm, which is redrawing part of a client's logo, and that is
 theirs to approve rather than something to ship quietly.
 
+### What the docs audit found
+
+Checked against `glaze.md`, `glaze/launch.md`, `glaze/link-cards.md`,
+`glaze/proposal.md`, `glaze/brand.md` and `glaze/intake.md`. Seven real faults,
+five of them at things no check in this repo was looking at:
+
+1. **The home link had no accessible name at 320.** The wordmark was hidden with
+   `display: none`, which removes it from the accessibility tree too, and both
+   images in the mark are decorative. axe reported `link-name` on all twelve
+   routes at 320 and at no other width. `glaze.md` says 320 is the one that
+   breaks and the house auditor runs 390 and 1440, so nothing here was ever
+   going to see it. Now `tools/width-check.mjs` does.
+2. **The form did nothing with JavaScript off.** `launch.md` requires every form
+   to still submit. It had no `action` and no `method`, so the button was inert.
+   It has a native `mailto:` POST and a `<noscript>` with both phone numbers now.
+3. **LCP was 3,912ms**, against a 2.5s bar, on a 1.6Mbps 4x-CPU profile. The
+   full-bleed hero shipped its 1600x1600 208KB source to every device. With
+   `srcset` a 390px phone takes a 42KB copy and it measures 2,084ms.
+4. **CLS was 0.1151** on the location pages, against 0.1. Entirely the webfont
+   swap: blocking the font files made it exactly 0. See the note in
+   `app/layout.js` for why the body face is `optional` and the display face is
+   not.
+5. **Three high-severity npm advisories** were unreviewed. `launch.md` requires
+   them named with a reason. Fixed rather than named, by going to Next 16.3.1.
+6. **The demo's `og:image` does not resolve yet.** It is
+   `https://pastramijoes.com/og.jpg`, which is correct for launch and is
+   currently their WordPress site, so it 404s. `link-cards.md` requires the URL
+   to return 200 with an image type. It will the day the domain moves; until
+   then anyone forwarding the demo link gets a bare card. On the checklist.
+7. **A false alarm worth recording.** Auditing at 320 and 768 first reported 27
+   contrast failures with foreground colours like `#847a71` that appear nowhere
+   in the palette. They were mid-fade composited values: the reveal takes 550ms
+   plus up to 210ms of stagger, and the harness measured at 400ms.
+   `glaze.md` says check the harness before the code, and it was the harness.
+   `width-check.mjs` waits for `getAnimations()` to finish now, skipping the one
+   infinite animation, which is the breathing dot and which hung the first
+   version of that tool forever.
+
 ### Forms have no mailbox
 
 `InquiryForm` composes a `mailto:` with every field prefilled and says on the
@@ -254,12 +305,21 @@ the proposal is not a live URL on their own domain the day it is attached.
 
 ### Next.js is pinned, and the pin is a security decision
 
-`next` is pinned to an exact **15.5.23**, not a range.
+`next` is pinned to an exact **16.3.1**, not a range.
 
-The first deploy of this repo went out on 15.5.4 and Vercel's install step warned
-about **CVE-2025-66478**, the React Server Components RCE, rated CVSS 10.0. It
-affects Next 15.x and 16.x App Router applications, which is what this is. The
-fix on the 15.5 line is 15.5.7 or later; 15.5.23 is the current backport.
+The first deploy of this repo went out on 15.5.4 and Vercel **refused to ship
+it**: `Deploying outputs... Vulnerable version of Next.js detected`. That is
+**CVE-2025-66478**, the React Server Components RCE, CVSS 10.0, affecting Next
+15.x and 16.x App Router applications, which is what this is. The build itself
+compiled fine, so the log reads like a success until its last line.
+
+It went to 15.5.23 first, which cleared that advisory. `npm audit` then still
+reported **three high-severity advisories** through Next's own dependencies:
+postcss, for XSS via an unescaped `</style>` and arbitrary file read via
+`sourceMappingURL`, and sharp, for four libvips CVEs. Both are build-time here
+and neither is reachable at runtime on a site whose CSS and images are all ours,
+but the only fix `npm audit` offered was Next 16. Six other repos in this account
+already run 16.3.x, so this went there too. `npm audit` now reports **zero**.
 
 An exact pin means builds are reproducible and it also means **somebody has to
 bump this deliberately**. Check the release line when you touch this repo.

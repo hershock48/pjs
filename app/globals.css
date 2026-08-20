@@ -765,10 +765,23 @@ section {
 }
 /* Below 380 the wordmark and three controls stop fitting on one line, so the
    wordmark goes and the mark carries the brand on its own. It is a roundel with
-   the name inside it, which is exactly the case a logo like this is drawn for. */
+   the name inside it, which is exactly the case a logo like this is drawn for.
+
+   IT IS HIDDEN VISUALLY, NOT REMOVED. The first version used `display: none`,
+   which takes the text out of the accessibility tree as well as off the screen.
+   Both images inside the mark are decorative, so the home link was left with no
+   accessible name at all: axe reported link-name on all twelve routes at 320,
+   and at no other width. 320 is the width the standing auditor does not visit. */
 @media (max-width: 379px) {
   .hdr-brand b {
-    display: none;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
   }
 }
 
