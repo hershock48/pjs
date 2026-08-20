@@ -27,24 +27,65 @@ for (const route of routes) {
       if (el.querySelector("h1,h2,h3,p,li,span,a,b,dt,dd,button,label")) return; // leaf text only
       const cs = getComputedStyle(el);
       if (cs.visibility === "hidden" || cs.display === "none" || +cs.opacity === 0) return;
-      let bg = "rgba(0, 0, 0, 0)", n = el;
-      while (n && bg === "rgba(0, 0, 0, 0)") { bg = getComputedStyle(n).backgroundColor; n = n.parentElement; }
-      out.push({ tag: el.tagName, text: el.textContent.trim().slice(0,50), color: cs.color, bg, size: cs.fontSize, weight: cs.fontWeight });
+      // WALK UP FOR THE PAINTED BACKGROUND, AND NOTICE A PICTURE ON THE WAY.
+      //
+      // The first version only looked for a background COLOUR and stopped at
+      // the first one it found. That is a false pass whenever something between
+      // the text and that colour paints an image over it, and it produced one:
+      // /about rendered dark green body copy over a bright white photograph of
+      // their storefront, with no scrim, and this tool reported the page clean
+      // because it computed against the cream underneath the picture.
+      //
+      // A photo backdrop cannot be measured from computed styles at all, so it
+      // is reported as UNMEASURED rather than passed. Whatever it names either
+      // needs a scrim measured on the composite the way tools/scrim-check.mjs
+      // does the hero, or should not be text on a photograph.
+      let bg = "rgba(0, 0, 0, 0)", n = el, imaged = null;
+      while (n && bg === "rgba(0, 0, 0, 0)") {
+        const ns = getComputedStyle(n);
+        if (!imaged && ns.backgroundImage && ns.backgroundImage !== "none" && !ns.backgroundImage.startsWith("linear-gradient")) {
+          imaged = n.tagName + "." + String(n.className).split(" ")[0];
+        }
+        bg = ns.backgroundColor;
+        n = n.parentElement;
+      }
+      // An <img> stretched behind the text is the same hazard and carries no
+      // background-image at all. Catch the case this repo actually shipped.
+      if (!imaged) {
+        const r0 = el.getBoundingClientRect();
+        for (const img of document.images) {
+          const ri = img.getBoundingClientRect();
+          const cs2 = getComputedStyle(img);
+          if (cs2.position !== "absolute" && cs2.position !== "fixed") continue;
+          if (ri.left <= r0.left && ri.right >= r0.right && ri.top <= r0.top && ri.bottom >= r0.bottom) {
+            imaged = "IMG." + String(img.className).split(" ")[0];
+            break;
+          }
+        }
+      }
+      out.push({ tag: el.tagName, text: el.textContent.trim().slice(0,50), color: cs.color, bg, size: cs.fontSize, weight: cs.fontWeight, imaged });
     });
     return out;
   });
+  // Text sitting on a picture cannot be judged from computed styles. It is a
+  // finding, not a pass: this is the exact shape of the /about fault, where
+  // dark green body copy sat on a white storefront and the ratio against the
+  // cream underneath the photo came back clean.
+  const onImage = r.filter((x) => x.imaged);
   const fails = r.filter(x => {
+    if (x.imaged) return false;
     const ratio = cr(x.color, x.bg);
     const px = parseFloat(x.size);
     const large = px >= 24 || (px >= 18.66 && +x.weight >= 700);
     return ratio < (large ? 3 : 4.5);
   });
-  if (fails.length) {
-    bad += fails.length;
+  if (fails.length || onImage.length) {
+    bad += fails.length + onImage.length;
     console.log(`\n${route}`);
-    fails.slice(0,8).forEach(x => console.log(`  ${cr(x.color,x.bg).toFixed(2)} ${x.tag} ${x.size} ${x.color} on ${x.bg}  "${x.text}"`));
+    fails.slice(0,8).forEach(x => console.log(`  FAIL ${cr(x.color,x.bg).toFixed(2)} ${x.tag} ${x.size} ${x.color} on ${x.bg}  "${x.text}"`));
+    onImage.slice(0,8).forEach(x => console.log(`  UNMEASURED ${x.tag} ${x.size} ${x.color} over ${x.imaged}  "${x.text}"`));
   }
   await p.close();
 }
-console.log(bad === 0 ? "\ncomputed-contrast sweep: 0 failures across " + routes.length + " routes" : `\n${bad} failures`);
+console.log(bad === 0 ? "\ncomputed-contrast sweep: 0 failures and no text over pictures, across " + routes.length + " routes" : `\n${bad} problem(s). UNMEASURED means text on a photograph: measure it on the composite the way tools/scrim-check.mjs does, or take it off the picture.`);
 await b.close();

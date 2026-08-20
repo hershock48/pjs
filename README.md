@@ -522,16 +522,62 @@ loyalty app, and it is what a customer holds.
 
 ### The steam
 
-Three wisps off "Hot pastrami" in the hero, once, on load, then gone. No loop:
-permanent motion beside the first line anyone reads is a distraction, and the
-joke does not survive a second viewing.
+Three plumes rising off the sandwich in the hero, once, on load, then gone. No
+loop: permanent motion beside the first line anyone reads is a distraction, and
+the joke does not survive a second viewing.
 
-**It does not run on a phone, and that was measured before it was decided.** At
-390 there are exactly 10px between the kicker's baseline and the top of the
-headline. Wisps rising off the words draw over the kicker; moved right, they
-draw over "PASTRAMI", because the line ends nearly flush. Either way white
-strokes land on white type and read as a rendering fault rather than as steam.
-It runs where there is air for it and is absent where there is not.
+**It took three wrong versions to get there, and each was wrong for a different
+reason worth writing down.**
+
+1. **Stroked bezier squiggles.** They read as squiggles. Real vapour has no
+   outline: it is a soft mass with a noisy edge that thins as it rises. Each
+   plume is a blurred ellipse pushed through `feTurbulence` into
+   `feDisplacementMap`, which tears its smooth edge into wisps, then blurred
+   again to soften what the tearing left. One filter per plume, own `seed`,
+   because two plumes on one seed are the same shape twice.
+2. **Over the headline.** Wrong twice over: steam does not come off lettering,
+   and the top-left of this photograph is its palest, least contrasty corner
+   with the scrim at its weakest. White vapour there had nothing to show
+   against. It rises off the pastrami now, which is both where steam comes from
+   and the darkest, most detailed part of the frame.
+3. **Too solid.** `stdDeviation` 2 with 0.78 opacity produced compact white
+   lumps that read as fingerprints on the lens. Bigger, softer and fainter
+   reads as vapour: blur 4-5.5, peak opacity 0.5, and roughly double the size.
+
+**Judge it at true size.** Two of those rounds were spent looking at a full-hero
+screenshot downscaled to 620px, where the effect had genuinely rendered and was
+invisible at that scale. A pixel diff of the region during and after the
+animation settled it: 7,825 pixels differing. The house log already says to
+judge at true size, and this is why.
+
+### The About page, and the regression that caused it
+
+`/about` rendered its headline and two paragraphs of dark green body copy over a
+bright white photograph of their storefront, with no scrim. Unreadable, and
+nothing like the rest of the site. Kevin's words: "you cant read the writing bc
+of the picture it looks nothing like the rest of the site."
+
+**It was a regression from the hero redesign.** `.hero-photo` had been a framed
+photograph in a `.hero-grid` cell. Making it `position: absolute; inset: 0` for
+the full-bleed homepage hero broke its **two other consumers**, `/about` and
+`/locations/[slug]`, where the picture escaped its cell and became a background
+behind the whole section. The house log already carries the rule: when a thing
+appears N times, check all N. It appeared three times and one was checked.
+
+The full-bleed behaviour is scoped to `.hero` now and the base class is the
+framed photograph it always was.
+
+**The sweep that should have caught it was also wrong**, and that is the more
+useful half. `tools/contrast-sweep.mjs` walked up for the nearest painted
+background *colour* and computed against it, so it reported the page clean by
+measuring the cream underneath the photograph. It now notices a
+`background-image` on any ancestor, and an absolutely positioned `<img>`
+covering the text, and reports those as **UNMEASURED** rather than passing them.
+Text on a photograph cannot be judged from computed styles at all; it needs
+measuring on the composite the way `tools/scrim-check.mjs` does the hero.
+
+Verified by disabling the tool's own `.hero` exclusion and confirming it then
+flags the hero's four text elements over `IMG.hero-photo`.
 
 ### Forms have no mailbox
 

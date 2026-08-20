@@ -41,15 +41,16 @@ export default function Home() {
           alt="A hot sandwich on marble rye, cut in half and stacked, with kettle chips and a pickle spear."
           fetchPriority="high"
         />
+        {/* Steam rises off the SANDWICH, not off the words. It was over the
+            headline first, which was wrong twice: steam does not come off
+            lettering, and the top-left of this photograph is its palest, least
+            contrasty corner, so white vapour had nothing to show against. The
+            sandwich is the dark, detailed part of the frame. */}
+        <Steam />
         <div className="wrap hero-in">
           <span className="kicker">Marshall and Battle Creek, Michigan</span>
           <h1>
-            {/* The steam is positioned off this span, so it tracks the words
-                rather than a fixed offset from the corner of the hero. */}
-            <span className="steamhost">
-              Hot pastrami,
-              <Steam />
-            </span>
+            Hot pastrami,
             <br />
             cut to order.
           </h1>
