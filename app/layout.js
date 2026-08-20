@@ -89,8 +89,8 @@ export const metadata = {
   // site as the original.
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Pastrami Joe's | New York style deli in Marshall and Battle Creek",
-    template: "%s | Pastrami Joe's",
+    default: "Pastrami Joe’s | New York style deli in Marshall and Battle Creek",
+    template: "%s | Pastrami Joe’s",
   },
   description:
     "Hot pastrami and Sy Ginsberg corned beef, cut to order. Two counters in Calhoun County, Michigan: Marshall from 7am and Battle Creek weekday lunch. Hours, menu and online ordering.",
@@ -109,7 +109,7 @@ export const metadata = {
         url: "/og.jpg",
         width: 1200,
         height: 630,
-        alt: "Hot pastrami, cut to order. Pastrami Joe's, Marshall and Battle Creek, Michigan.",
+        alt: "Hot pastrami, cut to order. Pastrami Joe’s, Marshall and Battle Creek, Michigan.",
       },
     ],
   },

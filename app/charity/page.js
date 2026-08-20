@@ -3,7 +3,7 @@ import InquiryForm from "@/components/InquiryForm";
 export const metadata = {
   title: "Dine to donate",
   description:
-    "Pastrami Joe's donates 30% of proceeds from designated dates to a chosen cause. Request a date for your nonprofit, school or team.",
+    "Pastrami Joe’s donates 30% of proceeds from designated dates to a chosen cause. Request a date for your nonprofit, school or team.",
   alternates: { canonical: "/charity" },
 };
 

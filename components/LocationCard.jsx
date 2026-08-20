@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Status from "@/components/Status";
+import { site } from "@/lib/site";
 import { schedule } from "@/lib/hours";
 
 /**
@@ -22,7 +23,10 @@ export default function LocationCard({ location, compact = false }) {
         <Status location={location} />
       </div>
 
-      {location.brand !== "Pastrami Joe's" && (
+      {/* Compared against site.name, never a literal. A hard-coded copy of this
+          string here went out of step with lib/site.js the moment the
+          apostrophe in the brand changed, and the comparison silently inverted. */}
+      {location.brand !== site.name && (
         <p className="small" style={{ marginBottom: 10 }}>
           The counter here trades as <b>{location.brand}</b>.
         </p>
@@ -48,9 +52,9 @@ export default function LocationCard({ location, compact = false }) {
       {!compact && <p className="small" style={{ marginBottom: 16 }}>{location.blurb}</p>}
 
       <div className="btnrow">
-        <a className="btn" href={location.orderUrl} rel="noopener">
+        <Link className="btn" href={`/order?at=${location.slug}`}>
           Order from {location.name}
-        </a>
+        </Link>
         <Link className="btn ghost" href={`/locations/${location.slug}`}>
           Details
         </Link>

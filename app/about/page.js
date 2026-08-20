@@ -4,7 +4,7 @@ import { site } from "@/lib/site";
 export const metadata = {
   title: "About",
   description:
-    "Pastrami Joe's opened in Marshall in 2003 and has been cutting Sy Ginsberg corned beef and pastrami ever since. Two counters, one kitchen's worth of recipes.",
+    "Pastrami Joe’s opened in Marshall in 2003 and has been cutting Sy Ginsberg corned beef and pastrami ever since. Two counters, one kitchen’s worth of recipes.",
   alternates: { canonical: "/about" },
 };
 
@@ -28,7 +28,7 @@ export default function About() {
               src="/assets/pjs/storefront.webp"
               width="1440"
               height="1080"
-              alt="The Pastrami Joe's storefront on North Jefferson Street in Marshall, awnings out and tables on the sidewalk."
+              alt="The Pastrami Joe’s storefront on North Jefferson Street in Marshall, awnings out and tables on the sidewalk."
             />
           </div>
         </div>
@@ -42,7 +42,7 @@ export default function About() {
           <p style={{ marginTop: 14 }}>
             {site.supplier.name} has been curing corned beef and pastrami in Detroit since
             1972. The Gold Label is what goes on the Reuben and on Joe&rsquo;s Famous Hot
-            Pastrami, and it is the reason people who grew up eating this on the east coast
+            Pastrami, and it is the reason people who grew up eating this on the East Coast
             keep telling us it tastes the way it is supposed to.
           </p>
           <p style={{ marginTop: 14 }}>
@@ -59,7 +59,7 @@ export default function About() {
           </p>
           <p style={{ marginTop: 14 }}>
             Battle Creek is a lunch counter on West Michigan Avenue, back downtown since
-            2024 after the old store closed during the pandemic. The sign there reads Little
+            2024, after the previous Battle Creek store closed. The sign there reads Little
             Joe&rsquo;s. Same meat, same recipes, twenty seats, weekdays only.
           </p>
 

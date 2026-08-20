@@ -7,7 +7,7 @@ import { site } from "@/lib/site";
 export const metadata = {
   title: "Contact",
   description:
-    "Phone numbers, addresses and hours for Pastrami Joe's in Marshall and Little Joe's in Battle Creek.",
+    "Phone numbers, addresses and hours for Pastrami Joe’s in Marshall and Little Joe’s in Battle Creek.",
   alternates: { canonical: "/contact" },
 };
 

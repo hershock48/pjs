@@ -54,7 +54,9 @@ export default function Catering() {
         <div className="wrap">
           <h2>Prices</h2>
           <p className="small" style={{ marginTop: 10, maxWidth: "60ch" }}>
-            Tray varieties: {catering.varieties.join(", ").toLowerCase()}.
+            {/* NOT .toLowerCase(): it flattened Italian and Caesar, which are
+                proper nouns on their own printed menu. */}
+            Tray varieties: {catering.varieties.join(", ")}.
           </p>
 
           <div className="grid g2" style={{ marginTop: 24, alignItems: "start" }}>

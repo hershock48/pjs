@@ -4,7 +4,7 @@ import { site } from "@/lib/site";
 export const metadata = {
   title: "Locations and hours",
   description:
-    "Pastrami Joe's on North Jefferson in Marshall and Little Joe's on West Michigan in Battle Creek. Addresses, phone numbers and the hours for both.",
+    "Pastrami Joe’s on North Jefferson in Marshall and Little Joe’s on West Michigan in Battle Creek. Addresses, phone numbers and the hours for both.",
   alternates: { canonical: "/locations" },
 };
 

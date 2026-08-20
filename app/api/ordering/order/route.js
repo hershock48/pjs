@@ -90,6 +90,14 @@ export async function POST(req) {
     if (!Number.isFinite(qty) || qty < 1 || qty > 200) return bad("Quantity out of range.");
 
     const chosen = Array.isArray(raw.options) ? raw.options.map(String) : [];
+
+    // Reject names that match no group FIRST. Silence here would misprice
+    // quietly, and running the required-group check first reported a confusing
+    // reason for a correct rejection.
+    const legal = new Set(item.options.flatMap((g) => g.choices.map((c) => c.name)));
+    const stray = chosen.filter((c) => !legal.has(c));
+    if (stray.length) return bad(`${stray[0]} is not an option on ${item.name}.`);
+
     let optionCents = 0;
     for (const group of item.options) {
       const inGroup = group.choices.filter((c) => chosen.includes(c.name));
@@ -98,17 +106,15 @@ export async function POST(req) {
           return bad(`${item.name} needs at least one ${group.name.toLowerCase()}.`);
         }
       } else {
-        if (group.required && inGroup.length !== 1) {
+        if (inGroup.length > 1) {
+          return bad(`${item.name} takes one ${group.name.toLowerCase()}, not ${inGroup.length}.`);
+        }
+        if (group.required && inGroup.length === 0) {
           return bad(`${item.name} needs a ${group.name.toLowerCase()} picked.`);
         }
-        if (!group.required && inGroup.length > 1) return bad("Malformed options.");
       }
       optionCents += inGroup.reduce((sum, c) => sum + c.priceCents, 0);
     }
-    // Reject names that match no group: silence here would misprice quietly.
-    const legal = new Set(item.options.flatMap((g) => g.choices.map((c) => c.name)));
-    if (chosen.some((c) => !legal.has(c))) return bad("Malformed options.");
-
     const unitCents = item.priceCents + optionCents;
     lines.push({ itemId: item.id, name: item.name, qty, unitCents, options: chosen, lineCents: unitCents * qty });
   }

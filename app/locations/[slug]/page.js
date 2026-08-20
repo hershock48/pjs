@@ -35,7 +35,7 @@ export async function generateMetadata({ params }) {
     .join(", ");
   return {
     title: `${l.name}, ${l.street}`,
-    description: `Pastrami Joe's in ${l.city}, Michigan. ${l.street}. ${hours}. ${l.blurb}`,
+    description: `Pastrami Joe’s in ${l.city}, Michigan. ${l.street}. ${hours}. ${l.blurb}`,
     alternates: { canonical: `/locations/${l.slug}` },
   };
 }
@@ -74,9 +74,9 @@ export default async function Location({ params }) {
               </address>
 
               <div className="btnrow" style={{ marginTop: 22 }}>
-                <a className="btn" href={l.orderUrl} rel="noopener">
+                <Link className="btn" href={`/order?at=${l.slug}`}>
                   Order from {l.name}
-                </a>
+                </Link>
                 <a
                   className="btn ghost"
                   href={`https://www.google.com/maps/search/?api=1&query=${mapQuery}`}

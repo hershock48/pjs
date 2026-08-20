@@ -353,6 +353,66 @@ vendor comparison, no "our own website". A guest gets a menu, a pickup time and
 a plainly labelled 99¢ fee like any checkout. `tools/flow-checks.mjs` greps the
 order page for that leak, because it is one paste from the proposal away.
 
+### The debug and copy pass
+
+**Bugs found by fuzzing the order endpoint.** All three were wrong messages
+rather than wrong money, which is the kind that survives a demo and annoys a
+customer:
+
+- An option name that matched nothing reported *"needs a which picked"*, because
+  the required-group check ran before the unknown-name check. The unknown-name
+  check runs first now and names the option.
+- A single-choice group given two picks reported *"needs a X picked"*, as if
+  nothing had been picked.
+- The group was called "Which", so every sentence about it read *"needs a which
+  picked"*. Their menu prints pasta salad and coleslaw as one line at one price;
+  here they are two items and the group is gone.
+
+**Two name collisions that would have printed ambiguous kitchen tickets.**
+"Pasta salad" existed at $2.10 as a side and $20 as a catering tray, and "Bread
+and butter" at $2.50 and $2.00 a head. A ticket reading `1 x Pasta salad` could
+have been either. They are "Pasta salad, side" and "Bread and butter, by the
+head" now.
+
+**Three surfaces were still sending customers to Heartland.** The Jelly work
+replaced `/order` and left the location pages, the menu page's location note and
+every `LocationCard` pointing at `hrpos.heartland.us`. They point at
+`/order?at=<slug>` now. `site.orderUrl` stays as a fact and is linked from
+nowhere, which is said next to it.
+
+**A bug the copy pass caused.** Normalising apostrophes turned `site.name` into
+"Pastrami Joe’s" while `LocationCard` still compared `location.brand` against a
+hard-coded straight-quoted `"Pastrami Joe's"`. The comparison inverted silently
+and Marshall's own card would have announced that it trades as Pastrami Joe's.
+The fault was the duplicated literal, not the apostrophe: it reads `site.name`
+now, the way the `[slug]` page already did.
+
+**Copy, checked on the rendered page rather than the source.**
+
+- 39 straight apostrophes and 17 curly ones, on the same pages. All curly now.
+- "flavours" on the order page. American spelling, per `glaze.md`.
+- The catering varieties rendered as *"chicken caesar, wrap only"*, which reads
+  as an eighth variety. Parenthesised, and the `.toLowerCase()` that flattened
+  Italian and Caesar is gone.
+- *"$25.00 per five / Five bagels"* stuttered. Now "for five".
+- The About page said the Battle Creek store "closed during the pandemic". The
+  year is a fact; the reason was an inference nobody confirmed. Cut to the fact.
+- Caesar, Russian and Italian are capitalised, which is a deliberate departure
+  from their menu. It writes "caesar dressing" lowercase and "Joe's Italian
+  Dressing" capitalised three lines apart, so there was no style to preserve.
+
+**Two false alarms, recorded so nobody chases them again.** A navigation test
+reported the first `.reveal` at opacity 0 after a mobile nav: the element was at
+`top: 896` on an 844px viewport, correctly not yet revealed. And 18
+`requestfailed` events on every run are all `net::ERR_ABORTED` on Next's own
+`?_rsc=` prefetches, which it cancels when a navigation supersedes them.
+
+**Verified fact, since it is a claim about the client's philanthropy.** The
+Reuben Race really is co-hosted with The Fountain Clinic of Marshall
+([runsignup](https://runsignup.com/Race/MI/Marshall/PastramiJoesReubenRace)),
+which their own charity page does not mention. Their page does confirm the 2012
+start and the 30% figure.
+
 ### Forms have no mailbox
 
 `InquiryForm` composes a `mailto:` with every field prefilled and says on the

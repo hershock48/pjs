@@ -5,7 +5,7 @@ import { site } from "@/lib/site";
 import { week } from "@/lib/menu";
 
 export const metadata = {
-  title: "Pastrami Joe's | New York style deli in Marshall and Battle Creek",
+  title: "Pastrami Joe’s | New York style deli in Marshall and Battle Creek",
   description:
     "Hot pastrami and Sy Ginsberg corned beef, cut to order. Marshall from 7am, Battle Creek for weekday lunch. Hours, menu, catering and online ordering.",
   alternates: { canonical: "/" },

@@ -3,7 +3,7 @@ import { site } from "@/lib/site";
 export const metadata = {
   title: "Jobs",
   description:
-    "Counter and kitchen roles at Pastrami Joe's in Marshall and Battle Creek. Training available, apply in person or start here.",
+    "Counter and kitchen roles at Pastrami Joe’s in Marshall and Battle Creek. Training available, apply in person or start here.",
   alternates: { canonical: "/jobs" },
 };
 

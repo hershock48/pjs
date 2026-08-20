@@ -51,9 +51,7 @@ export default async function MenuPage({ searchParams }) {
           {location && (
             <p className="small" style={{ marginTop: 14 }}>
               Showing what the {location.name} counter makes.{" "}
-              <a href={location.orderUrl} rel="noopener">
-                Order from {location.name}
-              </a>
+              <Link href={`/order?at=${location.slug}`}>Order from {location.name}</Link>
               .
             </p>
           )}
