@@ -620,6 +620,44 @@ their own name with their hours and prices visible, plus 50¢ an order; and that
 the trade is a 99¢ fee their customer does not pay today. It offers to build the
 ordering without the fee if that is the sticking point.
 
+### Why Heartland gives ordering away, and what that means for Jelly
+
+It is not generosity and it is not a loss leader in the usual sense.
+
+**Heartland is a payments company that sells software to acquire processing
+volume.** Reforming Retail, covering the industry, puts it flatly: "90%+ of the
+quoted 'revenue' is payments processing revenue", and describes Global Payments'
+strategy as buying merchant portfolios and widening the payments margin. The POS
+is the hook; the card rail is the business.
+
+**And an online order is worth more to them than a counter order.** Online is
+card-not-present, which carries higher interchange than card-present:
+[roughly 2.25-2.65% against 1.70-2.05%](https://merchantcostconsulting.com/lower-credit-card-processing-fees/card-present-vs-card-not-present-transactions/),
+about half a point. Square's own published rates show the same shape, 2.6% + 10¢
+in person against 2.9% + 30¢ online. So free online ordering is a pump that moves
+volume into their highest-margin channel. Charging for it would be leaving money
+on the table.
+
+**Which is the part that matters for us.** Taking the ordering channel does not
+just move a page, it moves that card volume off Heartland's rail and onto
+Stripe's. Two consequences, and neither is in the proposal because neither is
+provable without his statement:
+
+1. **Their rep will care.** This is their high-margin volume, and Pastrami Joe's
+   is on a three-year POS term with $295 a location to exit. We are not asking
+   them to leave, but somebody at Heartland may argue the point.
+2. **The processing rate may get worse, not better.** Stripe standard is
+   2.9% + 30¢. A negotiated interchange-plus deal on card-not-present might land
+   nearer 2.6% + 10¢. On a $30 order that is roughly 29¢ more through Stripe,
+   against 50¢ earned from the guest fee. **Still net positive, but it is ~21¢,
+   not 50¢** — and with the fee waived, which the proposal offers, it goes
+   negative.
+
+**So do not offer the no-fee build here without pricing the processing first.**
+That offer is in the proposal deliberately, because against a free incumbent it
+is the difference between a conversation and a no, but it needs his rate before
+it becomes a number.
+
 **The Jelly economics that work at Beans do not transfer here.** Beans was on
 Toast, paying $50 a month for a handheld and 3.69% + 15¢, so there was real money
 to move. Pastrami Joe's is on a free channel. Sell the website; treat ordering as
