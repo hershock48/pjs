@@ -604,9 +604,19 @@ The other numbers, for completeness: the point of sale is **$89 a month and up**
 on [Heartland's own page](https://www.heartland.us/pricing/restaurant-pos), and
 [TechRadar](https://www.techradar.com/reviews/heartland-pos-review) reports tiers
 at $80 and $160 per selling station, interchange-plus processing, a **three year
-term** and **$295 per location** to leave early. Those last three are switching
-costs on the POS, which this proposal is not asking them to switch, so they do
-not enter the decision at all.
+term** and **$295 per location** to leave early.
+
+**Checked, because the client asked whether the term was even real.** The $295
+early termination fee corroborates: merchants writing in to
+[PaymentPop](https://paymentpop.com/merchant-accounts/heartland-payment-systems-customer-reviews/)
+name that exact figure independently and repeatedly, with some reporting they
+were then billed $500. The **three year term is single-sourced to TechRadar** and
+should stay hedged in the proposal as a report rather than a fact.
+
+None of it enters the decision anyway: these are switching costs on the point of
+sale, and this proposal does not ask them to switch the point of sale. The
+proposal now says so on the row itself, so the owner does not read a term length
+as a reason he cannot do this.
 
 #### Two wrong framings were shipped before the right one
 
