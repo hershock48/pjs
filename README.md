@@ -455,6 +455,84 @@ websites publish six different answers", and the individual listing findings
 about Yelp, Tripadvisor and the Visitors Bureau. They were checked when the
 proposal was written; they have not been re-checked since.
 
+### The UX pass
+
+Driven on a real 390x844 phone rather than audited. None of this is anything axe
+reports.
+
+**The cart was invisible.** Measured: after adding an item the cart panel sat
+**3,437px** down the page. Nothing on screen changed. A guest taps Add, the sheet
+closes, and the only evidence their order exists is three screens below the
+fold, so they tap Add again. There is a sticky bar at the bottom of the viewport
+now, mobile only, showing the count and the total with a button that scrolls to
+the cart and focuses it.
+
+**The option sheet was not a dialog.** It had `role="dialog"` and none of the
+behaviour: focus stayed on the button behind it, Escape did nothing, the
+backdrop did nothing, the page behind kept scrolling, and Tab walked straight
+out. All five fixed, and focus returns to the item that opened it. The backdrop
+closes on `mousedown` matching the target, so a drag that starts inside and ends
+outside does not throw away the guest's picks.
+
+**The sheet never showed a price.** You picked options and tapped Add having
+never seen what it cost. It carries a running total now, and the Add button says
+the number.
+
+**Quantity defaulted to 1 on per-person items.** A sub tray is $7.00 *a head*.
+Defaulting to 1 invites somebody to book lunch for one and get a tray. Per-person
+and serves-N items default to 10.
+
+**The demo override contradicted the header.** With `ORDERING_DEMO_ALWAYS_OPEN`
+on, `/order` showed "Battle Creek: Opens tomorrow at 10am" in the strip and
+"Battle Creek: Taking orders until close" in the picker two inches below. On one
+screen. The override now says what it is doing: "Demo: this counter is shut
+right now".
+
+**Every `tel:` link was an 18px-tall inline text link.** On a deli's site, on a
+phone, calling is a primary action and it was the smallest target on the page.
+They are 42px now, fixed at the attribute selector rather than on each link.
+
+### The printed menu
+
+Kevin photographed the in-store menu, which is the source that settles most of
+what this repo had been carefully refusing to guess.
+
+**It corrected an hour we had wrong.** Marshall's Saturday open was `10:00` here,
+taken second-hand from a Second Wave interview. The printed menu says **11am**.
+This repo exists to argue that nobody can find their hours, and it published one
+that was wrong by sixty minutes for a week. The answer was sitting on their
+counter.
+
+**Prices: 55 unpriced items became 8.** Whole, half and wrap for every sandwich,
+14" and 9" for every pizza, all transcribed from the photographs. The price cell
+renders every size their menu prints, because showing only the whole price is
+how a menu gets called expensive, and price is already the most common complaint
+in their reviews.
+
+**And it corrected a price.** Extra cheese was `1.00` here, from their website's
+extras block. The printed menu says **50¢**.
+
+What is still unpriced is what the printed menu itself does not price: the
+pastries and the build-your-own platter, which it lists as "Varies".
+
+**Two menus that disagree, which is the argument the proposal already makes.**
+Their website lists a Pastrami breakfast burrito; the printed menu does not, and
+lists an Egg & Cheese one instead. The printed menu is newer, it carries the
+loyalty app, and it is what a customer holds.
+
+### The steam
+
+Three wisps off "Hot pastrami" in the hero, once, on load, then gone. No loop:
+permanent motion beside the first line anyone reads is a distraction, and the
+joke does not survive a second viewing.
+
+**It does not run on a phone, and that was measured before it was decided.** At
+390 there are exactly 10px between the kicker's baseline and the top of the
+headline. Wisps rising off the words draw over the kicker; moved right, they
+draw over "PASTRAMI", because the line ends nearly flush. Either way white
+strokes land on white type and read as a rendering fault rather than as steam.
+It runs where there is air for it and is absent where there is not.
+
 ### Forms have no mailbox
 
 `InquiryForm` composes a `mailto:` with every field prefilled and says on the

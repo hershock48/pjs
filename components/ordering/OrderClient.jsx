@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
 /**
@@ -81,13 +81,78 @@ export default function OrderClient({ sections, locations, hours }) {
   const taxCents = Math.round((subtotal + feeCents) * (state?.taxRate ?? 0.06));
   const total = subtotal + feeCents + taxCents;
 
+  const cartCount = cart.reduce((n, l) => n + l.qty, 0);
   const canOrder = cart.length > 0 && (cartIsCatering || (here?.open ?? false));
+
+  // What the open sheet currently costs per unit, options included, recomputed
+  // as they are picked. Display only; the server re-prices everything anyway.
+  const sheetUnitCents = open
+    ? open.priceCents +
+      open.options
+        .flatMap((g) => g.choices)
+        .filter((ch) => chosen.includes(ch.name))
+        .reduce((sum, ch) => sum + ch.priceCents, 0)
+    : 0;
 
   function beginAdd(item, section) {
     setOpen({ ...item, section });
     setChosen([]);
-    setQty(1);
+    // A "per person" or "serves 10" item defaults to 1 and reads as one tray.
+    // Nobody caters for one person. Two is still a number they will change, but
+    // it is not a number that silently books a $7 lunch for a party of forty.
+    setQty(item.unit && /person|serves|five/i.test(item.unit) ? 10 : 1);
   }
+
+  // The sheet is a dialog and has to behave like one: focus moves in, Escape
+  // closes, the backdrop closes, the page behind stops scrolling, and Tab does
+  // not walk out of it. None of this is what axe checks, and all of it is what
+  // makes a modal feel broken.
+  const sheetRef = useRef(null);
+  const openerRef = useRef(null);
+  const cartRef = useRef(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const node = sheetRef.current;
+    const previouslyFocused = document.activeElement;
+    openerRef.current = previouslyFocused;
+
+    const focusables = () =>
+      [...(node?.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])') ?? [])].filter(
+        (el) => !el.disabled && el.offsetParent !== null
+      );
+    focusables()[0]?.focus();
+
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const onKey = (e) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        setOpen(null);
+        return;
+      }
+      if (e.key !== "Tab") return;
+      const list = focusables();
+      if (!list.length) return;
+      const first = list[0];
+      const last = list[list.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+      // Focus goes back to the item that opened it, not to the top of the page.
+      if (previouslyFocused instanceof HTMLElement) previouslyFocused.focus();
+    };
+  }, [open]);
 
   function toggle(group, choiceName) {
     setChosen((prev) => {
@@ -205,7 +270,11 @@ export default function OrderClient({ sections, locations, hours }) {
             >
               <b>{l.name}</b>
               <span className={`small ${l.open ? "isopen" : "isshut"}`}>
-                {l.open ? `Taking orders until ${l.until}` : "Not taking orders"}
+                {l.demoNote
+                  ? l.demoNote
+                  : l.open
+                  ? `Taking orders until ${l.until}`
+                  : "Not taking orders"}
               </span>
               {/* The counter's actual opening hours, which are NOT the ordering
                   window: ordering stops twenty minutes before the door does.
@@ -259,8 +328,38 @@ export default function OrderClient({ sections, locations, hours }) {
         </p>
       </div>
 
+      {/* THE STICKY CART BAR, MOBILE ONLY, AND THE MOST IMPORTANT THING HERE.
+          Measured on a 390x844 phone: after adding an item the cart panel sits
+          3,437px down the page. Nothing on screen changed. A guest taps Add, the
+          sheet closes, and the only evidence the order exists is three screens
+          below the fold, so they tap Add again. This bar is the receipt. */}
+      {cart.length > 0 && (
+        <div className="cartbar">
+          <div className="cartbar-in">
+            <span>
+              <b>
+                {cartCount} {cartCount === 1 ? "item" : "items"}
+              </b>
+              <span className="small"> {money(total)}</span>
+            </span>
+            <button
+              type="button"
+              className="btn"
+              onClick={() => {
+                cartRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+                // Focus the first field so a keyboard or screen-reader user is
+                // taken there too, not just the viewport.
+                setTimeout(() => cartRef.current?.querySelector("input")?.focus(), 500);
+              }}
+            >
+              Review order
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Cart */}
-      <aside className="cart">
+      <aside className="cart" ref={cartRef}>
         <div className="card" style={{ padding: 20 }}>
           <h3>Your order</h3>
           {cart.length === 0 ? (
@@ -386,8 +485,19 @@ export default function OrderClient({ sections, locations, hours }) {
 
       {/* Option sheet */}
       {open && (
-        <div className="sheet" role="dialog" aria-modal="true" aria-label={open.name}>
-          <div className="sheet-in card">
+        <div
+          className="sheet"
+          role="dialog"
+          aria-modal="true"
+          aria-label={open.name}
+          onMouseDown={(e) => {
+            // Only a click that both starts AND ends on the backdrop closes it.
+            // Using onClick alone closes the dialog when a drag inside it
+            // happens to finish on the backdrop, which loses the guest's picks.
+            if (e.target === e.currentTarget) setOpen(null);
+          }}
+        >
+          <div className="sheet-in card" ref={sheetRef} onMouseDown={(e) => e.stopPropagation()}>
             <h3>{open.name}</h3>
             {open.desc && (
               <p className="small" style={{ marginTop: 6 }}>
@@ -417,20 +527,29 @@ export default function OrderClient({ sections, locations, hours }) {
                 </div>
               </fieldset>
             ))}
-            <div className="btnrow" style={{ marginTop: 20, alignItems: "center" }}>
-              <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <span className="small">Qty</span>
+            <div className="sheetfoot">
+              <label className="qtyfield">
+                <span className="small">{open.unit ? `How many, ${open.unit}` : "How many"}</span>
                 <input
                   type="number"
                   min="1"
                   max="200"
+                  inputMode="numeric"
                   value={qty}
                   onChange={(e) => setQty(Math.max(1, Number(e.target.value) || 1))}
-                  style={{ width: 84 }}
                 />
               </label>
+              {/* The running total, in the dialog. Without it a guest picks
+                  options and taps Add having never seen what it costs, and the
+                  first number they see is the cart. */}
+              <p className="sheettotal">
+                <span className="small">Adds to your order</span>
+                <b>{money(sheetUnitCents * qty)}</b>
+              </p>
+            </div>
+            <div className="btnrow" style={{ marginTop: 16 }}>
               <button className="btn" type="button" onClick={confirmAdd}>
-                Add
+                Add {money(sheetUnitCents * qty)}
               </button>
               <button className="btn ghost" type="button" onClick={() => setOpen(null)}>
                 Cancel

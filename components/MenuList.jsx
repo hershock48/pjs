@@ -29,7 +29,19 @@ function Price({ item }) {
       </span>
     );
   }
-  return <span className="mprice">{money(item.price)}</span>;
+  // Their printed menu prices a sandwich three ways: whole, half and wrap, and
+  // a pizza two ways, 14" and 9". Showing only the whole price is how a menu
+  // gets accused of being expensive, which is already the most common complaint
+  // in their reviews. So every size their menu prints, this prints.
+  return (
+    <span className="mprice">
+      {money(item.price)}
+      {item.half != null && <span className="msize"> &frac12; {money(item.half)}</span>}
+      {item.wrap != null && (
+        <span className="msize"> {item.pizza ? '9" ' : "wrap "}{money(item.wrap)}</span>
+      )}
+    </span>
+  );
 }
 
 function Item({ item, slug }) {

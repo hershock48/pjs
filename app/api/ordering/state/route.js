@@ -40,6 +40,9 @@ function forLocation(location, state) {
     open,
     reason,
     until: w.open ? w.until : "",
+    // Set only when ORDERING_DEMO_ALWAYS_OPEN is holding a shut counter open.
+    // The UI prints it so the picker cannot contradict the header badge.
+    demoNote: w.demoNote ?? "",
   };
 }
 

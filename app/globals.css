@@ -1648,3 +1648,224 @@ textarea:focus {
   font-size: 12.5px;
   line-height: 1.4;
 }
+
+/* ============ the sticky cart bar ============
+   Mobile only, and it exists because of a measurement: on a 390x844 phone the
+   cart panel sits 3,437px down /order. Adding an item changed nothing on
+   screen, so the only feedback a guest got for tapping Add was silence.
+
+   It is not shown on desktop because there the cart is a sticky column already
+   in view, and a second copy of the same total is noise. */
+.cartbar {
+  display: none;
+}
+.cartbar-in {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  max-width: var(--wrap);
+  margin: 0 auto;
+  padding: 10px 16px;
+}
+.cartbar-in b {
+  font-family: var(--font-display), sans-serif;
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: 18px;
+}
+@media (max-width: 900px) {
+  .cartbar {
+    display: block;
+    position: sticky;
+    /* Sticks to the BOTTOM of the viewport, above the thumb, not under the
+       header. `bottom: 0` on a sticky element inside normal flow keeps it in
+       the document, so it never covers the last item on the page the way a
+       fixed bar does. */
+    bottom: 0;
+    z-index: 45;
+    background: var(--paper);
+    border-top: 2px solid var(--green);
+    box-shadow: 0 -8px 24px -14px rgba(20, 35, 27, 0.5);
+    margin-inline: -20px;
+  }
+}
+
+/* The dialog's footer: how many, and what that comes to. */
+.sheetfoot {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1px solid var(--green-line);
+}
+.qtyfield {
+  display: grid;
+  gap: 5px;
+}
+.qtyfield input {
+  width: 110px;
+}
+.sheettotal {
+  text-align: right;
+  display: grid;
+  gap: 2px;
+}
+.sheettotal b {
+  font-family: var(--font-display), sans-serif;
+  font-weight: 400;
+  font-size: 28px;
+  line-height: 1;
+}
+@media (max-width: 420px) {
+  .sheetfoot {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .sheettotal {
+    text-align: left;
+  }
+  .qtyfield input {
+    width: 100%;
+  }
+}
+
+/* ============ tap targets ============
+   Measured on a 390px phone: every `tel:` link on the site was an 18px-tall
+   inline text link. On a deli's website, on a phone, "call the counter" is a
+   primary action and it was the smallest target on the page.
+
+   Padding rather than a min-height, so the link stays inline in its address
+   block and does not push the layout around. The negative inline margin keeps
+   the text visually aligned with the lines above and below it. */
+a[href^="tel:"] {
+  display: inline-block;
+  padding: 9px 6px;
+  margin-inline: -6px;
+  font-weight: 700;
+  text-decoration-thickness: 1px;
+}
+/* Inside a button the padding is already there and doubling it deforms it. */
+.btn[href^="tel:"] {
+  display: inline-flex;
+  padding: 13px 24px;
+  margin-inline: 0;
+}
+
+/* The section chips on the menu and the hours strip were both 36-38px tall,
+   which is under the 44px guidance and feels imprecise with a thumb. */
+@media (max-width: 900px) {
+  .menujump a {
+    padding-block: 11px;
+  }
+  .hoursbar-item {
+    padding-block: 6px;
+  }
+}
+
+/* The half and wrap prices next to the whole. Lighter and smaller, so the
+   headline price still reads first and the alternatives are there for the
+   person who is deciding on size. */
+.msize {
+  display: inline-block;
+  font-weight: 500;
+  font-size: 13px;
+  color: var(--muted);
+  margin-left: 8px;
+  white-space: nowrap;
+}
+
+/* ============ the steam ============
+   Three wisps off "Hot pastrami", once, on load. See components/Steam.jsx.
+
+   The host span is inline and position:relative, so the SVG hangs off the words
+   themselves and follows them when the headline rewraps at 390 or 320. */
+.steamhost {
+  position: relative;
+  display: inline-block;
+}
+.steam {
+  position: absolute;
+  /* Sits just above the cap height of the line, nudged right so it rises off
+     the middle of "pastrami" rather than off the H. */
+  left: 36%;
+  bottom: 84%;
+  width: clamp(58px, 10vw, 104px);
+  pointer-events: none;
+  /* Above the headline but below nothing else: it must never sit over a button
+     or a link, and it cannot be clicked regardless. */
+  z-index: 1;
+}
+.steam svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.steam path {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 3;
+  stroke-linecap: round;
+  /* Invisible by default. Nothing appears unless the animation runs, so with
+     reduced motion, or with the stylesheet loaded and animations suppressed,
+     the hero is simply the hero. */
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Rise, drift sideways, thin out, gone. `forwards` holds the final state,
+     which is opacity 0, so it ends invisible rather than snapping back. */
+  @keyframes wisp {
+    0% {
+      opacity: 0;
+      transform: translateY(14px) scaleY(0.55) scaleX(0.9);
+    }
+    22% {
+      opacity: 0.62;
+    }
+    60% {
+      opacity: 0.4;
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-22px) translateX(8px) scaleY(1.25) scaleX(1.12);
+    }
+  }
+  .steam path {
+    transform-origin: 50% 100%;
+    animation: wisp 2600ms cubic-bezier(0.32, 0.16, 0.3, 1) forwards;
+  }
+  /* The desynchronisation is the effect. 260ms apart, and each wisp is given a
+     slightly different duration so they do not re-align on the way up. */
+  .steam .w1 {
+    animation-delay: 620ms;
+    animation-duration: 2500ms;
+  }
+  .steam .w2 {
+    animation-delay: 880ms;
+    animation-duration: 3000ms;
+  }
+  .steam .w3 {
+    animation-delay: 1140ms;
+    animation-duration: 2700ms;
+  }
+}
+
+/* NOT ON A PHONE, and this was measured before it was decided.
+
+   At 390 there are exactly 10px between the kicker's baseline and the top of
+   the headline. Wisps rising off the words draw over the kicker; moved right,
+   they draw over "PASTRAMI" instead, because the line ends nearly flush. Either
+   way white strokes land on white type and read as a rendering fault rather
+   than as steam.
+
+   The mobile hero has no empty air in it. A detail that degrades into noise on
+   the device most people will use is not worth shipping there, so it runs where
+   there is room for it and is simply absent where there is not. */
+@media (max-width: 700px) {
+  .steam {
+    display: none;
+  }
+}

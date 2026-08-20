@@ -1,6 +1,7 @@
 import Link from "next/link";
 import LocationCard from "@/components/LocationCard";
 import Mark from "@/components/Mark";
+import Steam from "@/components/Steam";
 import { site } from "@/lib/site";
 import { week } from "@/lib/menu";
 
@@ -43,7 +44,12 @@ export default function Home() {
         <div className="wrap hero-in">
           <span className="kicker">Marshall and Battle Creek, Michigan</span>
           <h1>
-            Hot pastrami,
+            {/* The steam is positioned off this span, so it tracks the words
+                rather than a fixed offset from the corner of the hero. */}
+            <span className="steamhost">
+              Hot pastrami,
+              <Steam />
+            </span>
             <br />
             cut to order.
           </h1>
