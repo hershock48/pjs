@@ -589,7 +589,7 @@ measuring on the composite the way `tools/scrim-check.mjs` does the hero.
 Verified by disabling the tool's own `.hero` exclusion and confirming it then
 flags the hero's four text elements over `IMG.hero-photo`.
 
-### What Heartland costs, and why the ordering pitch is not a savings pitch
+### What Heartland costs, and the arithmetic that actually decides it
 
 **Heartland's online ordering is free and takes no commission.** Three of their
 own resellers say so independently:
@@ -600,25 +600,65 @@ POS"), and
 [Clear Solutions](https://heartlandrestaurantpos.clearsolutionsip.com/fully-integrated-online-mobile-ordering/)
 ("at no additional cost").
 
-**This kills the savings argument, and it was nearly shipped anyway.** The first
-version of the money box said Heartland's ordering cost was "not published" and
-invited the owner to compare a statement. That framing implies there is a fee to
-be saved. There is not. Pastrami Joe's pays nothing for the ordering channel
-they have.
-
 The other numbers, for completeness: the point of sale is **$89 a month and up**
 on [Heartland's own page](https://www.heartland.us/pricing/restaurant-pos), and
 [TechRadar](https://www.techradar.com/reviews/heartland-pos-review) reports tiers
 at $80 and $160 per selling station, interchange-plus processing, a **three year
-term** and **$295 per location** to leave early. Those last three matter for a
-different reason: they are switching costs on the POS, which this proposal is
-not asking them to switch.
+term** and **$295 per location** to leave early. Those last three are switching
+costs on the POS, which this proposal is not asking them to switch, so they do
+not enter the decision at all.
 
-**What the proposal says now.** That moving the channel does not save money,
-because the channel is already free; that what it buys is the ordering living on
-their own name with their hours and prices visible, plus 50¢ an order; and that
-the trade is a 99¢ fee their customer does not pay today. It offers to build the
-ordering without the fee if that is the sticking point.
+#### Two wrong framings were shipped before the right one
+
+**First wrong framing: "not published, compare your statement."** That implies
+there is an ordering fee to be saved. There is not.
+
+**Second wrong framing, and the one that took a client to correct: "so this does
+not save you money."** Free is not the same as better for the owner, and the
+money box said it was. What decides this is not the sticker on the ordering
+module, it is what lands in the owner's bank on one order:
+
+- **Ours.** Guest pays `order + 0.99`. Stripe takes `2.9% + 30¢` of that total.
+  Glazed takes `49¢`. Owner keeps the remainder.
+- **Heartland's.** Owner receives `order` minus their own card processing, at
+  whatever all-in rate is on their statement.
+
+| Order | With us | HL 2.60%+10¢ | HL 2.80%+15¢ | HL 3.00%+20¢ |
+|------:|--------:|-------------:|-------------:|-------------:|
+| $12 | **$11.82** | $11.59 | $11.51 | $11.44 |
+| $20 | **$19.59** | $19.38 | $19.29 | $19.20 |
+| $30 | **$29.30** | $29.12 | $29.01 | $28.90 |
+| $45 | **$43.87** | $43.73 | $43.59 | $43.45 |
+| $60 | **$58.43** | $58.34 | $58.17 | $58.00 |
+
+**We win every line, and the break-even proves it is not a rate war we can
+lose.** For Heartland to match on a $20 order their all-in rate would have to be
+**1.54%**; on a $30 order, **2.00%**. Card-not-present restaurant interchange —
+the wholesale cost, before any processor markup or assessments — is
+[2.10% to 2.80%](https://merchantcostconsulting.com/lower-credit-card-processing-fees/visa-interchange-rates/)
+depending on the card. Nobody sells below their own cost, so on counter-sized
+orders that rate does not exist.
+
+**Where it does turn over, and this is in the proposal.** The advantage is a
+flat fee split, so it is largest on small tickets and decays as the ticket grows.
+Crossover, computed:
+
+| Their all-in rate | Heartland pulls ahead above |
+|---|---|
+| 2.20% + 10¢ | $38.76 |
+| 2.40% + 10¢ | $54.26 |
+| 2.60% + 10¢ | $90.43 |
+| 2.80% + 15¢ | $321.30 |
+| 3.00% + 20¢ | never |
+
+Sandwich orders are nowhere near any of these. **Large catering trays can be**,
+which is why the proposal offers to leave catering booking where it is and move
+only counter ordering. Say it before the owner finds it.
+
+**What the proposal says now.** The ledger above, the break-even, the crossover
+caveat, and then the argument that would stand even if the money were a wash:
+the channel moves onto their own name. The no-fee alternative is now offered as
+**a flat monthly instead**, not as free, because free flips the sign (see below).
 
 ### Why Heartland gives ordering away, and what that means for Jelly
 
@@ -645,23 +685,29 @@ provable without his statement:
 
 1. **Their rep will care.** This is their high-margin volume, and Pastrami Joe's
    is on a three-year POS term with $295 a location to exit. We are not asking
-   them to leave, but somebody at Heartland may argue the point.
-2. **The processing rate may get worse, not better.** Stripe standard is
-   2.9% + 30¢. A negotiated interchange-plus deal on card-not-present might land
-   nearer 2.6% + 10¢. On a $30 order that is roughly 29¢ more through Stripe,
-   against 50¢ earned from the guest fee. **Still net positive, but it is ~21¢,
-   not 50¢** — and with the fee waived, which the proposal offers, it goes
-   negative.
+   them to leave, but somebody at Heartland may argue the point. **This is not
+   the owner's problem and it does not belong in the pitch.** The POS, the term
+   and the exit fee are untouched either way, so they cannot change his decision.
+2. **The gross gain is not the whole 50¢.** Stripe standard is 2.9% + 30¢; a
+   negotiated interchange-plus deal on card-not-present might land nearer
+   2.6% + 10¢. On a $30 order that costs about 32¢ more through Stripe against
+   the 50¢ from the guest fee, so the owner's net edge is the **18¢** in the
+   ledger above rather than a clean 50¢. Small, real, and positive at every
+   counter-sized ticket.
 
-**So do not offer the no-fee build here without pricing the processing first.**
-That offer is in the proposal deliberately, because against a free incumbent it
-is the difference between a conversation and a no, but it needs his rate before
-it becomes a number.
+**Never offer a free build here.** With the guest fee waived the owner absorbs
+Stripe's 2.9% + 30¢ against a channel that currently costs them nothing, and the
+sign flips at every order size. The escape hatch in the proposal is a **flat
+monthly** priced against his statement, which keeps the arithmetic honest. The
+earlier version of this file said "do not offer the no-fee build without pricing
+the processing first"; that was too soft. It is not a pricing exercise, it is a
+loss.
 
-**The Jelly economics that work at Beans do not transfer here.** Beans was on
-Toast, paying $50 a month for a handheld and 3.69% + 15¢, so there was real money
-to move. Pastrami Joe's is on a free channel. Sell the website; treat ordering as
-the thing that makes the website worth having, not as a saving.
+**Beans transfers better than it first looked.** Beans was on Toast at $50 a
+month and 3.69% + 15¢, so the saving was obvious. Pastrami Joe's is on a free
+channel, so the saving has to be computed rather than pointed at — but it is
+still there, because the guest fee more than covers the card cost on a normal
+ticket. Lead with the site; back it with the ledger, not with a shrug.
 
 ### Forms have no mailbox
 

@@ -205,6 +205,41 @@ h2.sec-title { font-size: clamp(30px, 4vw, 42px); font-weight: 800; letter-spaci
   .moneytable tr { padding-bottom: 12px; margin-bottom: 12px; border-bottom: 1px solid rgba(243,234,225,0.12); }
   .moneytable th, .moneytable td { border-bottom: 0; padding: 2px 0; white-space: normal; }
 }
+/* The ledger is a numeric grid, so it does NOT get the stacking treatment the
+   table above gets: a column of bare dollar amounts with no header beside them
+   is worse than a scroll. It scrolls inside its own box instead, which keeps
+   the page itself from ever scrolling sideways at 320px. */
+.ledgerwrap { overflow-x: auto; margin-top: 10px; -webkit-overflow-scrolling: touch;
+  /* A scroll shadow on the right edge, pure CSS. The solid gradient is painted
+     `background-attachment: local` so it travels with the content and covers the
+     shadow once there is nothing left to scroll to; the radial shadow is
+     `scroll`, so it stays pinned to the box edge and shows only while a column
+     is still hidden past it. #2B221C is the box's own painted colour,
+     rgba(243,234,225,.05) composited over the section's #201712 — it has to be
+     an opaque match, because a transparent mask cannot hide anything.
+     Right edge only: the left one would be painted behind the sticky order
+     column below and never seen. */
+  background:
+    linear-gradient(to left, #2B221C 40%, rgba(43,34,28,0)) right center,
+    radial-gradient(farthest-side at 100% 50%, rgba(0,0,0,.45), rgba(0,0,0,0)) right center;
+  background-repeat: no-repeat;
+  background-size: 34px 100%, 13px 100%;
+  background-attachment: local, scroll;
+}
+.ledger { width: 100%; min-width: 460px; border-collapse: collapse; }
+.moneybox p.ledgercap { margin-top: 20px; font-size: 12.5px; color: #9C8B7B; line-height: 1.55; max-width: 62ch; }
+.ledger th, .ledger td { text-align: right; padding: 9px 10px; font-size: 14.5px; color: #C3B2A2; font-weight: 400; border-bottom: 1px solid rgba(243,234,225,0.12); white-space: nowrap; }
+.ledger thead th { font-size: 12px; text-transform: uppercase; letter-spacing: .07em; color: #9C8B7B; font-weight: 700; vertical-align: bottom; }
+.ledger thead th:first-child { position: sticky; left: 0; background: #2B221C; text-align: left; }
+/* The order column is pinned. Scrolled to the far right on a phone the last
+   three columns are five bare dollar amounts with nothing saying which order
+   each one is, which is a table that has stopped being a table. It carries its
+   own opaque background so the cells slide underneath it rather than through
+   it, and `left: 0` with the wrap as the scroll container is what pins it. */
+.ledger th[scope="row"] { text-align: left; color: #F3EAE1; font-weight: 700; position: sticky; left: 0; background: #2B221C; padding-right: 14px; }
+.ledger .us { color: var(--slime); font-weight: 700; }
+.ledger thead .us { color: var(--slime); }
+.ledger tbody tr:last-child th, .ledger tbody tr:last-child td { border-bottom: 0; }
 /* The vendor's ordering hostname is 38 unbreakable characters and it pushed
    the document to 360px wide at a 320px viewport. overflow-wrap on the text
    elements does not reach inside a <code>, so it is set here, on the element
@@ -634,7 +669,7 @@ footer .inner { max-width: 1100px; margin: 0 auto; padding: 56px 24px 36px; }
     <div class="wcards" style="margin-top:26px">
       <div class="wcard reveal">
         <b>What it costs you: nothing a month</b>
-        <p>No monthly fee for ordering, ever, and no term and no early termination. The guest pays a <strong>99&cent; order fee</strong> at checkout and <strong>half of it comes back to you</strong>. We keep 49&cent;. That is the whole business model and there is nothing else in it. The table below is honest about how that compares to what you have.</p>
+        <p>No monthly fee for ordering, ever, and no term and no early termination. The guest pays a <strong>99&cent; order fee</strong> at checkout and <strong>half of it comes back to you</strong>. We keep 49&cent;. That is the whole business model and there is nothing else in it. The tables below work out, order by order, what that leaves you against what you have now.</p>
       </div>
       <div class="wcard reveal">
         <b>A screen for the counter</b>
@@ -662,17 +697,53 @@ footer .inner { max-width: 1100px; margin: 0 auto; padding: 56px 24px 36px; }
           </tr>
           <tr>
             <th scope="row">Card processing</th>
-            <td>Interchange plus a markup, negotiated per merchant. Not published, and it applies whoever takes the order</td>
+            <td>Interchange plus a markup, negotiated per merchant and not published. On a Heartland online order <b>it comes out of your side</b>. On ours the guest&rsquo;s fee covers it</td>
             <td class="src">on your statement</td>
           </tr>
           <tr class="ours">
             <th scope="row">Ordering with us</th>
-            <td><b>$0 a month</b>, and <b>50&cent; of the guest's 99&cent; comes back to you</b> on every order</td>
+            <td><b>$0 a month</b>, and <b>50&cent; of the guest&rsquo;s 99&cent; comes back to you</b> on every order</td>
             <td class="src">no tiers, no term, no early termination</td>
           </tr>
         </tbody>
       </table>
-      <p><strong>So we are not going to pretend this saves you money on ordering, because it does not.</strong> Your ordering channel is already free. What we are actually proposing is that the channel move onto your own name, where your hours and your prices are visible and where the page belongs to you, and that you get paid 50&cent; an order for it. The trade is that your customer pays 99&cent; they do not pay today, and you should weigh that honestly. <strong>If that fee is the sticking point, say so and we will build the ordering without it.</strong></p>
+
+      <p><strong>Free is not the same as better for you.</strong> Their online ordering costs you nothing to switch on, and then every online order arrives at your bank minus card processing, the same as any other card sale. What matters is not the sticker on the ordering module. It is what lands in your account when a customer orders a Reuben.</p>
+
+      <!-- The caption lives OUTSIDE the scrolling box, not in a <caption>. A
+           <caption> is laid out with the table, so at 320px it inherited the
+           table's 460px min-width and its second line ran off the right edge
+           where nobody would scroll to find it. It names the table through
+           aria-labelledby instead, which is the same accessible name. -->
+      <p class="ledgercap" id="ledger-cap">What you keep on one online order, after card processing. The Heartland columns show three all-in rates, because yours is on your statement and not on their website.</p>
+      <div class="ledgerwrap">
+        <table class="ledger" aria-labelledby="ledger-cap">
+          <thead>
+            <tr>
+              <th scope="col">Order</th>
+              <th scope="col" class="us">With us</th>
+              <th scope="col">Heartland<br>at 2.60% + 10&cent;</th>
+              <th scope="col">Heartland<br>at 2.80% + 15&cent;</th>
+              <th scope="col">Heartland<br>at 3.00% + 20&cent;</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">$12</th><td class="us">$11.82</td><td>$11.59</td><td>$11.51</td><td>$11.44</td></tr>
+            <tr><th scope="row">$20</th><td class="us">$19.59</td><td>$19.38</td><td>$19.29</td><td>$19.20</td></tr>
+            <tr><th scope="row">$30</th><td class="us">$29.30</td><td>$29.12</td><td>$29.01</td><td>$28.90</td></tr>
+            <tr><th scope="row">$45</th><td class="us">$43.87</td><td>$43.73</td><td>$43.59</td><td>$43.45</td></tr>
+            <tr><th scope="row">$60</th><td class="us">$58.43</td><td>$58.34</td><td>$58.17</td><td>$58.00</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p><strong>You come out ahead on every line.</strong> The reason is simple arithmetic rather than a trick: the guest&rsquo;s 99&cent; more than covers what the card costs on a normal ticket, and half of it is yours. Our column is the guest&rsquo;s payment less Stripe&rsquo;s 2.9% + 30&cent; and our 49&cent;, with the rest to you. Nothing is hidden in it; there is no monthly fee underneath it to change the answer.</p>
+
+      <p><strong>How cheap would your Heartland rate have to be to match this?</strong> On a $20 order, about <b>1.54%</b>. On a $30 order, <b>2.00%</b>. Card-not-present interchange for a restaurant &mdash; the wholesale cost, before any processor has added a cent of markup &mdash; runs <b>2.10% to 2.80%</b> depending on the card. No processor sells below their own cost, so a rate that beats us on a sandwich order does not exist.</p>
+
+      <p><strong>Where it turns over, because you should hear it from us and not later.</strong> The advantage is a fee split, so it is worth the most on small tickets and thins out on big ones. If your all-in rate is at the low end, near 2.60%, Heartland edges ahead somewhere above a <b>$90</b> ticket; at 2.80% that point is past <b>$300</b>. Sandwich orders are nowhere near either number. Large catering trays can be, so if you want, catering keeps booking the way it does now and only the counter orders move. We would rather tell you where the line is than pretend there is not one.</p>
+
+      <p>The other half of it is not on this table. The channel moves onto <strong>your own name</strong>, with your hours and your prices on it, on a page you own. That is the part we would argue for even if the money were a wash. <strong>And if you would rather your customer never saw a 99&cent; fee, we can switch it off and price it as a flat monthly instead</strong> &mdash; that changes the table above, so we would work it against your actual statement before you decided anything.</p>
     </div>
 
     <p class="lede reveal" style="margin-top:26px"><strong>What is live on the demo today:</strong> catering, soup and the seasonal board, because those are the only prices you publish anywhere. Every number on it came off your own pages. We did not guess a single sandwich price, and we would rather show you an honest half than a made-up whole. <a href="/demo/order">Try it</a>.</p>
