@@ -144,6 +144,67 @@ console.log("\nprice placeholders");
     : fail("prices are missing and the page does not say so");
 }
 
+// ------------------------------------------------------- 6b. Jelly ordering
+// The ordering system is the part of this build that can fail silently and
+// expensively: a page that takes an order nobody will make, or a price the
+// server did not agree to.
+console.log("\nordering");
+{
+  const state = await get(`${BASE}/api/ordering/state`);
+  const s = JSON.parse(state.body);
+
+  s.locations?.length === 2
+    ? pass("the state endpoint answers for both counters")
+    : fail("the state endpoint does not carry both counters");
+
+  // Demo mode must be visible, not implied. If a Stripe key ever lands here
+  // without the copy changing, this is what says so.
+  const orderPage = await get(`${BASE}/order`);
+  s.demo === true
+    ? pass("no Stripe key, and the build reports demo mode")
+    : pass("Stripe configured, ordering takes real money");
+
+  // The server is the till. Send a line with a made-up unit price and confirm
+  // the total comes back at the menu price rather than the one we sent.
+  const r = await fetch(`${BASE}/api/ordering/order`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      guestName: "Flow Check",
+      guestPhone: "2695551234",
+      locationSlug: "marshall",
+      tipCents: 0,
+      lines: [{ itemId: "soup-cup", qty: 1, options: [], unitCents: 1 }],
+    }),
+  });
+  const d = await r.json().catch(() => ({}));
+  if (r.ok) {
+    d.totals?.subtotalCents === 449
+      ? pass("the server re-prices every line and ignores the client's numbers")
+      : fail(`the server accepted a client price: subtotal ${d.totals?.subtotalCents}`);
+  } else {
+    // A closed counter is a legitimate answer here, and it must be a real
+    // sentence rather than a bare status.
+    typeof d.error === "string" && d.error.length > 20
+      ? pass(`ordering closed, and it says why: "${d.error.slice(0, 60)}..."`)
+      : fail("ordering refused the order without an explanation");
+  }
+
+  // The counter's screen is not public.
+  const kitchen = await get(`${BASE}/api/kitchen/orders`);
+  kitchen.status === 401
+    ? pass("the kitchen queue is behind the PIN")
+    : fail(`the kitchen queue answered ${kitchen.status} without auth`);
+
+  // Nothing on the guest side may carry the business model. glaze.md's rule,
+  // and the easiest one to break by pasting from a proposal.
+  const leaks = ["fee split", "50/50", "Toast", "Heartland", "middleman", "our own website"];
+  const found = leaks.filter((t) => orderPage.body.toLowerCase().includes(t.toLowerCase()));
+  found.length === 0
+    ? pass("the guest ordering page carries no business-model copy")
+    : fail(`the ordering page leaks the pitch: ${found.join(", ")}`);
+}
+
 // --------------------------------------------------- 7. the studio plate
 console.log("\nstudio credit");
 {

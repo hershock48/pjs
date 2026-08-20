@@ -1,84 +1,65 @@
-import Link from "next/link";
-import Status from "@/components/Status";
-import { schedule } from "@/lib/hours";
+import OrderClient from "@/components/ordering/OrderClient";
+import { getStore } from "@/lib/ordering/store";
+import { guestMenu } from "@/lib/ordering/catalog";
 import { site } from "@/lib/site";
 
 export const metadata = {
   title: "Order online",
   description:
-    "Order ahead from the Marshall or Battle Creek counter. Pick the one you are collecting from and we will have it wrapped.",
+    "Order ahead from the Marshall or Battle Creek counter, and book catering trays, boxed lunches and soup by the gallon.",
   alternates: { canonical: "/order" },
 };
 
+// The ordering window reads the Michigan clock. See the note in app/layout.js:
+// a cached page here would take orders at a counter that closed hours ago.
+export const dynamic = "force-dynamic";
+
 /**
- * One ordering hub, on their own domain.
+ * Ordering, on their own domain.
  *
- * Their site has no page like this. "Order Online Marshall" in the nav goes
- * straight off to pastramijoesmarshall.hrpos.heartland.us, the Battle Creek nav
- * goes to a different Heartland subdomain, and pastramijoes.com/online-ordering/
- * is a 404. So there is no page on their site that answers "can I order right
- * now, and from where."
+ * WHAT THIS REPLACED. The first version of this page was a hub: two buttons
+ * that handed the customer off to `pastramijoesmarshall.hrpos.heartland.us` and
+ * a second Heartland subdomain for Battle Creek. It knew whether each counter
+ * was open, which their own site does not, and then sent the customer to
+ * somebody else's domain to actually order. That is the channel Jelly exists to
+ * replace, and shipping the handoff while pitching the replacement was the
+ * wrong build. Their register is untouched; this is the online channel only.
  *
- * The links still hand off to Heartland, because replacing their POS is not what
- * this rebuild is for. What changes is that the customer chooses from a page
- * that knows whether each counter is open, on the domain they searched for.
+ * WHAT IS ORDERABLE, AND WHY IT IS NOT EVERYTHING. Every price here came off
+ * one of their own published pages. Their catering menu is fully priced and is
+ * transcribed complete. Their retail menu publishes prices for soup, five
+ * extras and two seasonal items, and nothing else: 55 of 65 items are blank on
+ * their own website. Those prices do exist, inside Heartland, which is the
+ * whole argument of the proposal, and they are not guessed at here. See the
+ * long note at the top of lib/ordering/seed.js.
+ *
+ * So this ships live on catering, soup and the seasonal board, and the sandwich
+ * board arrives the day the owner sends a price list. That is one paste into
+ * the menu editor at /kitchen, and it is the most persuasive fact in the pitch:
+ * the system is built and the only missing input is his.
  */
-export default function Order() {
+export default async function Order() {
+  const { sections } = await guestMenu(getStore());
+
   return (
     <>
       <section className="tight">
         <div className="wrap">
-          <span className="kicker">Pick a counter</span>
+          <span className="kicker">Order ahead</span>
           <h1>Order online</h1>
           <p className="lede" style={{ marginTop: 14 }}>
-            Ordering runs on our till system, so the last step happens on their page.
-            Choose where you are collecting from.
+            Pick a counter, build the order, and it is waiting when you get there. Catering
+            books the same way, with a real total instead of a callback.
           </p>
         </div>
       </section>
 
       <section className="tight" style={{ paddingTop: 8 }}>
         <div className="wrap">
-          <div className="grid g2">
-            {site.locations.map((l) => {
-              const rows = schedule(l);
-              return (
-                <div key={l.slug} className="card" style={{ padding: 26 }}>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center" }}>
-                    <h2 style={{ fontSize: 30, marginRight: "auto" }}>{l.name}</h2>
-                    <Status location={l} />
-                  </div>
-                  <p className="small" style={{ marginTop: 12 }}>
-                    {l.street}, {l.city}
-                  </p>
-                  <dl className="hours" style={{ marginTop: 14, maxWidth: 300 }}>
-                    {rows.map((r) => (
-                      <div key={r.label} style={{ display: "contents" }}>
-                        <dt>{r.label}</dt>
-                        <dd className={r.closed ? "closed" : undefined}>{r.value}</dd>
-                      </div>
-                    ))}
-                  </dl>
-                  <div className="btnrow" style={{ marginTop: 20 }}>
-                    <a className="btn big" href={l.orderUrl} rel="noopener">
-                      Order from {l.name}
-                    </a>
-                  </div>
-                  <p className="small" style={{ marginTop: 12 }}>
-                    Or call <a href={`tel:${l.phone.tel}`}>{l.phone.display}</a> and we will
-                    have it wrapped.
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="notice" style={{ marginTop: 26, maxWidth: 720 }}>
-            <b>Catering is a different form.</b>
-            Trays, boxed lunches and anything for a crowd goes through{" "}
-            <Link href="/catering">the catering page</Link> so we can call you back and
-            get it right.
-          </div>
+          <OrderClient
+            sections={sections}
+            locations={site.locations.map((l) => ({ slug: l.slug, name: l.name, open: false, until: "" }))}
+          />
         </div>
       </section>
     </>

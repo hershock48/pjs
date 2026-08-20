@@ -1376,3 +1376,268 @@ textarea:focus {
   display: block;
   margin: 0 auto 18px;
 }
+
+/* ============ ordering ============
+   Jelly's guest flow and the counter's screen. Everything here is plain CSS on
+   the site's own tokens, so ordering looks like the rest of the site rather
+   than like a widget somebody embedded, which is half the point of it living
+   on their domain at all. */
+.ordergrid {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 34px;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .ordergrid {
+    grid-template-columns: 1fr;
+  }
+}
+.cart {
+  position: sticky;
+  top: calc(var(--hdr-h) + 12px);
+}
+@media (max-width: 900px) {
+  .cart {
+    position: static;
+  }
+}
+
+.counterpick {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 520px) {
+  .counterpick {
+    grid-template-columns: 1fr;
+  }
+}
+.counterbtn {
+  display: grid;
+  gap: 4px;
+  justify-items: start;
+  text-align: left;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  border: 2px solid var(--green-line);
+  background: var(--paper);
+  cursor: pointer;
+  font: inherit;
+  color: var(--ink);
+}
+.counterbtn.on {
+  border-color: var(--green);
+  background: var(--green-pale);
+}
+.counterbtn b {
+  font-family: var(--font-display), sans-serif;
+  text-transform: uppercase;
+  font-size: 19px;
+  font-weight: 400;
+}
+.isopen {
+  color: var(--green-deep);
+  font-weight: 700;
+}
+.isshut {
+  color: var(--red);
+  font-weight: 700;
+}
+
+.orderitems {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+.orderitem {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px 16px;
+  text-align: left;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--green-line);
+  background: var(--paper);
+  cursor: pointer;
+  font: inherit;
+  color: var(--ink);
+}
+.orderitem:hover:not(.off) {
+  border-color: var(--green);
+  background: var(--green-pale);
+}
+.orderitem.off {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.oi-name {
+  font-weight: 700;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.oi-price {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.oi-unit {
+  font-weight: 500;
+  color: var(--muted);
+  font-size: 13px;
+}
+.oi-desc {
+  grid-column: 1 / -1;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.cartlines {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0;
+  display: grid;
+  gap: 10px;
+}
+.cartlines li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--green-line);
+  font-size: 15px;
+}
+.totals {
+  margin-top: 14px;
+  display: grid;
+  gap: 4px;
+}
+.totals > div {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  font-size: 15px;
+}
+.totals dt {
+  color: var(--muted);
+}
+.totals dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+.totals .grand {
+  border-top: 1px solid var(--green-line);
+  margin-top: 6px;
+  padding-top: 8px;
+  font-size: 18px;
+}
+.totals .grand dt {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+/* The option sheet. A dialog rather than an expanding row, because a required
+   choice has to be unmissable and an inline panel scrolls out from under the
+   thumb on a phone. */
+.sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(3, 38, 22, 0.55);
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  overflow-y: auto;
+}
+.sheet-in {
+  width: min(560px, 100%);
+  padding: 24px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+.choice {
+  font: inherit;
+  font-size: 15px;
+  padding: 9px 14px;
+  border-radius: 999px;
+  border: 1.5px solid var(--green-line);
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+}
+.choice.on {
+  background: var(--green);
+  border-color: var(--green);
+  color: #fff;
+}
+
+/* The counter's screen. Bigger than the rest of the site on purpose: it is read
+   at arm's length, standing up, in a hurry. */
+.tickets {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+.ticket {
+  border: 2px solid var(--green-line);
+  border-radius: var(--radius);
+  background: var(--paper);
+  padding: 16px 18px;
+}
+.ticket.new {
+  border-color: var(--green);
+  box-shadow: 0 0 0 4px var(--green-pale);
+}
+.ticket header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.ticket header b {
+  font-family: var(--font-display), sans-serif;
+  font-size: 26px;
+  font-weight: 400;
+}
+.ticket ul {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0;
+  display: grid;
+  gap: 6px;
+  font-size: 17px;
+}
+.ticket .notegap {
+  margin: 8px 0;
+}
+.eightysix {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.editrow {
+  display: grid;
+  grid-template-columns: 1fr 110px auto;
+  gap: 10px;
+  align-items: center;
+  margin-top: 8px;
+}
+@media (max-width: 560px) {
+  .editrow {
+    grid-template-columns: 1fr;
+  }
+}
+.btn.ghost.on {
+  border-color: var(--green);
+  background: var(--green-pale);
+}

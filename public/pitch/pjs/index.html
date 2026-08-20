@@ -139,6 +139,16 @@ h2.sec-title { font-size: clamp(30px, 4vw, 42px); font-weight: 800; letter-spaci
 #found { background: var(--cream-2); }
 .find-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 44px; }
 @media (max-width: 800px) { .find-grid { grid-template-columns: 1fr; } }
+/* A GRID ITEM DEFAULTS TO min-width:auto, so it refuses to shrink below the
+   widest unbreakable thing inside it and pushes the track wider than 1fr. This
+   document is full of such things: "/contact-battle-creek/" in a <b> is 277px,
+   and at a 320 viewport it took the whole document to 360 and scrolled the
+   page sideways. `overflow-wrap: break-word` did NOT prevent it, because
+   break-word does not reduce an element's min-content contribution; `anywhere`
+   does, and min-width:0 lets the track use it. Both are needed. Found at 320,
+   which is the width the proposal had never been checked at. */
+.find-grid > *, .wcards > *, .blist > *, .pricewrap > * { min-width: 0; }
+.fcard, .wcard, .bitem { overflow-wrap: anywhere; }
 .fcard {
   background: #fff; border: 2px solid rgba(43,30,22,0.1); border-radius: 20px; padding: 26px 24px;
   position: relative;
@@ -161,11 +171,39 @@ h2.sec-title { font-size: clamp(30px, 4vw, 42px); font-weight: 800; letter-spaci
 .honest p + p { margin-top: 10px; }
 
 /* ============ the wedge ============ */
-#wedge { background: var(--chocolate-2); color: #F3EAE1; }
-#wedge .sec-kicker { color: var(--slime); }
-#wedge .sec-sub { color: #C3B2A2; }
-#wedge .lede { margin-top: 34px; font-size: 20px; line-height: 1.6; max-width: 720px; color: #F3EAE1; }
-#wedge .lede strong { color: var(--slime); }
+#wedge, #ordering { background: var(--chocolate-2); color: #F3EAE1; }
+#wedge .sec-kicker, #ordering .sec-kicker { color: var(--slime); }
+#wedge .sec-sub, #ordering .sec-sub { color: #C3B2A2; }
+#wedge .lede, #ordering .lede { margin-top: 34px; font-size: 20px; line-height: 1.6; max-width: 720px; color: #F3EAE1; }
+#wedge .lede strong, #ordering .lede strong { color: var(--slime); }
+/* The two sections run together as one dark band, so the second one's title
+   needs air above it rather than the full section padding twice. */
+#ordering .inner { padding-top: 20px; }
+/* The vendor's ordering hostname is 38 unbreakable characters and it pushed
+   the document to 360px wide at a 320px viewport. overflow-wrap on the text
+   elements does not reach inside a <code>, so it is set here, on the element
+   that carries the long token. */
+#ordering code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.92em;
+  background: rgba(243,234,225,0.09);
+  padding: 2px 6px;
+  border-radius: 5px;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+/* A link on the dark ground. The document's `a` colour is --raspberry-ink,
+   which is chosen to measure 4.63 on CREAM; on #201712 it is 2.28 and axe
+   found it on all four widths. Slime is the palette's dark-ground colour and
+   measures 12.4 here. Fixed at the section, not on the one anchor that got
+   named, because the next link added in here would ship the same fault. */
+#wedge a, #ordering a {
+  color: var(--slime);
+  text-decoration-color: rgba(191, 224, 122, 0.5);
+}
+#wedge a:hover, #ordering a:hover {
+  color: #fff;
+}
 .wcards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 40px; }
 @media (max-width: 800px) { .wcards { grid-template-columns: 1fr; } }
 .wcard { background: rgba(243,234,225,0.05); border: 1px solid rgba(243,234,225,0.14); border-radius: 18px; padding: 24px 22px; }
@@ -546,13 +584,53 @@ footer .inner { max-width: 1100px; margin: 0 auto; padding: 56px 24px 36px; }
   </div>
 </section>
 
+<section id="ordering">
+  <div class="inner">
+    <p class="sec-kicker reveal">The second thing that matters</p>
+    <h2 class="sec-title reveal">Right now, ordering online means leaving your website.</h2>
+    <p class="lede reveal">Tap <strong>Order Online Marshall</strong> on your site and you land on <code>pastramijoesmarshall.hrpos.heartland.us</code>. Battle Creek goes somewhere else again. Neither address has your name in it, neither page has your hours on it, and there is no page anywhere that offers both counters. <strong>The one thing your website is for hands the customer to somebody else's domain.</strong></p>
+
+    <div class="wcards">
+      <div class="wcard reveal">
+        <b>Where your prices actually live</b>
+        <p>Inside Heartland. That is why your own menu page has none: fifty-five of your sixty-five items show no price on pastramijoes.com. Your prices are real, they are just somewhere a customer has to go looking for them, on a page you do not control.</p>
+      </div>
+      <div class="wcard reveal">
+        <b>What we built instead</b>
+        <p>Ordering on <strong>pastramijoes.com</strong>. Pick a counter, build the order, pay, done. It knows which counter is open, it stops taking orders twenty minutes before close, and it takes catering bookings with a real total instead of a form that promises a phone call.</p>
+      </div>
+      <div class="wcard reveal">
+        <b>Your register does not move</b>
+        <p>Heartland keeps the till, the drawer and the card machine. Nobody behind the counter retrains. What changes is the online channel, which is the part that currently sends your customers away from your own name.</p>
+      </div>
+    </div>
+
+    <div class="wcards" style="margin-top:26px">
+      <div class="wcard reveal">
+        <b>What it costs you: nothing a month</b>
+        <p>No monthly fee for ordering, ever. The guest pays a <strong>99&cent; order fee</strong> at checkout, the same way every ordering platform charges one. <strong>Half of it comes back to you.</strong> We keep 49&cent;. That is the whole business model and there is nothing else in it.</p>
+      </div>
+      <div class="wcard reveal">
+        <b>A screen for the counter</b>
+        <p>Orders arrive on a screen with a chime. Start it, done, and the ticket clears. Sold out of the chili? One tap and nobody can order it. Slammed? Pause online orders for twenty minutes and it turns itself back on.</p>
+      </div>
+      <div class="wcard reveal">
+        <b>You edit your own menu</b>
+        <p>Prices and items live in a text field you own, not in a vendor's back office. Change a price at 6am and the site has it at 6am. <strong>Send us the sandwich prices and the whole board turns on the same day.</strong></p>
+      </div>
+    </div>
+
+    <p class="lede reveal" style="margin-top:26px"><strong>What is live on the demo today:</strong> catering, soup and the seasonal board, because those are the only prices you publish anywhere. Every number on it came off your own pages. We did not guess a single sandwich price, and we would rather show you an honest half than a made-up whole. <a href="/demo/order">Try it</a>.</p>
+  </div>
+</section>
+
 <svg class="drip-divider" viewBox="0 0 1440 60" preserveAspectRatio="none" style="background:#201712" aria-hidden="true"><use href="#dripEdge" fill="#FDF6EC"/></svg>
 
 <section id="build">
   <div class="inner">
     <p class="sec-kicker reveal">What we would build</p>
     <h2 class="sec-title reveal">A new pastramijoes.com, and it is already standing.</h2>
-    <p class="sec-sub reveal">Not a mockup. A working site with your logo, your photographs, your whole menu off both counters, and your catering prices. <a href="/demo">Open it</a> and click everything.</p>
+    <p class="sec-sub reveal">Not a mockup. A working site with your logo, your photographs, your whole menu off both counters, your catering prices, and ordering that takes a real order. <a href="/demo">Open it</a> and click everything, including <a href="/demo/order">the ordering page</a>.</p>
 
     <div class="blist">
       <div class="bitem reveal">
@@ -633,7 +711,8 @@ footer .inner { max-width: 1100px; margin: 0 auto; padding: 56px 24px 36px; }
           <li>Live hours on every page</li>
           <li>Restaurant structured data per store</li>
           <li>One filtered menu, priced when you send prices</li>
-          <li>Ordering hub on your own domain</li>
+          <li>Online ordering built into the site</li>
+          <li>A counter screen, and a menu they edit themselves</li>
           <li>Catering and Dine to Donate forms</li>
           <li>The listings corrected</li>
           <li>Hosting, security, updates and content edits in the monthly</li>
@@ -650,7 +729,7 @@ footer .inner { max-width: 1100px; margin: 0 auto; padding: 56px 24px 36px; }
         </div>
         <div class="reveal">
           <b>Your till stays your till</b>
-          <span>Heartland keeps the register and keeps online ordering. We are not asking you to change how you take money to get a website.</span>
+          <span>Heartland keeps the register. Nothing behind your counter changes, and nobody retrains. What moves is the online ordering channel, and only that.</span>
         </div>
         <div class="reveal">
           <b>Nothing rented underneath it</b>

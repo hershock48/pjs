@@ -58,16 +58,28 @@ app/
   page.js                 home
   menu/                   one menu, filtered by ?at=<slug>
   specials/               the soup rotation and seasonal board, with a date
-  order/                  the ordering hub, both counters
+  order/                  Jelly. Real ordering, both counters
+  kitchen/                the counter's screen. noindex, PIN, not in the nav
+  api/ordering/           state and order. The server is the till
+  api/kitchen/            login, orders, state, menu. All behind the PIN
   catering/               full priced catering menu and the inquiry form
   locations/              index, and [slug] for each store
   about/ jobs/ charity/ contact/
 lib/
   site.js                 EVERY business fact. Locations are an array.
   hours.js                open/closed, in America/Detroit, at request time
-  menu.js                 the whole menu, per-location, prices where real
+  menu.js                 the READ-ONLY menu the /menu page renders
+  ordering/               Jelly. See the section below.
+    config.js             the fee, the tax, the pickup quote, the PIN fallback
+    window.js             is this counter taking orders, per location
+    store.js              Postgres, or memory with a loud warning
+    seed.js               the starting menu. Every price off one of their pages
+    catalog.js            the live menu document and its validation
+    auth.js  email.js  printing.js
 components/
   HoursBar, Header, Footer, Status, LocationCard, MenuList, InquiryForm
+  ordering/OrderClient          the guest flow: counter, cart, checkout
+  ordering/KitchenClient        the counter's screen and the menu editor
   GlazedCredit / GlazedPlate    copied verbatim from glaze/assets. Do not rebuild.
   Reveal                        copied verbatim. Re-arms on navigation.
 public/
@@ -281,6 +293,65 @@ five of them at things no check in this repo was looking at:
    `width-check.mjs` waits for `getAnimations()` to finish now, skipping the one
    infinite animation, which is the breathing dot and which hung the first
    version of that tool forever.
+
+### Jelly, and why the sandwich board is not in it
+
+Ordering is built into the site. It was a hub before: two buttons that handed
+the customer to `pastramijoesmarshall.hrpos.heartland.us` and a second Heartland
+subdomain. That is the channel Jelly exists to replace, and shipping the handoff
+while pitching the replacement was the wrong build.
+
+**Their register does not move.** Heartland keeps the till. This replaces the
+online channel only.
+
+**Every price came off one of their own published pages.** Catering is fully
+priced on `pastramijoes.com/catering/` and is transcribed complete. Soup and the
+extras come off their menu page; the two seasonal items come off their weekly
+features page. That is what is orderable.
+
+**The sandwich board is not seeded, and that is deliberate.** Their retail menu
+publishes no prices at all: 55 of 65 items are blank on their own site. The
+prices do exist, inside Heartland, which is the whole argument of the proposal.
+Getting them out means reverse-engineering a bundled vendor SPA's private API
+rather than reading a published page, and a sandwich price is exactly the kind
+of number a business gets held to. A placeholder price on another site in this
+account was served to real customers.
+
+So the system ships live on what they publish, and the board turns on the day
+the owner sends a price list. That is one paste into the menu editor at
+`/kitchen`, and it is the most persuasive fact in the pitch.
+
+**What is different from the Copper and Beans builds it was ported from:**
+locations. This is the first Jelly site with two counters, so `window.js` takes
+a location, every order carries one, the state endpoint answers for both, and
+the kitchen board filters by it. Battle Creek is shut at 3pm on a day Marshall
+runs to 7, and one global window would have taken orders for a dark counter.
+
+**The ordering window reads `lib/hours.js`**, the same module the header badge
+uses. One source, on purpose: a customer who sees "Open until 7pm" cannot be
+told by the order page that the counter is shut.
+
+**No new orders inside 20 minutes of close.** Taking one four minutes before
+close is how a guest arrives at a locked door holding a receipt.
+
+**Catering and counter items cannot go in one order.** They land on different
+days and print differently, so mixing is refused with a sentence rather than
+guessed at. Catering needs 48 hours and is allowed at any hour; counter orders
+need the window open.
+
+**Demo mode is visible, never implied.** No `STRIPE_SECRET_KEY` means no card is
+taken, and the checkout, the confirmation and the printed slip all say so. The
+slip prints DUE AT PICKUP with tip and signature lines rather than PAID ONLINE.
+
+**Without `DATABASE_URL` the kitchen screen says so in a red box.** On deployed
+serverless, memory storage means orders land on whichever lambda answered and
+the screen can simply miss them. A demo that half-works silently is worse than
+one that says what is wrong.
+
+**Guest-facing copy never carries the business model.** No fee-split story, no
+vendor comparison, no "our own website". A guest gets a menu, a pickup time and
+a plainly labelled 99¢ fee like any checkout. `tools/flow-checks.mjs` greps the
+order page for that leak, because it is one paste from the proposal away.
 
 ### Forms have no mailbox
 
