@@ -49,6 +49,11 @@
   --shadow: 0 1px 2px rgba(20, 35, 27, 0.05), 0 12px 28px -18px rgba(20, 35, 27, 0.35);
   --radius: 14px;
   --wrap: 1120px;
+  /* The sticky header's own height, MEASURED, not guessed: 67.0 at desktop and
+     65.3 at 390. The menu bar sticks directly under it and reads this, so the
+     two cannot drift apart when the header's padding changes. Re-measure with
+     tools/sticky-check.mjs after touching .hdr-in padding or the mark size. */
+  --hdr-h: 67px;
 
 }
 
@@ -426,9 +431,119 @@ section {
 .mprice.todo {
   color: var(--muted);
   font-weight: 500;
-  font-size: 13.5px;
-  font-style: italic;
-  border-bottom: 1px dashed rgba(94, 82, 72, 0.4);
+  font-size: 16px;
+  opacity: 0.55;
+  cursor: help;
+}
+
+/* ============ the menu bar ============
+   A sticky section index and a filter, under the site header.
+
+   The menu is 8,660px tall at 1440 and that is correct, it is their whole
+   board. What was wrong was that the only way to the bottom half was scrolling
+   past the top half. A paper menu solves this with headings you can see all at
+   once; this is that, plus a filter, because "do they do a veggie one" is a
+   real question and scanning sixty-five items is not an answer to it.
+
+   It sticks directly under the header, at --hdr-h, so the two cannot overlap.
+   The header keeps `position: sticky` on mobile too: sticky establishes its own
+   containing block, so the disclosure panel still anchors to it, and the Order
+   button stays on screen while somebody reads sixty-five items. */
+.menubar {
+  position: sticky;
+  top: var(--hdr-h);
+  z-index: 40;
+  background: rgba(251, 247, 240, 0.94);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--green-line);
+}
+.menubar-in {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-block: 8px;
+}
+.menujump {
+  display: flex;
+  gap: 2px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+}
+.menujump::-webkit-scrollbar {
+  display: none;
+}
+.menujump a {
+  text-decoration: none;
+  color: var(--ink);
+  font-family: var(--font-display), sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 15px;
+  padding: 7px 11px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+.menujump a:hover {
+  background: var(--green-pale);
+  color: var(--green-deep);
+}
+.menujump a[aria-current="true"] {
+  background: var(--green);
+  color: #fff;
+}
+.menufind {
+  margin-left: auto;
+  flex: none;
+}
+.menufind input {
+  width: 210px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--paper);
+}
+@media (max-width: 760px) {
+  .menubar-in {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .menufind {
+    margin-left: 0;
+    width: 100%;
+  }
+  .menufind input {
+    width: 100%;
+  }
+}
+
+/* A button that reads as a link. Used for "show everything" next to the filter
+   count, which is an action rather than a destination and so must not be an
+   anchor with no href. */
+.linkish {
+  font: inherit;
+  color: var(--green-deep);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Their photography, inside the board rather than only on the home page. */
+.menushot {
+  margin: 22px 0 0;
+}
+.menushot img {
+  width: 100%;
+  aspect-ratio: 16 / 7;
+  object-fit: cover;
+  border-radius: var(--radius);
+  border: 1px solid var(--green-line);
+}
+.menushot figcaption {
+  margin-top: 8px;
+  text-align: right;
 }
 
 .tag {
@@ -552,50 +667,237 @@ section {
 .hdr-nav a.btn:hover {
   color: #fff;
 }
+/* The mobile cluster: phone, Order, toggle. Hidden on desktop, where .hdr-nav
+   does the work. */
+.hdr-mob {
+  display: none;
+  margin-left: auto;
+  align-items: center;
+  gap: 6px;
+}
+.hdr-icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  border: 1px solid var(--green-line);
+  background: var(--paper);
+  color: var(--green-deep);
+  cursor: pointer;
+  flex: none;
+}
+.hdr-icon:hover {
+  background: var(--green-pale);
+  color: var(--green-deep);
+}
+.hdr-order {
+  padding: 10px 16px;
+  font-size: 15px;
+}
+.hdr-panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  background: var(--paper);
+  border-bottom: 1px solid var(--green-line);
+  box-shadow: var(--shadow);
+  display: grid;
+  padding: 6px 12px 12px;
+}
+.hdr-panel[hidden] {
+  display: none;
+}
+.hdr-panel a {
+  text-decoration: none;
+  color: var(--ink);
+  font-family: var(--font-display), sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  font-size: 20px;
+  padding: 13px 8px;
+  border-bottom: 1px solid var(--green-line);
+}
+.hdr-panel a:last-child {
+  border-bottom: 0;
+}
+.hdr-panel a[aria-current="page"] {
+  color: var(--green-deep);
+}
+
 @media (max-width: 900px) {
   .hdr-in {
-    flex-wrap: wrap;
+    padding: 8px 16px;
     gap: 8px;
   }
   .hdr-nav {
-    width: 100%;
-    margin-left: 0;
-    overflow-x: auto;
-    flex-wrap: nowrap;
-    padding-bottom: 4px;
-    scrollbar-width: none;
-  }
-  .hdr-nav::-webkit-scrollbar {
     display: none;
   }
-  .hdr-nav a {
-    white-space: nowrap;
+  .hdr-mob {
+    display: flex;
+  }
+  .hdr-brand img {
+    width: 40px;
+    height: 40px;
+  }
+  .hdr-brand b {
+    font-size: 17px;
+  }
+  :root {
+    --hdr-h: 66px;
+  }
+}
+/* Below 380 the wordmark and three controls stop fitting on one line, so the
+   wordmark goes and the mark carries the brand on its own. It is a roundel with
+   the name inside it, which is exactly the case a logo like this is drawn for. */
+@media (max-width: 379px) {
+  .hdr-brand b {
+    display: none;
   }
 }
 
-/* ============ hero ============ */
+/* ============ hero ============
+   The first version was a 50/50 split with the sandwich in a rounded card at
+   about 40% of the width. For a deli named after one sandwich, the sandwich was
+   the smallest thing on the screen and the page read as a template that happened
+   to have food in it.
+
+   Now the photograph is the hero: full bleed, the headline sitting on it, and
+   the meat filling the frame at any width. The scrim is what makes the type
+   legible over it, and it is measured rather than eyeballed. See below. */
 .hero {
   position: relative;
-  padding: clamp(36px, 5vw, 64px) 0 0;
-}
-.hero-grid {
+  min-height: clamp(460px, 72vh, 660px);
   display: grid;
-  gap: clamp(24px, 4vw, 48px);
-  align-items: center;
-  grid-template-columns: 1.05fr 0.95fr;
-}
-@media (max-width: 880px) {
-  .hero-grid {
-    grid-template-columns: 1fr;
-  }
+  align-items: end;
+  isolation: isolate;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
 }
 .hero-photo {
-  border-radius: 18px;
-  border: 1px solid var(--green-line);
-  box-shadow: var(--shadow);
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
+  position: absolute;
+  inset: 0;
   width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* The source is square and the frame is wide, so cover scales to width and
+     only the vertical position does anything here. 44% keeps the whole
+     sandwich, cocktail pick included, inside the frame at desktop widths. */
+  object-position: 50% 44%;
+  z-index: -2;
+}
+/* THE SCRIM IS LOAD-BEARING, NOT DECORATION, AND ITS NUMBERS ARE MEASURED.
+   White text over a photograph has no fixed contrast ratio, and axe will not
+   compute one: it skips any element whose background resolves to an image. So
+   this passes a clean audit at any strength, including none.
+
+   The first version of this scrim was picked by eye and looked fine in a
+   screenshot. Rendering the hero with the text hidden and walking every pixel
+   behind each text box gave the real answer:
+
+     element   worst   median
+     kicker     1.18     3.11      invisible over the bread
+     h1         1.74     5.04
+     lede       4.97     9.95
+     buttons   10.13    11.50
+
+   1.18 is white on nearly-white. So the scrim is two layers now: a flat base
+   over the whole photograph, and the bottom-up gradient on top of it. The
+   measured result is in the note above .hero-in. `tools/scrim-check.mjs`
+   re-runs the measurement.
+
+   IF YOU SWAP THE PHOTOGRAPH, RUN THAT SCRIPT. A lighter image moves the worst
+   pixel and nothing in a normal audit will tell you. */
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(rgba(3, 38, 22, 0.52), rgba(3, 38, 22, 0.52)),
+    linear-gradient(
+      to top,
+      rgba(3, 38, 22, 0.9) 0%,
+      rgba(3, 38, 22, 0.82) 30%,
+      rgba(3, 38, 22, 0.6) 58%,
+      rgba(3, 38, 22, 0.3) 82%,
+      rgba(3, 38, 22, 0.16) 100%
+    );
+}
+/* Measured over the current photograph with tools/scrim-check.mjs, worst pixel
+   behind each text box rather than the median:
+
+              1440px   390px
+     kicker     5.32    4.88
+     h1         6.75    6.86
+     lede       9.30    9.40
+     buttons   13.17+  13.22+
+
+   All clear 4.5. The kicker is the tight one and it is 13px, so it is the first
+   thing to break if the scrim is lightened or the photograph swapped. It has
+   already broken twice here: at 1.18 with the eyeballed scrim, and at 3.89 when
+   the mobile base was dropped to 0.22 to let more of the sandwich through. */
+.hero-in {
+  /* padding-block, NOT the padding shorthand. .hero-in also carries .wrap,
+     whose `padding: 0 20px` is what keeps text off the edge of a phone, and a
+     shorthand here silently resets it to zero. It did: the kicker, the lede and
+     both buttons sat flush against the left edge at 390px. */
+  padding-block: clamp(32px, 6vw, 68px) clamp(28px, 4vw, 48px);
+}
+.hero h1 {
+  color: #fff;
+  font-size: clamp(42px, 9vw, 92px);
+  max-width: 15ch;
+}
+.hero .kicker {
+  color: #dff0e6;
+}
+.hero .lede {
+  color: #eaf3ed;
+  max-width: 46ch;
+}
+/* The ghost button is bordered ink on cream everywhere else on the site, which
+   over a photograph is invisible. On the hero it is white on white at 40%,
+   which is the same button doing the same job in the other direction. */
+.hero .btn.ghost {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.08);
+}
+.hero .btn.ghost:hover {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+@media (max-width: 560px) {
+  .hero {
+    min-height: 0;
+  }
+  .hero-in {
+    padding-block-start: clamp(150px, 40vw, 235px);
+  }
+  /* On a phone the frame is taller than it is wide, so cover scales to height
+     and the HORIZONTAL position is the one that does anything, which is the
+     opposite of the desktop case. Vertical framing is fixed at that point: the
+     whole square is on screen, sandwich in the middle, plate above it. Shorter
+     top padding is what puts the sandwich in the visible band, not a Y value. */
+  .hero-photo {
+    object-position: 42% 50%;
+  }
+  /* The flat base of the scrim exists for the desktop case, where the headline
+     sits halfway up the photograph against bread. On a phone every line of text
+     is in the bottom third, where the gradient alone is already past 0.8, so the
+     base only greys out the photograph above the text for no benefit. Lighter
+     here, and re-measured: the worst pixel at 390 is still well clear. */
+  .hero::after {
+    background: linear-gradient(rgba(3, 38, 22, 0.36), rgba(3, 38, 22, 0.36)),
+      linear-gradient(
+        to top,
+        rgba(3, 38, 22, 0.92) 0%,
+        rgba(3, 38, 22, 0.86) 34%,
+        rgba(3, 38, 22, 0.58) 62%,
+        rgba(3, 38, 22, 0.2) 86%,
+        rgba(3, 38, 22, 0.04) 100%
+      );
+  }
 }
 
 /* ============ footer ============ */
@@ -799,9 +1101,37 @@ section {
 .hoursbar-note:hover {
   color: #fff;
 }
+/* Two pills side by side used to run off the right edge of a 390px screen
+   inside a scroll container, so the Battle Creek badge was cut mid-word and
+   nothing said to swipe. Below 720 they become a two-column grid that fits,
+   with the store name stacked over its badge. Nothing scrolls and nothing is
+   clipped. */
 @media (max-width: 720px) {
   .hoursbar-note {
     display: none;
+  }
+  .hoursbar-in {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    overflow: visible;
+  }
+  .hoursbar-item {
+    display: grid;
+    gap: 3px;
+    justify-items: start;
+    white-space: normal;
+    padding: 2px 4px;
+    font-size: 13px;
+  }
+  .hoursbar-item b {
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    opacity: 0.85;
+  }
+  .hoursbar .status {
+    font-size: 12.5px;
   }
 }
 

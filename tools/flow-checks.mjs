@@ -128,8 +128,19 @@ console.log("\nprice placeholders");
   const { missing, total } = missingPrices();
   console.log(`  note  ${missing} of ${total} menu items have no published price`);
   const { body } = await get(`${BASE}/menu`);
-  missing === 0 || /price to come/.test(body)
-    ? pass("the menu page labels them rather than hiding them")
+  // The per-row label used to be the words "price to come", fifty-four times.
+  // It is an em rule with a title attribute now, and the fact is stated once,
+  // with the count, in the notice at the top. So the assertion moved to the
+  // notice: what has to be true is that the page SAYS how many are missing, not
+  // that a particular string appears in a particular cell.
+  // React's SSR output puts `<!-- -->` between adjacent expressions and text,
+  // so the sentence on the page is literally
+  //   54<!-- --> of <!-- -->65<!-- --> items have no published price
+  // and a naive regex against the raw HTML never matches. Strip comments first.
+  const text = body.replace(/<!--.*?-->/g, "");
+  const saysSo = new RegExp(`${missing} of ${total} items have no published price`).test(text);
+  missing === 0 || saysSo
+    ? pass("the menu page states the count rather than hiding it")
     : fail("prices are missing and the page does not say so");
 }
 

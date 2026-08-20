@@ -1,6 +1,5 @@
 import Link from "next/link";
 import LocationCard from "@/components/LocationCard";
-import Status from "@/components/Status";
 import { site } from "@/lib/site";
 import { week } from "@/lib/menu";
 
@@ -20,51 +19,37 @@ export default function Home() {
   return (
     <>
       <section className="hero">
-        <div className="wrap">
-          <div className="hero-grid">
-            <div>
-              <span className="kicker">Marshall and Battle Creek, Michigan</span>
-              <h1>
-                Hot pastrami,
-                <br />
-                cut to order.
-              </h1>
-              <p className="lede" style={{ marginTop: 18 }}>
-                Sy Ginsberg corned beef and pastrami out of Detroit, piled on rye, with
-                the Reuben people drive in for. Two counters, one board, since 2003.
-              </p>
-              <div className="btnrow" style={{ marginTop: 26 }}>
-                <Link className="btn big" href="/order">
-                  Order online
-                </Link>
-                <Link className="btn big ghost" href="/menu">
-                  See the menu
-                </Link>
-              </div>
-
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginTop: 26 }}>
-                {site.locations.map((l) => (
-                  <Link
-                    key={l.slug}
-                    href={`/locations/${l.slug}`}
-                    style={{ textDecoration: "none", display: "grid", gap: 6 }}
-                  >
-                    <b style={{ fontSize: 15 }}>{l.name}</b>
-                    <Status location={l} />
-                  </Link>
-                ))}
-              </div>
-            </div>
-
-            <img
-              className="hero-photo"
-              src="/assets/pjs/reuben.webp"
-              width="1600"
-              height="1600"
-              alt="A hot sandwich on marble rye, cut in half and stacked, with kettle chips and a pickle spear."
-              fetchPriority="high"
-            />
+        <img
+          className="hero-photo"
+          src="/assets/pjs/reuben.webp"
+          width="1600"
+          height="1600"
+          alt="A hot sandwich on marble rye, cut in half and stacked, with kettle chips and a pickle spear."
+          fetchPriority="high"
+        />
+        <div className="wrap hero-in">
+          <span className="kicker">Marshall and Battle Creek, Michigan</span>
+          <h1>
+            Hot pastrami,
+            <br />
+            cut to order.
+          </h1>
+          <p className="lede" style={{ marginTop: 18 }}>
+            Sy Ginsberg corned beef and pastrami out of Detroit, piled on rye, with
+            the Reuben people drive in for. Two counters, one board, since 2003.
+          </p>
+          <div className="btnrow" style={{ marginTop: 28 }}>
+            <Link className="btn big" href="/order">
+              Order online
+            </Link>
+            <Link className="btn big ghost" href="/menu">
+              See the menu
+            </Link>
           </div>
+          {/* The two open/closed badges that used to sit here are the same two
+              badges in the strip at the very top of every page. One idea, one
+              screen, twice. The strip is the one that stays, because it is on
+              all eleven routes rather than only this one. */}
         </div>
       </section>
 

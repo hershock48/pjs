@@ -24,9 +24,18 @@ Then, in another shell:
 
 ```bash
 node tools/flow-checks.mjs --base http://127.0.0.1:4495
+node tools/scrim-check.mjs  --base http://127.0.0.1:4495
+node tools/sticky-check.mjs --base http://127.0.0.1:4495
+node tools/contrast-sweep.mjs
 node ../glazedweb/glaze/scripts/audit.mjs --base http://127.0.0.1:4495 \
   --routes "/,/menu,/menu?at=marshall,/menu?at=battle-creek,/specials,/order,/catering,/locations,/locations/marshall,/locations/battle-creek,/about,/jobs,/charity,/contact"
 ```
+
+**A clean axe run is not the same as a legible page.** Three of the four faults
+found on this build were invisible to axe: white on white over a background
+image, white on a photograph, and a nav that fitted inside a scroll container
+with the primary button off the right edge. That is what the three extra tools
+are for.
 
 **Confirm the port is free and the served CSS hash matches `.next/static/css/`
 before believing any audit result.** A stale server on the port serves a build
@@ -61,7 +70,11 @@ public/
   og.jpg                  the demo's link card, theirs
   pitch/pjs/index.html    the proposal, standalone, no build step
   pitch/pjs/og.jpg        the proposal's link card, Glazed Web's argument
-tools/flow-checks.mjs     the checks that would otherwise be somebody remembering
+tools/
+  flow-checks.mjs         the checks that would otherwise be somebody remembering
+  scrim-check.mjs         hero text vs the photograph, measured on the composite
+  sticky-check.mjs        the two sticky bars, measured against each other
+  contrast-sweep.mjs      every element's computed colour vs its painted ground
 ```
 
 ---
@@ -140,6 +153,34 @@ at **1.00**: in the DOM, selectable, invisible. axe declines to compute contrast
 over a background image, and that section has one. It was found by walking every
 element's computed color against its painted background. If you add a section
 with a patterned background, run that sweep rather than trusting a clean axe run.
+
+### The design pass, and the four faults a clean audit missed
+
+The first build passed everything: zero axe violations at 390 and 1440 across
+fourteen routes, no overflow at 320, no console errors. It was also worse than
+it looks in that sentence. Four faults, none of which any of those checks can
+see, found by screenshotting every route and looking at it:
+
+1. **The mobile nav hid the primary action.** The nav was a horizontal scroll
+   strip, which genuinely does not overflow the page, so the overflow check
+   passed it. On a 390px screen "Order online" sat off the right edge with no
+   affordance saying to swipe. It is a disclosure now, with the phone number and
+   an Order button always on screen.
+2. **The hours strip was clipped mid-word.** Same cause, same clean audit. It is
+   a two-column grid below 720 and nothing scrolls.
+3. **The hero text was white on nearly-white.** The scrim was picked by eye and
+   looked fine in a screenshot. Measured on the composite, the kicker was
+   **1.18** against the bread. axe skips any element whose background resolves
+   to an image, so it will never report this. `tools/scrim-check.mjs` does.
+4. **The `.wrap` padding was being reset by a shorthand.** `.hero-in` carried
+   both `.wrap` and its own `padding: X 0 Y`, which zeroed the 20px that keeps
+   text off the edge of a phone. `padding-block` now.
+
+The menu page was the other half of the pass. It is 11,000px tall, which is
+correct because it is their whole board, but the only way to the bottom half was
+scrolling past the top half. It has a sticky section index and a filter now, and
+their own photography inside it, which was already in `lib/menu.js` on the items
+and rendered nowhere.
 
 ### Forms have no mailbox
 
