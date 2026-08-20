@@ -162,6 +162,18 @@ the proposal is not a live URL on their own domain the day it is attached.
 **Attach the apex form of `pjs.glazedweb.com` in Vercel and send the link without
 `www`.** Adding only the apex leaves `www` without a certificate.
 
+### Next.js is pinned, and the pin is a security decision
+
+`next` is pinned to an exact **15.5.23**, not a range.
+
+The first deploy of this repo went out on 15.5.4 and Vercel's install step warned
+about **CVE-2025-66478**, the React Server Components RCE, rated CVSS 10.0. It
+affects Next 15.x and 16.x App Router applications, which is what this is. The
+fix on the 15.5 line is 15.5.7 or later; 15.5.23 is the current backport.
+
+An exact pin means builds are reproducible and it also means **somebody has to
+bump this deliberately**. Check the release line when you touch this repo.
+
 ### robots
 
 `app/robots.js` is the only robots source in the repo. A static
