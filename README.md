@@ -589,33 +589,41 @@ measuring on the composite the way `tools/scrim-check.mjs` does the hero.
 Verified by disabling the tool's own `.hero` exclusion and confirming it then
 flags the hero's four text elements over `IMG.hero-photo`.
 
-### What Heartland costs, and what the proposal is allowed to say about it
+### What Heartland costs, and why the ordering pitch is not a savings pitch
 
-Asked and answered, 20 Aug 2026: **$89 a month and up is the only figure
-Heartland publishes**, and it is for the point of sale, on
-[their own pricing page](https://www.heartland.us/pricing/restaurant-pos). The
-online ordering module is not priced anywhere public, and neither are the card
-rates. Both are quoted per merchant, which is normal for a Global Payments
-company and is exactly what makes a savings claim unprovable.
+**Heartland's online ordering is free and takes no commission.** Three of their
+own resellers say so independently:
+[JCR Systems](https://www.jcrsystems.com/heartlandrestaurant-online-ordering/)
+("Online Ordering is FREE to turn on. No Commissions, No Extra Fees"),
+[NBS](https://www.nbsystems.com/hrposolo.html) ("provided at no cost with your
+POS"), and
+[Clear Solutions](https://heartlandrestaurantpos.clearsolutionsip.com/fully-integrated-online-mobile-ordering/)
+("at no additional cost").
 
-Third-party sources agree there is nothing more to find: TrustRadius carries no
-plans for it at all, and the review sites that do quote a number quote the same
-$89.
+**This kills the savings argument, and it was nearly shipped anyway.** The first
+version of the money box said Heartland's ordering cost was "not published" and
+invited the owner to compare a statement. That framing implies there is a fee to
+be saved. There is not. Pastrami Joe's pays nothing for the ordering channel
+they have.
 
-**So the proposal states the four things it can prove and refuses the fifth.**
-The money box in the ordering section lists Heartland's published $89, says
-plainly that the ordering and processing numbers are not published, and puts our
-side next to them: $0 a month, and 50¢ of the guest's 99¢ comes back to them. It
-then says, in as many words, that we are not going to tell them what they would
-save because we do not know, and that the other half of the sentence is on a
-statement in their office.
+The other numbers, for completeness: the point of sale is **$89 a month and up**
+on [Heartland's own page](https://www.heartland.us/pricing/restaurant-pos), and
+[TechRadar](https://www.techradar.com/reviews/heartland-pos-review) reports tiers
+at $80 and $160 per selling station, interchange-plus processing, a **three year
+term** and **$295 per location** to leave early. Those last three matter for a
+different reason: they are switching costs on the POS, which this proposal is
+not asking them to switch.
 
-That is the strongest honest version. A savings figure would be the single most
-persuasive line in the document and there is no way to write one that survives
-being checked.
+**What the proposal says now.** That moving the channel does not save money,
+because the channel is already free; that what it buys is the ordering living on
+their own name with their hours and prices visible, plus 50¢ an order; and that
+the trade is a 99¢ fee their customer does not pay today. It offers to build the
+ordering without the fee if that is the sticking point.
 
-**Until that statement is read, do not let anyone add a savings number to this
-proposal.**
+**The Jelly economics that work at Beans do not transfer here.** Beans was on
+Toast, paying $50 a month for a handheld and 3.69% + 15¢, so there was real money
+to move. Pastrami Joe's is on a free channel. Sell the website; treat ordering as
+the thing that makes the website worth having, not as a saving.
 
 ### Forms have no mailbox
 
