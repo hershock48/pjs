@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Can somebody tell when you are open? A proposal for Pastrami Joe's</title>
+<meta name="description" content="A website proposal for Pastrami Joe&#39;s of Marshall and Battle Creek, Michigan, where every claim links to the proof.">
+<meta name="robots" content="noindex, nofollow">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Glazed Web">
+<meta property="og:title" content="Can somebody tell when you are open?">
+<meta property="og:description" content="A website proposal for Pastrami Joe&#39;s, where every claim links to the proof.">
+<meta property="og:url" content="https://pjs.glazedweb.com/">
+<meta property="og:image" content="https://pjs.glazedweb.com/pitch/pjs/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Can somebody tell when you are open? A proposal from Glazed Web.">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='42' fill='%23E84D8A'/%3E%3Ccircle cx='50' cy='50' r='11' fill='%23FDF6EC'/%3E%3C/svg%3E">
+
+<style>
+/* Palette and type lifted from glazedweb app/globals.css. Three pinks on
+   purpose: --raspberry is 3.34 as text on cream and 3.58 under white, so it is
+   accents only. --raspberry-deep (4.78) carries white text. --raspberry-ink
+   (4.63 on cream) is link text. Picking the wrong one reintroduces a fault
+   that took a full audit to find. */
+:root {
+  --raspberry: #E84D8A;
+  --raspberry-deep: #CE3672;
+  --raspberry-ink: #C9356F;
+  --slime: #BFE07A;
+  --slime-bright: #A9D65C;
+  --fern: #467C3D;
+  --chocolate: #2B1E16;
+  --chocolate-2: #201712;
+  --cream: #FDF6EC;
+  --cream-2: #FFFDF8;
+  --taupe: #7F6D5B;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--cream); color: var(--chocolate);
+  overflow-x: hidden;
+}
+::selection { background: var(--slime); color: var(--chocolate); }
+a { color: var(--raspberry-ink); }
+/* This document is full of long unbreakable tokens: domain names, upload paths,
+   "pastramijoesmarshall.hrpos.heartland.us" in a finding. At 320px they pushed the page
+   wide. Fixed here, on the text elements, rather than on the one heading the
+   measurement named, because there are a dozen more of them in the findings. */
+h1, h2, h3, h4, p, li, span, a, b { overflow-wrap: break-word; }
+
+/* ============ header ============ */
+header {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(253, 246, 236, 0.85); backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(43,30,22,0.07);
+}
+.navwrap { max-width: 1100px; margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--chocolate); }
+.brand .bw { font-weight: 800; font-size: 19px; letter-spacing: -0.6px; }
+.brand .bw span { font-weight: 350; color: var(--taupe); }
+.navfor { font-size: 13px; color: var(--taupe); font-weight: 600; text-align: right; }
+.navfor b { display: block; color: var(--chocolate); font-size: 14px; font-weight: 800; }
+
+.btn {
+  display: inline-block; background: var(--raspberry-deep); color: #fff !important;
+  font-weight: 700; border-radius: 999px; text-decoration: none;
+  padding: 10px 20px; font-size: 14px; border: none; cursor: pointer;
+  box-shadow: 0 6px 16px -6px rgba(232,77,138,0.55);
+  transition: transform .15s ease, box-shadow .15s ease;
+  white-space: nowrap;
+}
+.btn:hover { transform: translateY(-2px); box-shadow: 0 10px 22px -8px rgba(232,77,138,0.65); }
+.btn.big { padding: 15px 30px; font-size: 16px; }
+.btn.ghost { background: transparent; color: var(--chocolate) !important; box-shadow: none; border: 2px solid rgba(43,30,22,0.18); }
+.btn.ghost:hover { border-color: var(--raspberry-deep); color: var(--raspberry-deep) !important; }
+
+/* ============ hero ============ */
+.hero { max-width: 1100px; margin: 0 auto; padding: 64px 24px 78px; display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 40px; align-items: center; }
+@media (max-width: 800px) { .hero { grid-template-columns: 1fr; text-align: center; } .hero .mark { order: -1; margin: 0 auto; } }
+.kicker { font-size: 12px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--fern); font-weight: 700; margin-bottom: 18px; }
+h1 { font-size: clamp(36px, 5.2vw, 58px); font-weight: 800; letter-spacing: -2px; line-height: 1.04; }
+h1 em { font-style: normal; color: var(--raspberry); }
+.hero p.sub { margin-top: 22px; font-size: 18px; color: #6B5747; line-height: 1.6; max-width: 500px; }
+.hero .ctas { margin-top: 30px; display: flex; gap: 14px; flex-wrap: wrap; }
+@media (max-width: 800px) { .hero .ctas, .hero p.sub { justify-content: center; margin-left: auto; margin-right: auto; } }
+.hero .proof { margin-top: 26px; font-size: 13px; color: var(--taupe); line-height: 1.6; }
+.hero .proof b { color: var(--chocolate); }
+
+/* logo animations, lifted from globals.css */
+.goo { transform-box: fill-box; transform-origin: 50% 0%; animation: breathe 6s ease-in-out infinite; }
+@keyframes breathe { 0%,100% { transform: scaleY(1); } 50% { transform: scaleY(1.02); } }
+.wob1, .wob2, .wob3, .wobB { transform-box: fill-box; transform-origin: 50% 0%; }
+.wob1 { animation: sagg 3.8s ease-in-out infinite -0.6s; }
+.wob2 { animation: sagg 4.9s ease-in-out infinite -2.1s; }
+.wob3 { animation: sagg 4.3s ease-in-out infinite -1.3s; }
+.wobB { animation: sagg 5.6s ease-in-out infinite -3s; }
+@keyframes sagg { 0%,100% { transform: scaleY(1) scaleX(1); } 50% { transform: scaleY(1.07) scaleX(0.98); } }
+.string { transform-box: fill-box; transform-origin: 50% 0%; animation: stringy 3.4s cubic-bezier(.55,.1,.8,.5) infinite; }
+@keyframes stringy {
+  0% { transform: scaleY(0.1); opacity: 0; } 25% { transform: scaleY(0.8); opacity: 1; }
+  60% { transform: scaleY(1.7); opacity: .85; } 80% { transform: scaleY(2.4); opacity: 0; } 100% { transform: scaleY(0.1); opacity: 0; }
+}
+.droplet { transform-box: fill-box; transform-origin: center; animation: fall 3.4s cubic-bezier(.5,.08,.85,.6) infinite; }
+@keyframes fall {
+  0% { transform: translateY(-16px) scaleY(1.5) scaleX(.7); opacity: 0; }
+  22% { transform: translateY(-8px) scaleY(1.2) scaleX(.85); opacity: 1; }
+  60% { transform: translateY(10px) scale(1); opacity: 1; }
+  100% { transform: translateY(38px) scaleY(1.15) scaleX(.9); opacity: 0; }
+}
+.droplet2 { transform-box: fill-box; transform-origin: center; animation: fall2 5.1s cubic-bezier(.5,.08,.85,.6) infinite -2.4s; }
+@keyframes fall2 {
+  0% { transform: translateY(-10px) scaleY(1.4) scaleX(.75); opacity: 0; }
+  25% { transform: translateY(-4px) scale(1); opacity: 1; }
+  65% { transform: translateY(8px) scale(1); opacity: 1; }
+  100% { transform: translateY(26px) scale(1); opacity: 0; }
+}
+.sheen { animation: shimmer 6s ease-in-out infinite; }
+@keyframes shimmer { 0%,100% { opacity: .55; } 50% { opacity: .95; } }
+
+/* ============ ticker ============ */
+.ticker { background: var(--slime); overflow: hidden; padding: 13px 0; border-top: 2px solid var(--chocolate); border-bottom: 2px solid var(--chocolate); }
+.ticker-inner { display: flex; gap: 0; width: max-content; animation: scroll 34s linear infinite; }
+.ticker span { font-weight: 800; font-size: 14px; letter-spacing: .18em; text-transform: uppercase; color: var(--chocolate); padding: 0 18px; white-space: nowrap; }
+@keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* ============ sections ============ */
+section .inner { max-width: 1100px; margin: 0 auto; padding: 84px 24px; }
+.sec-kicker { font-size: 12px; letter-spacing: .3em; text-transform: uppercase; font-weight: 700; margin-bottom: 14px; color: var(--fern); }
+h2.sec-title { font-size: clamp(30px, 4vw, 42px); font-weight: 800; letter-spacing: -1.4px; line-height: 1.1; }
+.sec-sub { margin-top: 14px; font-size: 16.5px; color: #6B5747; max-width: 620px; line-height: 1.6; }
+
+/* ============ findings ============ */
+#found { background: var(--cream-2); }
+.find-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 44px; }
+@media (max-width: 800px) { .find-grid { grid-template-columns: 1fr; } }
+.fcard {
+  background: #fff; border: 2px solid rgba(43,30,22,0.1); border-radius: 20px; padding: 26px 24px;
+  position: relative;
+}
+.fcard.urgent { border-color: var(--raspberry); box-shadow: 0 18px 40px -18px rgba(232,77,138,.35); grid-column: 1 / -1; }
+.fcard .tag { position: absolute; top: -13px; left: 24px; background: var(--raspberry-deep); color: #fff; font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; border-radius: 999px; padding: 5px 12px; }
+.fcard h3 { font-size: 19px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.25; }
+.fcard p { font-size: 14.5px; color: #5A4A3A; line-height: 1.6; margin-top: 10px; }
+.fcard .proof { display: block; margin-top: 14px; font-size: 12.5px; font-weight: 700; color: var(--raspberry-ink); text-transform: uppercase; letter-spacing: .08em; word-break: break-word; }
+.fcard .proof a { color: var(--raspberry-ink); }
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 16px; }
+@media (max-width: 560px) { .split { grid-template-columns: 1fr; } }
+.split > div { background: var(--cream); border-radius: 12px; padding: 13px 15px; border: 1px solid rgba(43,30,22,0.09); }
+.split b { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: .1em; color: var(--fern); margin-bottom: 4px; }
+.split span { font-size: 14.5px; color: #5A4A3A; line-height: 1.45; }
+
+.honest { margin-top: 40px; background: var(--cream); border: 2px solid rgba(43,30,22,0.09); border-radius: 16px; padding: 20px 22px; }
+.honest b { display: block; font-size: 12.5px; text-transform: uppercase; letter-spacing: .1em; color: var(--fern); margin-bottom: 8px; }
+.honest p { font-size: 14.5px; color: #5A4A3A; line-height: 1.6; }
+.honest p + p { margin-top: 10px; }
+
+/* ============ the wedge ============ */
+#wedge { background: var(--chocolate-2); color: #F3EAE1; }
+#wedge .sec-kicker { color: var(--slime); }
+#wedge .sec-sub { color: #C3B2A2; }
+#wedge .lede { margin-top: 34px; font-size: 20px; line-height: 1.6; max-width: 720px; color: #F3EAE1; }
+#wedge .lede strong { color: var(--slime); }
+.wcards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 40px; }
+@media (max-width: 800px) { .wcards { grid-template-columns: 1fr; } }
+.wcard { background: rgba(243,234,225,0.05); border: 1px solid rgba(243,234,225,0.14); border-radius: 18px; padding: 24px 22px; }
+.wcard b { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: .12em; color: var(--slime); margin-bottom: 10px; }
+.wcard p { font-size: 14.5px; color: #C3B2A2; line-height: 1.6; }
+.wcard p strong { color: #F3EAE1; }
+
+/* ============ build ============ */
+.blist { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 44px; }
+@media (max-width: 800px) { .blist { grid-template-columns: 1fr; } }
+.bitem { background: var(--cream-2); border: 2px solid rgba(43,30,22,0.09); border-radius: 18px; padding: 24px 22px; }
+.bitem .num {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: radial-gradient(circle at 32% 26%, #EAF7C6 0%, var(--slime) 48%, #9CCB4F 100%);
+  box-shadow: inset 0 2px 3px rgba(255,255,255,.7), inset 0 -3px 5px rgba(67,129,58,.35);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 17px; color: var(--chocolate); margin-bottom: 16px;
+  border: 2px solid var(--chocolate);
+}
+.bitem h4 { font-size: 17.5px; font-weight: 800; letter-spacing: -0.3px; }
+.bitem .sub { font-size: 12px; text-transform: uppercase; letter-spacing: .12em; color: var(--fern); font-weight: 700; margin: 4px 0 10px; }
+.bitem p { font-size: 14.5px; color: #5A4A3A; line-height: 1.6; }
+.later { margin-top: 28px; font-size: 14.5px; color: var(--taupe); line-height: 1.65; max-width: 700px; }
+.later b { color: var(--chocolate); }
+
+/* ============ price ============ */
+#price { background: var(--cream-2); }
+.pricewrap { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 26px; margin-top: 44px; align-items: start; }
+@media (max-width: 860px) { .pricewrap { grid-template-columns: 1fr; } }
+.pcard {
+  background: #fff; border: 2px solid var(--raspberry); border-radius: 20px; padding: 32px 28px;
+  box-shadow: 0 18px 40px -18px rgba(232,77,138,.35); position: relative;
+}
+.pcard .tag { position: absolute; top: -13px; left: 24px; background: var(--raspberry-deep); color: #fff; font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; border-radius: 999px; padding: 5px 12px; }
+.pcard h3 { font-size: 21px; font-weight: 800; letter-spacing: -0.5px; }
+.pcard .flavor { font-size: 12.5px; color: var(--fern); font-weight: 700; text-transform: uppercase; letter-spacing: .12em; margin-top: 4px; }
+.pcard .price { margin-top: 18px; font-size: 40px; font-weight: 800; letter-spacing: -1.8px; font-variant-numeric: tabular-nums; }
+.pcard .price small { font-size: 14px; color: var(--taupe); font-weight: 500; letter-spacing: 0; }
+.pcard .mo { margin-top: 6px; font-size: 20px; font-weight: 800; letter-spacing: -0.6px; font-variant-numeric: tabular-nums; }
+.pcard .mo small { font-size: 13.5px; color: var(--taupe); font-weight: 500; letter-spacing: 0; }
+.pcard ul { list-style: none; margin: 22px 0 0; display: grid; gap: 10px; }
+.pcard li { font-size: 14.5px; color: #5A4A3A; padding-left: 24px; position: relative; line-height: 1.45; }
+.pcard li::before {
+  content: ""; position: absolute; left: 0; top: 4px; width: 12px; height: 12px;
+  border: 3.5px solid var(--raspberry); border-radius: 50%;
+}
+.terms { display: grid; gap: 14px; }
+.terms > div { background: #fff; border: 2px solid rgba(43,30,22,0.1); border-radius: 16px; padding: 20px 22px; }
+.terms b { display: block; font-size: 15.5px; margin-bottom: 6px; }
+.terms span { font-size: 14.5px; color: #5A4A3A; line-height: 1.6; display: block; }
+
+/* ============ cta band ============ */
+.ctaband { background: var(--raspberry-deep); color: #fff; }
+.ctaband .inner { padding: 86px 24px; text-align: center; }
+.ctaband h2 { font-size: clamp(28px, 4.2vw, 44px); font-weight: 800; letter-spacing: -1.6px; line-height: 1.08; }
+.ctaband p { margin: 16px auto 30px; font-size: 17px; max-width: 520px; line-height: 1.55; color: #fff; }
+.ctaband .btn { background: var(--chocolate); box-shadow: 0 10px 24px -10px rgba(0,0,0,.4); }
+/* Was #FBEFF4, a softened white, which measured 4.27 on --raspberry-deep and
+   failed the 4.5 that normal-weight text needs. Same fault and same fix as the
+   band's own paragraph in globals.css: the softness was costing the pass on its
+   own, so it comes off and hierarchy comes from size instead. Full white is
+   4.78 on this ground. */
+.ctaband .after { margin-top: 22px; font-size: 13.5px; color: #fff; }
+
+/* ============ footer ============ */
+footer { background: var(--chocolate-2); color: #A6907F; }
+footer .inner { max-width: 1100px; margin: 0 auto; padding: 56px 24px 36px; }
+.foot-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 30px; flex-wrap: wrap; }
+.foot-brand { display: flex; align-items: center; gap: 12px; }
+.foot-brand .bw { font-weight: 800; font-size: 22px; letter-spacing: -0.7px; color: #F3EAE1; }
+.foot-brand .bw span { font-weight: 350; color: #A6907F; }
+.foot-note { font-size: 14px; line-height: 1.6; max-width: 420px; }
+.foot-note a { color: #F3EAE1; font-weight: 700; text-decoration: none; }
+.foot-note a:hover { color: var(--slime); }
+.foot-bottom { margin-top: 40px; padding-top: 22px; border-top: 1px solid rgba(243,234,225,0.1); display: flex; justify-content: space-between; font-size: 12.5px; flex-wrap: wrap; gap: 10px; }
+
+/* drip dividers */
+.drip-divider { display: block; width: 100%; height: 54px; margin-bottom: -1px; }
+
+/* reveal on scroll. The un-animated state is the finished state: .reveal is
+   only added by JS, so a blocked script or reduced motion leaves a complete
+   page rather than an empty one. */
+.js .reveal { opacity: 0; transform: translateY(26px); transition: opacity .7s ease, transform .7s ease; }
+.js .reveal.in { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .js .reveal { opacity: 1; transform: none; transition: none; }
+  .goo, .wob1, .wob2, .wob3, .wobB, .string, .droplet, .droplet2, .sheen, .ticker-inner { animation: none; }
+  .string, .droplet, .droplet2 { opacity: 1; }
+  .btn:hover { transform: none; }
+}
+
+/* ============ mobile ============ */
+@media (max-width: 640px) {
+  .navwrap { padding: 11px 14px; }
+  .brand { gap: 7px; }
+  .brand .bw { font-size: 17px; }
+  .navfor { font-size: 12px; }
+  .navfor b { font-size: 13px; }
+  .hero { padding: 30px 20px 58px; gap: 22px; }
+  .hero .mark svg { width: 165px; height: 208px; }
+  .hero p.sub { font-size: 16px; }
+  .btn.big { padding: 13px 22px; font-size: 15px; }
+  section .inner { padding: 56px 20px; }
+  .ctaband .inner { padding: 60px 20px; }
+  .pcard .price { font-size: 34px; }
+  footer .inner { padding: 44px 20px 30px; }
+}
+@media (max-width: 390px) {
+  .brand .bw { font-size: 16px; }
+  .navfor { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- Gradients and symbols, lifted verbatim from components/Logo.jsx in the
+     glazedweb repo. Mounted once, hidden, before anything references them. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <radialGradient id="pinkGrad" cx="40%" cy="34%" r="75%">
+      <stop offset="0%" stop-color="#F887B2"/><stop offset="55%" stop-color="#E84D8A"/><stop offset="100%" stop-color="#CE3672"/>
+    </radialGradient>
+    <linearGradient id="lgGrad" x1="0" y1="92" x2="0" y2="215" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#D9EDA0"/><stop offset="55%" stop-color="#BFE07A"/><stop offset="100%" stop-color="#A3CE55"/>
+    </linearGradient>
+    <linearGradient id="creepGrad" x1="0" y1="90" x2="0" y2="124" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#E3F2B0"/><stop offset="100%" stop-color="#C3E181"/>
+    </linearGradient>
+    <linearGradient id="dgGrad" x1="0" y1="92" x2="0" y2="165" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#5FA850"/><stop offset="100%" stop-color="#43813A"/>
+    </linearGradient>
+  </defs>
+  <!-- viewBox cropped to 46 16 110 186, the mark's real painted bounds. No
+       coordinate moves; the matting is gone so it reads at 26px. -->
+  <symbol id="mark" viewBox="46 16 110 186" overflow="visible">
+    <g fill="url(#dgGrad)">
+      <ellipse cx="100" cy="110" rx="38" ry="15"/>
+      <path d="M 86 100 C 86 116, 87 130, 88 142 C 88 148, 91 149, 92 142 C 93 130, 92 114, 92 100 Z"/>
+      <path d="M 114 100 C 114 112, 115 124, 116 134 C 116 140, 119 141, 120 134 C 121 124, 120 110, 120 100 Z"/>
+    </g>
+    <g fill="url(#lgGrad)">
+      <path d="M 64 100 C 63 120, 65 138, 66 152 C 66 164, 68 172, 74 173 C 80 172, 83 165, 82 154 C 84 136, 85 116, 86 100 Z"/>
+      <path d="M 92 100 C 91 128, 93 152, 94 172 C 94 188, 97 199, 104 200 C 111 199, 114 190, 112 174 C 113 150, 114 124, 114 100 Z"/>
+      <path d="M 120 100 C 119 116, 120 130, 121 142 C 121 152, 123 159, 129 160 C 134 159, 137 153, 135 144 C 136 130, 137 114, 137 100 Z"/>
+    </g>
+    <circle cx="100" cy="70" r="52" fill="url(#pinkGrad)"/>
+    <path d="M 56 98 A 52 52 0 0 0 144 98 C 142 94, 138 92, 134 94 C 130 97, 129 102, 125 104 C 119 106, 116 98, 110 96 C 104 94, 103 102, 98 105 C 93 107, 90 100, 84 97 C 78 95, 76 100, 71 102 C 66 103, 62 100, 56 98 Z" fill="url(#creepGrad)"/>
+    <path d="M 68 106 A 42 42 0 0 0 84 116" fill="none" stroke="#F1F8DC" stroke-width="4" stroke-linecap="round" opacity="0.85"/>
+    <path d="M 97 144 Q 103 151 109 144" fill="none" stroke="#55974A" stroke-width="4" stroke-linecap="round"/>
+    <g stroke="#F1F8DC" fill="none" stroke-linecap="round">
+      <path d="M 97 128 C 96 148, 97 166, 100 182" stroke-width="4.5" opacity="0.85"/>
+      <path d="M 69 118 C 68 132, 70 146, 71 156" stroke-width="3.5" opacity="0.8"/>
+      <path d="M 124 114 C 123 124, 125 138, 126 148" stroke-width="3.5" opacity="0.8"/>
+    </g>
+    <circle cx="100" cy="192" r="2.5" fill="#F1F8DC" opacity="0.9"/>
+    <circle cx="100" cy="72" r="13" fill="var(--hole, #FDF6EC)"/>
+    <circle cx="100" cy="72" r="13" fill="none" stroke="#C22F6B" stroke-width="3" opacity="0.3"/>
+    <path d="M 62 46 A 44 44 0 0 1 82 28" fill="none" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round" opacity="0.75"/>
+    <circle cx="92" cy="26" r="3.5" fill="#FFFFFF" opacity="0.75"/>
+  </symbol>
+  <symbol id="dripEdge" viewBox="0 0 1440 60" preserveAspectRatio="none">
+    <path d="M0,0 H1440 V16 C1408 16 1400 44 1378 44 C1356 44 1362 16 1332 16 H1180 C1160 16 1156 52 1132 52 C1110 52 1116 16 1088 16 H880 C862 16 860 38 842 38 C824 38 828 16 802 16 H590 C574 16 572 48 550 48 C528 48 532 16 506 16 H300 C284 16 282 36 264 36 C246 36 250 16 224 16 H0 Z"/>
+  </symbol>
+</svg>
+
+<header>
+  <div class="navwrap">
+    <a class="brand" href="https://glazedweb.com">
+      <svg width="24" height="31" viewBox="46 16 110 186" overflow="visible" aria-hidden="true"><use href="#mark"/></svg>
+      <span class="bw">glazed<span>web</span></span>
+    </a>
+    <div class="navfor">
+      Prepared for
+      <b>Pastrami Joe&rsquo;s</b>
+    </div>
+  </div>
+</header>
+
+<div class="hero">
+  <div>
+    <p class="kicker">A website proposal, August 2026</p>
+    <h1>Can somebody tell <em>when you are open?</em></h1>
+    <p class="sub">Not from your website they cannot. We opened all eleven pages of pastramijoes.com and none of them publishes an hour. Not the homepage, not either contact page, not either menu. Meanwhile six other websites publish six different answers on your behalf, and three of them say Marshall opens at eleven.</p>
+    <div class="ctas">
+      <a class="btn big" href="/demo">See it built</a>
+      <a class="btn big ghost" href="#found">What we found</a>
+    </div>
+    <p class="proof">Everything below links to the page that proves it. Where we could not check something, we say so.</p>
+  </div>
+  <div class="mark">
+    <!-- AnimatedMark, lifted verbatim. Hero only, one per page. -->
+    <svg width="230" height="290" viewBox="0 0 200 250" overflow="visible" aria-hidden="true">
+      <g class="goo">
+        <g fill="url(#dgGrad)">
+          <ellipse cx="100" cy="110" rx="38" ry="15"/>
+          <path class="wobB" d="M 86 100 C 86 116, 87 130, 88 142 C 88 148, 91 149, 92 142 C 93 130, 92 114, 92 100 Z"/>
+          <path d="M 114 100 C 114 112, 115 124, 116 134 C 116 140, 119 141, 120 134 C 121 124, 120 110, 120 100 Z"/>
+        </g>
+        <g fill="url(#lgGrad)">
+          <path class="wob1" d="M 64 100 C 63 120, 65 138, 66 152 C 66 164, 68 172, 74 173 C 80 172, 83 165, 82 154 C 84 136, 85 116, 86 100 Z"/>
+          <path class="wob2" d="M 92 100 C 91 128, 93 152, 94 172 C 94 188, 97 199, 104 200 C 111 199, 114 190, 112 174 C 113 150, 114 124, 114 100 Z"/>
+          <path class="wob3" d="M 120 100 C 119 116, 120 130, 121 142 C 121 152, 123 159, 129 160 C 134 159, 137 153, 135 144 C 136 130, 137 114, 137 100 Z"/>
+        </g>
+      </g>
+      <path class="string" d="M 104 199 L 104 209" stroke="#BFE07A" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      <g class="droplet">
+        <circle cx="104" cy="213" r="7" fill="#BFE07A"/>
+        <circle cx="102" cy="211" r="2" fill="#F1F8DC" opacity="0.9"/>
+      </g>
+      <circle class="droplet2" cx="74" cy="186" r="4.5" fill="#BFE07A"/>
+      <circle cx="100" cy="70" r="52" fill="url(#pinkGrad)"/>
+      <path d="M 56 98 A 52 52 0 0 0 144 98 C 142 94, 138 92, 134 94 C 130 97, 129 102, 125 104 C 119 106, 116 98, 110 96 C 104 94, 103 102, 98 105 C 93 107, 90 100, 84 97 C 78 95, 76 100, 71 102 C 66 103, 62 100, 56 98 Z" fill="url(#creepGrad)"/>
+      <path d="M 68 106 A 42 42 0 0 0 84 116" fill="none" stroke="#F1F8DC" stroke-width="4" stroke-linecap="round" opacity="0.85"/>
+      <path d="M 97 144 Q 103 151 109 144" fill="none" stroke="#55974A" stroke-width="4" stroke-linecap="round"/>
+      <g stroke="#F1F8DC" fill="none" stroke-linecap="round">
+        <path d="M 97 128 C 96 148, 97 166, 100 182" stroke-width="4.5" opacity="0.85"/>
+        <path d="M 69 118 C 68 132, 70 146, 71 156" stroke-width="3.5" opacity="0.8"/>
+        <path d="M 124 114 C 123 124, 125 138, 126 148" stroke-width="3.5" opacity="0.8"/>
+      </g>
+      <circle cx="100" cy="192" r="2.5" fill="#F1F8DC" opacity="0.9"/>
+      <circle cx="100" cy="72" r="13" fill="#FDF6EC"/>
+      <circle cx="100" cy="72" r="13" fill="none" stroke="#C22F6B" stroke-width="3" opacity="0.3"/>
+      <path class="sheen" d="M 62 46 A 44 44 0 0 1 82 28" fill="none" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round"/>
+      <circle class="sheen" cx="92" cy="26" r="3.5" fill="#FFFFFF"/>
+    </svg>
+  </div>
+</div>
+
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-inner">
+    <span>No hours on any page</span><span>&bull;</span><span>Google is quoting $10.50 for the pastrami</span><span>&bull;</span><span>Battle Creek reads CLOSED on Yelp</span><span>&bull;</span><span>Three listings say you open at 11</span><span>&bull;</span><span>battlecreek - Pastrami Joe&rsquo;s</span><span>&bull;</span>
+    <span>No hours on any page</span><span>&bull;</span><span>Google is quoting $10.50 for the pastrami</span><span>&bull;</span><span>Battle Creek reads CLOSED on Yelp</span><span>&bull;</span><span>Three listings say you open at 11</span><span>&bull;</span><span>battlecreek - Pastrami Joe&rsquo;s</span><span>&bull;</span>
+  </div>
+</div>
+
+<section id="found">
+  <div class="inner">
+    <p class="sec-kicker reveal">What we found</p>
+    <h2 class="sec-title reveal">We read your website the way a hungry person does, then the way Google does.</h2>
+    <p class="sec-sub reveal">Your site is not neglected. Elementor is patched to June, and somebody updated the specials page three days before we wrote this. The problem is not that nobody is looking after it. The problem is what it cannot do.</p>
+
+    <div class="find-grid">
+
+      <article class="fcard urgent reveal">
+        <span class="tag">Fix this today</span>
+        <h3>Your hours are not on your website.</h3>
+        <p>We fetched all eleven pages. Zero of them publish an opening hour for either store. Not the homepage, not <b>/contact/</b>, not <b>/contact-battle-creek/</b>, not the Marshall menu, not the Battle Creek menu.</p>
+        <p>For a deli that opens at seven with a full breakfast board and closes at seven, and a lunch counter that runs ten to three on weekdays, that is the single most expensive gap on the site. It is also the question every phone search is asking.</p>
+        <span class="proof"><a href="https://pastramijoes.com/contact/">Your contact page</a> &middot; <a href="https://pastramijoes.com/battlecreek/">Your Battle Creek page</a></span>
+      </article>
+
+      <article class="fcard urgent reveal">
+        <span class="tag">Fix this today</span>
+        <h3>Google is quoting your hot pastrami at $10.50.</h3>
+        <p>Because your menus publish no prices, a third party filled the gap. allmenus.com carries a complete, fully priced, obsolete Pastrami Joe&rsquo;s menu, and it ranks. It lists Joe&rsquo;s Hot Pastrami at <b>$10.50</b>. A February 2025 review put the real price at &ldquo;slightly over $13&rdquo;.</p>
+        <p>That page also lists seven sandwiches you no longer make, a whole take-out market section, and a phone number that is not yours: <b>(269) 248-7172</b>.</p>
+        <p>Now read your reviews. The most consistent complaint about Pastrami Joe&rsquo;s is price. People are being quoted ten fifty and charged thirteen, and then they write about it.</p>
+        <span class="proof"><a href="https://www.allmenus.com/mi/marshall/291143-pastrami-joes/menu/">The stale menu ranking for you</a> &middot; <a href="https://swmichigandining.com/2025/02/04/pastrami-joes-battle-creek-3/">The review with the real price</a></span>
+      </article>
+
+      <article class="fcard urgent reveal">
+        <span class="tag">Fix this today</span>
+        <h3>Battle Creek reads as closed, at an address you left in 2021.</h3>
+        <p>There are two Yelp listings for Battle Creek. One is the current store. The other is <b>80 W. Michigan Ave.</b>, flagged CLOSED, holding thirty-one reviews and seventeen photos of a place you rebuilt somewhere else.</p>
+        <p>Tripadvisor is worse. Its only Battle Creek entry is still at 80 W. Michigan, five years after that store shut and two years after you reopened a block away.</p>
+        <p>Somebody searching for Pastrami Joe&rsquo;s in Battle Creek is being told you are out of business.</p>
+        <span class="proof"><a href="https://www.tripadvisor.com/Restaurants-g42423-Battle_Creek_Michigan.html">Tripadvisor, Battle Creek</a> &middot; <a href="https://www.yelp.com/search?find_desc=Pastrami+Joes&find_loc=Battle+Creek%2C+MI">The two Yelp listings</a></span>
+      </article>
+
+      <article class="fcard reveal">
+        <h3>Three listings say you open at eleven. You open at seven.</h3>
+        <p>Tripadvisor, Yellowpages and Sirved all publish 11:00am for Marshall. You told Second Wave in February that it is 7am, and you sell biscuits and gravy, breakfast burritos, breakfast pizza and NYC bagels to prove it.</p>
+        <p>Sirved also says you are closed on Saturday. Six sources, six answers, and no authoritative one to correct them against, because your own site publishes none.</p>
+        <div class="split">
+          <div><b>What you told Second Wave</b><span>Marshall 7am to 7pm, Saturday 10 to 3. Battle Creek 10 to 3, weekdays.</span></div>
+          <div><b>What Tripadvisor tells searchers</b><span>11:00am to 7:00pm. The entire breakfast daypart, gone.</span></div>
+        </div>
+        <span class="proof"><a href="https://www.tripadvisor.com/Restaurant_Review-g42442-d2701169-Reviews-Pastrami_Joe_s-Marshall_Calhoun_County_Michigan.html">Tripadvisor</a> &middot; <a href="https://secondwavemedia.com/day-to-day-interactions-with-happy-customers-keeps-pastrami-joes-owner-going/">Second Wave, February 2026</a></span>
+      </article>
+
+      <article class="fcard reveal">
+        <h3>Google does not know you are a restaurant.</h3>
+        <p>Your homepage carries structured data, and all of it is generic. WebPage, ImageObject, BreadcrumbList, WebSite, Organization. There is no Restaurant type, no LocalBusiness, no address, no telephone and no opening hours anywhere in it.</p>
+        <p>That is the machine-readable half of the hours problem. Even if you typed the hours onto a page tomorrow, nothing on the site tells a search engine they are opening hours.</p>
+        <span class="proof"><a href="https://pastramijoes.com/">Your homepage source</a></span>
+      </article>
+
+      <article class="fcard reveal">
+        <h3>Your Battle Creek page is titled &ldquo;battlecreek&rdquo;.</h3>
+        <p>The browser tab, the Google result and every shared link for that page read <b>battlecreek - Pastrami Joe&rsquo;s</b>. Lowercase, no space, the URL slug used as a title.</p>
+        <p>It also has no meta description, so Google writes its own from whatever text it finds. Your catering page has no description either.</p>
+        <span class="proof"><a href="https://pastramijoes.com/battlecreek/">The Battle Creek page</a> &middot; <a href="https://pastramijoes.com/catering/">The catering page</a></span>
+      </article>
+
+      <article class="fcard reveal">
+        <h3>Two names, two navigations, one unexplained relationship.</h3>
+        <p>The Battle Creek section is branded <b>Little Joe&rsquo;s</b>, runs a different menu bar from the rest of the site, has its own contact form and its own menu page, and nothing anywhere explains how the two names relate.</p>
+        <p>Its body copy is a word for word duplicate of the homepage paragraph. The addresses are typed by hand onto ten separate pages, so a correction is ten edits and one of them always gets missed.</p>
+        <span class="proof"><a href="https://pastramijoes.com/battlecreek/">Little Joe&rsquo;s</a> &middot; <a href="https://pastramijoes.com/">The homepage it copies</a></span>
+      </article>
+
+      <article class="fcard reveal">
+        <h3>There is no page on your site where somebody can order.</h3>
+        <p>The nav sends people straight off to <b>pastramijoesmarshall.hrpos.heartland.us</b>, Battle Creek goes to a different Heartland subdomain, and <b>pastramijoes.com/online-ordering/</b> is a 404.</p>
+        <p>So there is nowhere on your own domain that answers &ldquo;can I order right now, and from which counter&rdquo;. The customer leaves your brand at the exact moment they decide to spend money.</p>
+        <span class="proof"><a href="https://pastramijoes.com/online-ordering/">The 404</a> &middot; <a href="https://pastramijoes.com/">The nav that skips it</a></span>
+      </article>
+
+      <article class="fcard reveal">
+        <h3>Your menus publish no prices. Your catering menu publishes all of them.</h3>
+        <p>On the Marshall menu the only prices are soup and five add-ons. On the Battle Creek menu there is exactly one price on the whole page. Every sandwich, wrap, salad and pizza is unpriced.</p>
+        <p>The catering page, meanwhile, prices everything down to the cookie tray. So the site can do it. The retail menus just do not.</p>
+        <span class="proof"><a href="https://pastramijoes.com/menu/">Marshall menu</a> &middot; <a href="https://pastramijoes.com/battlecreek/menu-battle-creek/">Battle Creek menu</a> &middot; <a href="https://pastramijoes.com/catering/">Catering, fully priced</a></span>
+      </article>
+
+      <article class="fcard reveal">
+        <h3>The one page you keep current does not look current.</h3>
+        <p>Weekly Features was edited three days before we wrote this. It carries no date, so a visitor cannot tell whether the soup rotation is this week&rsquo;s or from 2019. A line reading &ldquo;week of&rdquo; costs nothing and is the difference.</p>
+        <p>Two small things in the live copy while we are here: the pizza is listed as <b>HOT HONEY bACON</b>, and the panini as <b>CHIP0TLE</b> with a zero.</p>
+        <span class="proof"><a href="https://pastramijoes.com/weekly-features/">Weekly Features</a></span>
+      </article>
+
+      <article class="fcard reveal">
+        <h3>Your homepage is one paragraph and one photograph.</h3>
+        <p>A deli people drive to Marshall for has a single food picture on its front page, and that picture has no alt text. Neither does your logo. No hours, no location cards, no menu preview, no map, no reviews.</p>
+        <p>Underneath, the homepage loads <b>32 script tags</b> and <b>28 stylesheets</b> to render that paragraph and that photograph.</p>
+        <span class="proof"><a href="https://pastramijoes.com/">Your homepage</a></span>
+      </article>
+
+      <article class="fcard reveal">
+        <h3>2020 is still live in three places.</h3>
+        <p>The only blog post on the site is the 7th Annual Reuben Race from March 2020, still listed in your sitemap. The Jobs page hands out an application PDF uploaded in March 2020. And your robots.txt still blocks a calendar plugin that is not installed.</p>
+        <p>One more, small but worth closing: Yoast is publishing an author sitemap that hands out a valid WordPress username, <b>kmaurer</b>, to anyone who asks for it.</p>
+        <span class="proof"><a href="https://pastramijoes.com/2020/03/31/the-7th-annual-reuben-race/">The 2020 post</a> &middot; <a href="https://pastramijoes.com/robots.txt">robots.txt</a> &middot; <a href="https://pastramijoes.com/author-sitemap.xml">The author sitemap</a></span>
+      </article>
+
+      <article class="fcard reveal">
+        <h3>The listings that should send you customers are empty.</h3>
+        <p>Your two Battle Creek Visitors Bureau entries carry one sentence each and no address, no phone, no hours and no link to your website. michigan.org has Marshall only, with no hours and no Battle Creek entry at all.</p>
+        <p>And your Choose Marshall directory listing does not load. It answers with a redirect loop.</p>
+        <span class="proof"><a href="https://www.battlecreekvisitors.org/listing/pastrami-joes/2517/">Battle Creek Visitors Bureau</a> &middot; <a href="https://www.michigan.org/property/pastrami-joes">michigan.org</a> &middot; <a href="https://choosemarshall.com/directory/pastrami-joes/">Choose Marshall</a></span>
+      </article>
+
+    </div>
+
+    <div class="honest reveal">
+      <b>What we could not check</b>
+      <p>Both Heartland ordering pages refuse automated access, so we have not seen the ordering experience itself, what it looks like, or what it charges. Everything above about ordering is about your website, not about Heartland.</p>
+      <p>Facebook, Instagram and Yelp all block automated reading. We know the accounts exist and we know @pastramijoes is linked from nowhere on your site, and that is all we know. The Yelp review counts and the CLOSED flag come from search result titles, not from the pages.</p>
+      <p>We have not measured your site on a real phone for speed, and the Google star ratings we saw came through an aggregator rather than from Google. We are not making a claim about either.</p>
+    </div>
+  </div>
+</section>
+
+<svg class="drip-divider" viewBox="0 0 1440 60" preserveAspectRatio="none" style="background:#FFFDF8" aria-hidden="true"><use href="#dripEdge" fill="#201712"/></svg>
+
+<section id="wedge">
+  <div class="inner">
+    <p class="sec-kicker reveal">The part that matters most</p>
+    <h2 class="sec-title reveal">Your website already broke at two locations. You are planning a third.</h2>
+    <p class="lede reveal">You told Choose Marshall you want to open a bakehouse and expand to more Michigan stores. Look at what happened to the website when you went from one store to two: it <strong>cloned itself</strong>. A second navigation, a second contact form, a second menu page, a second brand name, and the homepage paragraph copied into it word for word.</p>
+    <div class="wcards">
+      <div class="wcard reveal">
+        <b>What two stores cost you</b>
+        <p>Ten hand-typed copies of two addresses. Two menus that have already drifted apart in small ways nobody intended. Two ordering links and no page that offers both. One brand with <strong>two names</strong> and no explanation.</p>
+      </div>
+      <div class="wcard reveal">
+        <b>What a third would cost</b>
+        <p>On this architecture, a third clone. A third nav, a third form, a third menu to keep in step with the other two, and fifteen copies of three addresses. Every hour change becomes a hunt. <strong>The work grows with every store you open.</strong></p>
+      </div>
+      <div class="wcard reveal">
+        <b>What we build instead</b>
+        <p>One file holds the locations. Add a bakehouse to it and the site grows a location page, a set of hours, a footer entry, a sitemap entry and a Google listing on its own. <strong>Opening store three is one edit, not one rebuild.</strong></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<svg class="drip-divider" viewBox="0 0 1440 60" preserveAspectRatio="none" style="background:#201712" aria-hidden="true"><use href="#dripEdge" fill="#FDF6EC"/></svg>
+
+<section id="build">
+  <div class="inner">
+    <p class="sec-kicker reveal">What we would build</p>
+    <h2 class="sec-title reveal">A new pastramijoes.com, and it is already standing.</h2>
+    <p class="sec-sub reveal">Not a mockup. A working site with your logo, your photographs, your whole menu off both counters, and your catering prices. <a href="/demo">Open it</a> and click everything.</p>
+
+    <div class="blist">
+      <div class="bitem reveal">
+        <div class="num" aria-hidden="true">1</div>
+        <h4>Your hours, on every page</h4>
+        <p class="sub">Open until 7pm. Opens tomorrow at 10am.</p>
+        <p>A strip across the top of every page saying whether each counter is open right now, in Michigan time, and when it closes. Full hours tables on the homepage, both location pages, the ordering page and the footer. All of it read from one place, so a holiday change is one edit and it lands everywhere at once.</p>
+      </div>
+      <div class="bitem reveal">
+        <div class="num" aria-hidden="true">2</div>
+        <h4>Hours a search engine can read</h4>
+        <p class="sub">A Restaurant record per store</p>
+        <p>Proper Restaurant structured data for Marshall and for Battle Creek, with the address, the phone number and the real opening hours, generated from the same file the page reads. That is what gives Google something authoritative to prefer over the six versions currently out there.</p>
+      </div>
+      <div class="bitem reveal">
+        <div class="num" aria-hidden="true">3</div>
+        <h4>One menu, filtered by counter</h4>
+        <p class="sub">Not two menus that drift</p>
+        <p>Every item lives once and declares where it is served. Marshall shows breakfast and pizza, Battle Creek does not, and both come out of the same list. A new sandwich is one line and it is on the right counters immediately.</p>
+      </div>
+      <div class="bitem reveal">
+        <div class="num" aria-hidden="true">4</div>
+        <h4>Prices, published by you</h4>
+        <p class="sub">And the stale menu buried</p>
+        <p>Send the price list and every item on the site carries a price. Then the top result for your menu is your menu, at your prices, and the 2019 copy quoting ten fifty stops being the one people read. On the demo those slots say &ldquo;price to come&rdquo;, because we are not going to invent a number and put it in front of your customers.</p>
+      </div>
+      <div class="bitem reveal">
+        <div class="num" aria-hidden="true">5</div>
+        <h4>An ordering page on your own domain</h4>
+        <p class="sub">Pick a counter, then go</p>
+        <p>One page that shows both stores, whether each is open, its hours and its phone number, then hands off to your Heartland ordering. Your till system does not change. What changes is that nobody has to guess which link is theirs, and the choice happens on your site.</p>
+      </div>
+      <div class="bitem reveal">
+        <div class="num" aria-hidden="true">6</div>
+        <h4>This week, with a date on it</h4>
+        <p class="sub">Soup rotation and seasonal board</p>
+        <p>The page you already keep up to date, with a last-updated line under the heading and today&rsquo;s soup called out. The homepage reads from it too, so somebody landing on your front page in the afternoon sees that today is lobster bisque.</p>
+      </div>
+      <div class="bitem reveal">
+        <div class="num" aria-hidden="true">7</div>
+        <h4>Catering that starts itself</h4>
+        <p class="sub">Priced, and with a real form</p>
+        <p>Your full catering menu at your published prices, with a form that captures the date, the headcount and the service type so the call back is a confirmation rather than an interview. Dine to Donate gets the same treatment.</p>
+      </div>
+      <div class="bitem reveal">
+        <div class="num" aria-hidden="true">8</div>
+        <h4>The listings cleaned up</h4>
+        <p class="sub">Battle Creek, off 80 W. Michigan</p>
+        <p>We fix the duplicate Yelp entry, get Tripadvisor moved to 32 W. Michigan, correct the eleven o&rsquo;clock openings, and fill in the two empty Visitors Bureau listings and the Choose Marshall entry that will not load. This is not code, it is an afternoon of paperwork, and it is included.</p>
+      </div>
+      <div class="bitem reveal">
+        <div class="num" aria-hidden="true">9</div>
+        <h4>Email on your own name</h4>
+        <p class="sub">hello@pastramijoes.com</p>
+        <p>If you want it, we set up sending and receiving from an address on your own domain and show you how it works. No charge, and it is yours whether or not you keep us afterwards.</p>
+      </div>
+    </div>
+
+    <p class="later reveal"><b>Not in this quote, and worth talking about later.</b> Online ordering built into the site rather than handed off, so the order lands on your own printers and the fees stop being somebody else&rsquo;s. That is a separate conversation and it starts with looking at a Heartland statement, not with a proposal.</p>
+  </div>
+</section>
+
+<section id="price">
+  <div class="inner">
+    <p class="sec-kicker reveal">What it costs</p>
+    <h2 class="sec-title reveal">$2,500 to build it. $150 a month to keep it.</h2>
+    <p class="sec-sub reveal">Two locations, nine pages, the whole menu, catering, and the listings work. One price, no stages, no change orders for things we should have thought of.</p>
+
+    <div class="pricewrap">
+      <div class="pcard reveal">
+        <span class="tag">Custom Order</span>
+        <h3>Pastrami Joe&rsquo;s</h3>
+        <p class="flavor">Marshall and Battle Creek, built so a third store is one edit.</p>
+        <p class="price">$2,500 <small>to build</small></p>
+        <p class="mo">$150 <small>a month after launch</small></p>
+        <ul>
+          <li>Nine pages, both locations</li>
+          <li>Live hours on every page</li>
+          <li>Restaurant structured data per store</li>
+          <li>One filtered menu, priced when you send prices</li>
+          <li>Ordering hub on your own domain</li>
+          <li>Catering and Dine to Donate forms</li>
+          <li>The listings corrected</li>
+          <li>Hosting, security, updates and content edits in the monthly</li>
+        </ul>
+      </div>
+      <div class="terms">
+        <div class="reveal">
+          <b>You own it</b>
+          <span>Once the build is paid, the code, the content and the accounts are yours. The repo and the hosting project get handed over. The domain stays in your name.</span>
+        </div>
+        <div class="reveal">
+          <b>You can leave</b>
+          <span>Month to month after launch, thirty days notice, no termination fee. You take everything with you, working.</span>
+        </div>
+        <div class="reveal">
+          <b>Your till stays your till</b>
+          <span>Heartland keeps the register and keeps online ordering. We are not asking you to change how you take money to get a website.</span>
+        </div>
+        <div class="reveal">
+          <b>Nothing rented underneath it</b>
+          <span>No page builder, no plugin subscriptions, no per-seat anything. The monthly is care, not a license. Nothing on the site stops working if you stop paying us.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="ctaband">
+  <div class="inner">
+    <h2>Give us thirty minutes.</h2>
+    <p>Bring your real hours and your price list. That is the whole meeting. Everything else is already built and sitting at the link above.</p>
+    <a class="btn big" href="mailto:kevin@glazedweb.com?subject=Pastrami%20Joe%27s%20website%20proposal">Email Kevin</a>
+    <p class="after">Kevin Hershock, Glazed Web, Marshall Michigan.</p>
+  </div>
+</div>
+
+<footer>
+  <div class="inner">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <svg width="30" height="38" viewBox="46 16 110 186" overflow="visible" style="--hole:#201712" aria-hidden="true"><use href="#mark"/></svg>
+        <span class="bw">glazed<span>web</span></span>
+      </div>
+      <p class="foot-note">Hand-built websites for small businesses in and around Marshall, Michigan. <a href="https://glazedweb.com">glazedweb.com</a></p>
+    </div>
+    <div class="foot-bottom">
+      <span>Prepared for Pastrami Joe's Deli, August 2026.</span>
+      <span>Findings verified against pastramijoes.com on August 20, 2026.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* The class is added by script, so with JavaScript off nothing is ever hidden
+   and the page is complete on arrival. */
+document.documentElement.classList.add('js');
+(function () {
+  var els = document.querySelectorAll('.reveal');
+  if (!('IntersectionObserver' in window) ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    for (var i = 0; i < els.length; i++) els[i].classList.add('in');
+    return;
+  }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { rootMargin: '0px 0px -60px 0px' });
+  els.forEach(function (el) { io.observe(el); });
+})();
+</script>
+</body>
+</html>

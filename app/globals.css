@@ -1,0 +1,840 @@
+/* =============================================================================
+   Pastrami Joe's
+
+   The palette is lifted, not invented. #00703C is the green in their own
+   PastramiJoelogo.svg, sampled out of the file rather than eyedropped off a
+   screenshot. The checkerboard is their deli paper, which appears under the
+   food in six of the nine photographs on their site, so it is a real brand
+   element and not a decoration somebody added.
+
+   CONTRAST, MEASURED RATHER THAN JUDGED, against --cream #FBF7F0:
+
+     --green      #00703C   5.81 as text, and white on it is 6.21
+     --green-deep #005C31   7.64 as text, white on it is 8.15
+     --ink        #14231B  15.29
+     --muted      #5E5248   7.08
+     --red        #B3261E   6.12 as text, white on it is 6.54
+     --mustard    #C8A227   2.27  DECORATION ONLY. Never text, never a border
+                                  that carries meaning on its own.
+
+   The lucky part is that #00703C clears 4.5 in both directions, which is
+   unusual, so there is one green here rather than the three pinks the studio's
+   own palette needs. Do not add a lighter green for text: #2F9E63 measures
+   3.18 and would reintroduce exactly the fault the studio spent a full audit
+   finding on its own site.
+
+   Fix contrast at the token or the class, never on the one element an auditor
+   names.
+   ========================================================================== */
+
+:root {
+  --green: #00703c;
+  --green-deep: #005c31;
+  --green-pale: #e7f2ea;
+  --green-line: rgba(0, 112, 60, 0.18);
+
+  --ink: #14231b;
+  --muted: #5e5248;
+  --cream: #fbf7f0;
+  --paper: #ffffff;
+  --red: #b3261e;
+  --mustard: #c8a227;
+  /* The "closing soon" ink, on the #FDF6DE amber ground. The obvious pick,
+     #8A6F12, measures 4.45 there: close enough to the 4.5 line to feel fine and
+     still a fail, which is the same trap --raspberry-deep set on the studio's
+     own site. #7A6110 measures 5.48. Do not lighten it back. */
+  --amber-ink: #7a6110;
+  --amber-bg: #fdf6de;
+
+  --shadow: 0 1px 2px rgba(20, 35, 27, 0.05), 0 12px 28px -18px rgba(20, 35, 27, 0.35);
+  --radius: 14px;
+  --wrap: 1120px;
+
+}
+
+/* The studio plate. These three came out of `node glaze/scripts/plate.mjs
+   "#04361f"` rather than being picked by eye. Against this footer, a chocolate
+   plate measures 1.30 and the drip would be an invisible graphic rather than an
+   ugly one; the cream plate lands a 12.60 step. Set on .gw-plate, which is
+   where glazed-credit.css reads them. */
+.gw-plate {
+  --gw-above: #04361f;
+  --gw-plate: #fdf6ec;
+  --gw-plate-ink: #2b1e16;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+* {
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+/* scroll-behavior lives on a media query rather than on html unconditionally,
+   because smooth scrolling breaks measurement harnesses and is motion the
+   visitor did not ask for. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  font-family: var(--font-body), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  line-height: 1.62;
+  font-size: 17px;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+img {
+  height: auto;
+}
+
+/* Long unbreakable tokens live all over this site: hrpos.heartland.us in the
+   findings, pastramijoes.com in a 40px heading, "pastramijoesmarshall" in a
+   code span. At 320px they push the page sideways. Fixed on the text elements,
+   not on whichever heading a measurement happens to name. */
+h1,
+h2,
+h3,
+h4,
+p,
+li,
+a,
+span,
+b,
+dd,
+dt {
+  overflow-wrap: break-word;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+a {
+  color: var(--green-deep);
+  text-underline-offset: 3px;
+}
+a:hover {
+  color: var(--ink);
+}
+
+:focus-visible {
+  outline: 3px solid var(--green);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+::selection {
+  background: var(--green);
+  color: #fff;
+}
+
+.skip {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 200;
+  background: var(--green-deep);
+  color: #fff;
+  padding: 12px 18px;
+  font-weight: 700;
+  border-radius: 0 0 10px 0;
+}
+.skip:focus {
+  left: 0;
+  color: #fff;
+}
+
+.wrap {
+  max-width: var(--wrap);
+  margin: 0 auto;
+  padding: 0 20px;
+}
+.narrow {
+  max-width: 760px;
+}
+
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ============ the deli paper ============
+   Their green and white checkered paper, as a background rather than a JPEG.
+   Two 45-degree gradients at 50% each, offset by half a tile, which is the
+   standard checkerboard trick. Kept faint on large surfaces because at full
+   strength it fights the food photographs, which are the point. */
+.check {
+  background-color: var(--paper);
+  background-image: linear-gradient(45deg, var(--green-pale) 25%, transparent 25%, transparent 75%, var(--green-pale) 75%),
+    linear-gradient(45deg, var(--green-pale) 25%, transparent 25%, transparent 75%, var(--green-pale) 75%);
+  background-size: 44px 44px;
+  background-position: 0 0, 22px 22px;
+}
+/* The strong check is their deli paper at full strength. Tile size matters
+   more than it looks: at 28px a full-bleed band of it vibrates and fights the
+   card sitting on top. 56px reads as paper. */
+.check-strong {
+  background-color: var(--green);
+  background-image: linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%),
+    linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%);
+  background-size: 56px 56px;
+  background-position: 0 0, 28px 28px;
+}
+/* A thin checkered rule, used where a section changes subject. */
+.checkrule {
+  height: 14px;
+  background-color: var(--green);
+  background-image: linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%),
+    linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%);
+  background-size: 14px 14px;
+  background-position: 0 0, 7px 7px;
+}
+
+/* ============ type scale ============ */
+.kicker {
+  font-family: var(--font-display), sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 13px;
+  color: var(--green-deep);
+  display: block;
+  margin-bottom: 10px;
+}
+h1 {
+  font-size: clamp(38px, 8.2vw, 76px);
+}
+h2 {
+  font-size: clamp(28px, 4.6vw, 44px);
+}
+h3 {
+  font-size: clamp(19px, 2.4vw, 24px);
+}
+.lede {
+  font-size: clamp(17px, 2.1vw, 21px);
+  color: var(--muted);
+  max-width: 60ch;
+}
+.small {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+section {
+  padding: clamp(48px, 7vw, 88px) 0;
+}
+.tight {
+  padding-top: clamp(28px, 4vw, 44px);
+}
+
+/* ============ buttons ============ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  background: var(--green);
+  color: #fff;
+  font-weight: 700;
+  font-size: 16px;
+  padding: 13px 24px;
+  border-radius: 999px;
+  border: 2px solid var(--green);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
+  font-family: inherit;
+  text-align: center;
+}
+.btn:hover {
+  background: var(--green-deep);
+  border-color: var(--green-deep);
+  color: #fff;
+  transform: translateY(-1px);
+}
+.btn.ghost {
+  background: transparent;
+  color: var(--green-deep);
+  border-color: var(--green-line);
+}
+.btn.ghost:hover {
+  background: var(--green-pale);
+  color: var(--green-deep);
+  border-color: var(--green);
+  transform: translateY(-1px);
+}
+.btn.big {
+  font-size: 17px;
+  padding: 16px 30px;
+}
+.btnrow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* ============ open / closed ============
+   The badge that the current site has nowhere. Colour is never the only carrier:
+   every state also has a dot of a different shape weight and, more importantly,
+   words. "Open until 7pm" is the message; green is the decoration. */
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 5px 13px 5px 10px;
+  border-radius: 999px;
+  border: 1.5px solid;
+  white-space: nowrap;
+}
+.status .dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+.status.is-open {
+  color: var(--green-deep);
+  border-color: var(--green-line);
+  background: var(--green-pale);
+}
+.status.is-soon {
+  color: var(--amber-ink);
+  border-color: rgba(122, 97, 16, 0.35);
+  background: var(--amber-bg);
+}
+.status.is-shut {
+  color: var(--red);
+  border-color: rgba(179, 38, 30, 0.25);
+  background: #fdeceb;
+}
+
+/* ============ cards ============ */
+.card {
+  background: var(--paper);
+  border: 1px solid var(--green-line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.grid {
+  display: grid;
+  gap: 20px;
+}
+.g2 {
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+}
+.g3 {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+/* ============ hours table ============ */
+.hours {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px 18px;
+  font-size: 15px;
+}
+.hours dt {
+  color: var(--muted);
+}
+.hours dd {
+  font-weight: 700;
+  text-align: right;
+}
+.hours dd.closed {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+/* ============ menu ============ */
+.mitem {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 18px;
+  padding: 16px 0;
+  border-top: 1px solid var(--green-line);
+  align-items: baseline;
+}
+.mitem:first-child {
+  border-top: 0;
+}
+.mname {
+  font-weight: 700;
+  font-size: 17px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.mdesc {
+  grid-column: 1 / -1;
+  color: var(--muted);
+  font-size: 15px;
+  max-width: 62ch;
+}
+.maddon {
+  grid-column: 1 / -1;
+  font-size: 14px;
+  color: var(--green-deep);
+  font-weight: 600;
+}
+.mprice {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* A missing price is labelled, not blank. See the comment at the top of
+   lib/menu.js: nothing here invents a number. */
+/* Quiet on purpose, and there are fifty-four of them. The first cut of this
+   was an uppercase dashed chip, which is the right instinct for one placeholder
+   and the wrong one for a whole column: fifty-four alarm boxes made a finished
+   page look broken, which is not the message. The loud version of this fact
+   lives once, in the counted notice at the top of the menu, where it belongs. */
+.mprice.todo {
+  color: var(--muted);
+  font-weight: 500;
+  font-size: 13.5px;
+  font-style: italic;
+  border-bottom: 1px dashed rgba(94, 82, 72, 0.4);
+}
+
+.tag {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--green-pale);
+  color: var(--green-deep);
+  border: 1px solid var(--green-line);
+  white-space: nowrap;
+}
+.tag.sig {
+  background: var(--green);
+  color: #fff;
+  border-color: var(--green);
+}
+
+.notice {
+  border: 1px solid var(--green-line);
+  border-left: 5px solid var(--green);
+  background: var(--paper);
+  border-radius: 10px;
+  padding: 16px 18px;
+  font-size: 15px;
+}
+.notice b {
+  display: block;
+  margin-bottom: 3px;
+}
+
+/* ============ reveal ============
+   The un-animated state is the finished state. Nothing is hidden until the
+   Reveal component adds `js` to <html>, so a blocked script or reduced motion
+   leaves a complete page rather than an empty one. */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.55s cubic-bezier(0.22, 0.61, 0.36, 1), transform 0.55s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.js .reveal.in {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .js .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ============ header ============ */
+.hdr {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  background: rgba(251, 247, 240, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--green-line);
+}
+.hdr-in {
+  max-width: var(--wrap);
+  margin: 0 auto;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.hdr-brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  text-decoration: none;
+  color: var(--ink);
+  flex: none;
+}
+.hdr-brand img {
+  width: 46px;
+  height: 46px;
+}
+.hdr-brand b {
+  font-family: var(--font-display), sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+.hdr-nav {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.hdr-nav a {
+  text-decoration: none;
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 15px;
+  padding: 8px 11px;
+  border-radius: 8px;
+}
+.hdr-nav a:hover {
+  background: var(--green-pale);
+  color: var(--green-deep);
+}
+.hdr-nav a[aria-current="page"] {
+  color: var(--green-deep);
+  box-shadow: inset 0 -2px 0 var(--green);
+}
+/* `.hdr-nav a` is (0,1,1) and `.btn` is (0,1,0), so the nav's ink colour beat
+   the button's white and the Order button rendered #14231B on #00703C, which
+   measures 2.63. It looked deliberate. axe found it on eleven routes at once,
+   which is the tell that it was a class fault and not one element's fault.
+   Fixed here at the class, not on the button that got named. */
+.hdr-nav a.btn,
+.hdr-nav a.btn:hover {
+  color: #fff;
+}
+@media (max-width: 900px) {
+  .hdr-in {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .hdr-nav {
+    width: 100%;
+    margin-left: 0;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+  .hdr-nav::-webkit-scrollbar {
+    display: none;
+  }
+  .hdr-nav a {
+    white-space: nowrap;
+  }
+}
+
+/* ============ hero ============ */
+.hero {
+  position: relative;
+  padding: clamp(36px, 5vw, 64px) 0 0;
+}
+.hero-grid {
+  display: grid;
+  gap: clamp(24px, 4vw, 48px);
+  align-items: center;
+  grid-template-columns: 1.05fr 0.95fr;
+}
+@media (max-width: 880px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.hero-photo {
+  border-radius: 18px;
+  border: 1px solid var(--green-line);
+  box-shadow: var(--shadow);
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  width: 100%;
+}
+
+/* ============ footer ============ */
+.ftr {
+  background: #04361f;
+  color: #eef5ef;
+  padding: clamp(40px, 6vw, 64px) 0 26px;
+}
+.ftr a {
+  color: #d8ebdd;
+}
+.ftr a:hover {
+  color: #fff;
+}
+.ftr h3 {
+  font-size: 15px;
+  letter-spacing: 0.12em;
+  color: #b7d6c1;
+  margin-bottom: 12px;
+}
+/* #b7d6c1 on #04361f is 8.51. #eef5ef is 13.6. Both clear AA at 14px. */
+.ftr-grid {
+  display: grid;
+  gap: 30px;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+}
+.ftr-bar {
+  margin-top: 34px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  font-size: 13px;
+  color: #c6dbcb;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  justify-content: space-between;
+}
+
+
+/* ───────────────────────────────────────────────────────────────────────────
+   Glazed Web studio credit — pairs with components/GlazedCredit.
+   Everything is scoped to .gw-credit. The words inherit the footer's own colour
+   and size; the mark carries Glazed's own palette, because it is a logo and a
+   logo does not take on the host's colours.
+   ─────────────────────────────────────────────────────────────────────────── */
+.gw-credit {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  /* A credit that sets its own colour is a credit that stops matching the day
+     the footer changes. */
+  color: inherit;
+  text-decoration: none;
+}
+.gw-credit-name {
+  font-weight: 600;
+}
+.gw-credit:hover .gw-credit-name,
+.gw-credit:focus-visible .gw-credit-name {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.gw-credit-mark {
+  /* Sized in em so it tracks the text beside it rather than needing a number per
+     client. 2.15em against a 12px footer line is ~26px, which is where his real
+     mark reads: the hole lands at 4.7px and the disc at 19px. At 22px the hole
+     closes to 3px and it starts reading as a lollipop; at 30px+ it dominates the
+     bar. Measured across all five footers, not guessed. */
+  height: 2.15em;
+  width: auto;
+  flex: none;
+  /* This has to be here rather than only as the SVG attribute: the UA stylesheet
+     sets overflow:hidden on an outermost <svg>, and that beats a presentation
+     attribute. Without it the hover extension is clipped at the viewBox edge. */
+  overflow: visible;
+}
+.gw-credit-drips {
+  transform-box: fill-box;
+  /* Top centre of the drip group — where the glaze leaves the donut. Scaling from
+     anywhere else slides the drips off the donut instead of running them down. */
+  transform-origin: 50% 0%;
+  /* Resting is 1: the default state is his drawing at his lengths. */
+  transform: scaleY(1);
+  transition: transform 340ms cubic-bezier(0.34, 1.32, 0.5, 1);
+}
+.gw-credit:hover .gw-credit-drips,
+.gw-credit:focus-visible .gw-credit-drips {
+  transform: scaleY(1.22);
+}
+@media (prefers-reduced-motion: reduce) {
+  /* Nothing to suppress — there is no autoplay. The hover just stops easing. */
+  .gw-credit-drips {
+    transition-duration: 0s;
+  }
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   The signature plate — pairs with components/GlazedPlate.
+   Set the three values below per site, in that site's own palette block:
+     --gw-above      the footer colour directly above (the drip's fill)
+     --gw-plate      cream #FDF6EC under a dark footer, chocolate-2 #201712 under a light one
+     --gw-plate-ink  cream on chocolate (16.41) or chocolate on cream (15.05); both AA
+   The inversion is not taste — a chocolate plate under a #191919 footer measures 1.00 and the
+   drip vanishes. See the table in GlazedPlate for every footer in the account.
+   ─────────────────────────────────────────────────────────────────────────── */
+.gw-plate {
+  /* Defaults are the light-footer case, so a site that forgets to set them still gets a
+     legible plate rather than an invisible one. */
+  --gw-above: #FDF6EC;
+  --gw-plate: #201712;
+  --gw-plate-ink: #FDF6EC;
+  background: var(--gw-plate);
+}
+.gw-plate-drip {
+  display: block;
+  width: 100%;
+  height: 46px;
+  /* The drip is the colour of the band above it, dripping down into the plate. */
+  color: var(--gw-above);
+  fill: currentColor;
+  /* Kills the hairline of plate colour that otherwise shows along the top edge from
+     subpixel rounding — the same -1px his DripDivider uses. */
+  margin-bottom: -1px;
+}
+.gw-plate-bar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 22px 18px;
+}
+.gw-plate .gw-credit {
+  /* Overrides the inherit-the-footer rule above: on the plate the credit takes the plate's
+     ink, because the plate is Glazed's ground, not the client's. */
+  color: var(--gw-plate-ink);
+  font-size: 12px;
+}
+@media (max-width: 640px) {
+  .gw-plate-drip { height: 34px; }
+  .gw-plate-bar { justify-content: center; padding: 0 16px 16px; }
+}
+
+/* ============ hours bar ============
+   Above the header on every page. The strip the current site does not have.
+   It scrolls horizontally rather than wrapping at 320px, because two location
+   chips plus a note stacked into three rows pushes the nav below the fold on a
+   small phone, which is the one screen where "are you open" is being asked. */
+.hoursbar {
+  background: var(--green);
+  color: #fff;
+}
+.hoursbar-in {
+  max-width: var(--wrap);
+  margin: 0 auto;
+  padding: 7px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px 18px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.hoursbar-in::-webkit-scrollbar {
+  display: none;
+}
+.hoursbar-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 14px;
+  white-space: nowrap;
+  border-radius: 999px;
+  padding: 2px 4px 2px 8px;
+}
+.hoursbar-item:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.14);
+}
+.hoursbar-item b {
+  font-weight: 700;
+}
+/* The badge sits on green here, so its own tinted grounds are what carry the
+   contrast. is-open on green would be pale-on-green; these keep the pill's
+   background opaque so the measured ratios in the palette note still hold. */
+.hoursbar .status {
+  background: #fff;
+  border-color: rgba(255, 255, 255, 0.5);
+}
+.hoursbar .status.is-shut {
+  background: #fdeceb;
+}
+.hoursbar .status.is-soon {
+  background: var(--amber-bg);
+}
+.hoursbar-note {
+  color: #fff;
+  margin-left: auto;
+  white-space: nowrap;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.hoursbar-note:hover {
+  color: #fff;
+}
+@media (max-width: 720px) {
+  .hoursbar-note {
+    display: none;
+  }
+}
+
+/* ============ forms ============ */
+.fields {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+}
+label > span {
+  display: block;
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+input,
+select,
+textarea {
+  width: 100%;
+  font: inherit;
+  font-size: 16px; /* under 16px, iOS Safari zooms the whole page on focus */
+  color: var(--ink);
+  background: var(--cream);
+  border: 1.5px solid var(--green-line);
+  border-radius: 10px;
+  padding: 11px 13px;
+}
+textarea {
+  resize: vertical;
+}
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--green);
+  background: #fff;
+}
