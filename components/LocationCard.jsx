@@ -24,7 +24,7 @@ export default function LocationCard({ location, compact = false }) {
 
       {location.brand !== "Pastrami Joe's" && (
         <p className="small" style={{ marginBottom: 10 }}>
-          The counter here trades as <b>{location.brand}</b>. Same kitchen, same board, smaller room.
+          The counter here trades as <b>{location.brand}</b>.
         </p>
       )}
 

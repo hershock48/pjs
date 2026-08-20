@@ -135,8 +135,8 @@ export default async function Location({ params }) {
 
               {l.brand !== site.name && (
                 <p className="small" style={{ marginTop: 16 }}>
-                  The sign here reads <b>{l.brand}</b>. It is the same deli, the same meat
-                  and the same recipes, in a smaller room.
+                  The sign here reads <b>{l.brand}</b>. Same owners, same suppliers, same
+                  sandwich board.
                 </p>
               )}
 

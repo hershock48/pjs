@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import Mark from "@/components/Mark";
 import { nav, site } from "@/lib/site";
 
 /**
@@ -54,11 +55,12 @@ export default function Header() {
     <header className="hdr">
       <div className="hdr-in">
         <Link className="hdr-brand" href="/">
-          {/* The mark is their own PastramiJoelogo.svg. Its viewBox is cropped
-              to the painted bounds, measured by pixel-scanning a 2448px render:
+          {/* Their own mark, in two layers so the man can lean and the badge
+              cannot. See components/Mark.jsx. The source viewBox is cropped to
+              the painted bounds, measured by pixel-scanning a 2448px render:
               the file declares 612x792 and paints 236x236 of it, so 61% of the
               width was empty matting. No coordinate moved. */}
-          <img src="/assets/pjs/logo.svg" width="46" height="46" alt="" />
+          <Mark size={46} />
           <b>
             Pastrami Joe&rsquo;s
             <span className="sr"> home</span>

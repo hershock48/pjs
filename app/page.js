@@ -1,5 +1,6 @@
 import Link from "next/link";
 import LocationCard from "@/components/LocationCard";
+import Mark from "@/components/Mark";
 import { site } from "@/lib/site";
 import { week } from "@/lib/menu";
 
@@ -61,13 +62,15 @@ export default function Home() {
             <span className="kicker">Two counters</span>
             <h2>Where we are, and when</h2>
             <p className="lede" style={{ marginTop: 12 }}>
-              Marshall opens at seven with breakfast on. Battle Creek is a weekday lunch
-              counter. Both cut the same meat.
+              Marshall opens at seven and does breakfast and pizza. Battle Creek is a
+              weekday lunch counter. The sandwich board is the same at both.
             </p>
           </div>
-          <div className="grid g2 reveal" style={{ marginTop: 26 }}>
+          <div className="grid g2 stagger" style={{ marginTop: 26 }}>
             {site.locations.map((l) => (
-              <LocationCard key={l.slug} location={l} />
+              <div key={l.slug} className="reveal">
+                <LocationCard location={l} />
+              </div>
             ))}
           </div>
         </div>
@@ -79,8 +82,8 @@ export default function Home() {
             <span className="kicker">The three</span>
             <h2>What people come in for</h2>
           </div>
-          <div className="grid g3 reveal" style={{ marginTop: 26 }}>
-            <article className="card">
+          <div className="grid g3 stagger" style={{ marginTop: 26 }}>
+            <article className="card reveal card-lift">
               <img src="/assets/pjs/reuben.webp" width="1600" height="1600" alt="A hot pastrami sandwich on rye, cut and stacked." style={{ aspectRatio: "4/3", objectFit: "cover", width: "100%" }} />
               <div style={{ padding: 20 }}>
                 <h3>Joe&rsquo;s Famous Hot Pastrami</h3>
@@ -90,7 +93,7 @@ export default function Home() {
                 </p>
               </div>
             </article>
-            <article className="card">
+            <article className="card reveal card-lift">
               <img src="/assets/pjs/grilled.webp" width="1400" height="934" alt="A grilled sandwich cut in half on green checkered deli paper." style={{ aspectRatio: "4/3", objectFit: "cover", width: "100%" }} />
               <div style={{ padding: 20 }}>
                 <h3>PJ&rsquo;s Reuben</h3>
@@ -100,7 +103,7 @@ export default function Home() {
                 </p>
               </div>
             </article>
-            <article className="card">
+            <article className="card reveal card-lift">
               <img src="/assets/pjs/soup.webp" width="1080" height="1080" alt="A white bowl of soup on green checkered paper." style={{ aspectRatio: "4/3", objectFit: "cover", width: "100%" }} />
               <div style={{ padding: 20 }}>
                 <h3>Soup, and the chili</h3>
@@ -191,7 +194,11 @@ export default function Home() {
       </section>
 
       <section>
-        <div className="wrap narrow reveal" style={{ textAlign: "center" }}>
+        <div className="wrap narrow reveal markbig" style={{ textAlign: "center" }}>
+          {/* Their mark at a size where it is a drawing of a man rather than a
+              favicon. It tips once when it arrives and then holds still. The
+              note in globals.css explains why he tips instead of waving. */}
+          <Mark size={128} className="markhero" />
           <span className="kicker">Since 2003</span>
           <h2>The meat comes from Detroit</h2>
           <p className="lede" style={{ marginTop: 14, marginInline: "auto" }}>

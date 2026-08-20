@@ -667,6 +667,21 @@ section {
 .hdr-nav a.btn:hover {
   color: #fff;
 }
+/* Two images stacked in one box. Both carry width and height attributes and the
+   box is sized in the component, so this reserves its space before either file
+   arrives and nothing shifts. */
+.mark {
+  position: relative;
+  display: inline-block;
+  flex: none;
+}
+.mark img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
 /* The mobile cluster: phone, Order, toggle. Hidden on desktop, where .hdr-nav
    does the work. */
 .hdr-mob {
@@ -772,6 +787,12 @@ section {
   display: grid;
   align-items: end;
   isolation: isolate;
+  /* The settle animation scales the photograph to 1.055 and the photograph is
+     inset:0 on this box, so without this the first 1.6s of every page load
+     pushes ~40px of image past the right edge and the document scrolls
+     sideways. The overflow check runs on a settled page and would never see
+     it. */
+  overflow: hidden;
   border-bottom: 1px solid rgba(0, 0, 0, 0.15);
 }
 .hero-photo {
@@ -1134,6 +1155,25 @@ section {
     font-size: 12.5px;
   }
 }
+/* At 320 the two columns still do not fit: "Opens tomorrow at 10am" in a
+   nowrap pill is 196px, and two of those plus the gap is 398 in a 320 box, so
+   the DOCUMENT scrolls sideways rather than the strip. Found by sampling
+   scrollWidth during the entrance animation at 320, which is a width the route
+   audit does not visit. One column below 400. */
+@media (max-width: 400px) {
+  .hoursbar-in {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+  .hoursbar-item {
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 8px;
+  }
+  .hoursbar-item b {
+    font-size: 11.5px;
+  }
+}
 
 /* ============ forms ============ */
 .fields {
@@ -1167,4 +1207,159 @@ select:focus,
 textarea:focus {
   border-color: var(--green);
   background: #fff;
+}
+
+/* =============================================================================
+   MOTION
+
+   House rule for this file: the un-animated state is the finished state.
+   Everything below is either a transition on an interaction the visitor
+   started, or a one-shot entrance that ends. Nothing loops forever except one
+   2.8s opacity pulse on the open/closed dot, which is the only element on the
+   site whose whole job is to say "this is live right now".
+
+   The reduced-motion block at the very bottom turns all of it off, and the page
+   still says everything it said before.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* ---- staggered reveal ----
+     .reveal already fades and rises on scroll. Children of a .stagger get an
+     increasing delay so a row of cards arrives as a row rather than as one
+     object. 70ms is the gap where it reads as deliberate; at 150ms it reads as
+     a slow site. */
+  .js .stagger > .reveal:nth-child(1) { transition-delay: 0ms; }
+  .js .stagger > .reveal:nth-child(2) { transition-delay: 70ms; }
+  .js .stagger > .reveal:nth-child(3) { transition-delay: 140ms; }
+  .js .stagger > .reveal:nth-child(4) { transition-delay: 210ms; }
+
+  /* ---- the hero arrives ----
+     A one-shot entrance rather than a scroll reveal, because the hero is
+     already on screen when the page loads and there is nothing to scroll to.
+     `backwards` holds the from-state during the delay, which is what stops the
+     four lines flashing at full opacity before they animate. */
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: none; }
+  }
+  .hero-in > * {
+    animation: rise 720ms cubic-bezier(0.22, 0.61, 0.36, 1) backwards;
+  }
+  .hero-in > .kicker  { animation-delay: 80ms; }
+  .hero-in > h1       { animation-delay: 160ms; }
+  .hero-in > .lede    { animation-delay: 280ms; }
+  .hero-in > .btnrow  { animation-delay: 380ms; }
+
+  /* The photograph settles rather than pans. A ken-burns loop on a hero is
+     motion that never ends and never means anything; this is a 1.6s settle that
+     finishes and then the image is simply the image. */
+  @keyframes settle {
+    from { transform: scale(1.055); }
+    to   { transform: none; }
+  }
+  .hero-photo {
+    animation: settle 1600ms cubic-bezier(0.16, 0.84, 0.44, 1) backwards;
+  }
+
+  /* ---- cards ----
+     A 3px lift and a slightly deeper shadow. Enough to say the whole card is
+     the target, not enough to move the text under the reader's eye. */
+  .card {
+    transition: transform 220ms cubic-bezier(0.34, 1.28, 0.5, 1), box-shadow 220ms ease,
+      border-color 220ms ease;
+  }
+  a:hover > .card,
+  a:focus-visible > .card,
+  .card-lift:hover,
+  .card-lift:focus-within {
+    transform: translateY(-3px);
+    box-shadow: 0 2px 4px rgba(20, 35, 27, 0.06), 0 20px 40px -22px rgba(20, 35, 27, 0.5);
+    border-color: var(--green);
+  }
+
+  /* ---- the man leans ----
+     See components/Mark.jsx. The badge is one image and the man is another, so
+     what moves here is only him: the disc holds still and the "Pastrami" and
+     "Joe's" lettering stays level, which is the whole difference between a nod
+     and a wobbling logo.
+
+     The pivot is 50% 72%, which is the base of his folded arms measured off a
+     600px render of logo-figure.svg (painted bounds y 25.7%-73.3%). Pivoting at
+     the centre of the box swings his head sideways instead of tipping it.
+
+     He does NOT wave. The arms are welded into his silhouette as one path;
+     Mark.jsx has the detail. */
+  @keyframes lean {
+    0%   { transform: none; }
+    30%  { transform: rotate(-5deg) translateY(-1.5%); }
+    62%  { transform: rotate(2.5deg); }
+    100% { transform: none; }
+  }
+  .mark-figure {
+    transform-origin: 50% 72%;
+  }
+  a:hover .mark-figure,
+  a:focus-visible .mark-figure {
+    animation: lean 820ms cubic-bezier(0.34, 1.16, 0.46, 1);
+  }
+  /* The big one on the homepage leans once, when it scrolls in, using the same
+     .in class the reveal already sets. Once, not on a timer: a mascot moving
+     forever in the corner of a page is a distraction from the sandwich. */
+  .js .markbig.reveal.in .mark-figure {
+    animation: lean 950ms 280ms cubic-bezier(0.34, 1.16, 0.46, 1) backwards;
+  }
+
+  /* ---- the open dot ----
+     The only loop on the site. It is a live status and the pulse is what says
+     the number was computed now rather than typed last year. Opacity only, no
+     scale, so it cannot draw the eye off the words next to it. */
+  @keyframes breathe {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.35; }
+  }
+  .status.is-open .dot {
+    animation: breathe 2800ms ease-in-out infinite;
+  }
+
+  /* ---- small transitions on things that change state ---- */
+  .menujump a,
+  .hdr-nav a,
+  .hdr-icon,
+  .hdr-panel a {
+    transition: background-color 180ms ease, color 180ms ease, box-shadow 180ms ease;
+  }
+  .menushot img {
+    transition: transform 420ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+  .menushot:hover img {
+    transform: scale(1.015);
+  }
+}
+
+/* One switch, at the end, after everything. Animations are turned off rather
+   than shortened: a 0.01s animation still fires events and still repaints, and
+   the point is that somebody who asked for no motion gets no motion. */
+@media (prefers-reduced-motion: reduce) {
+  .hero-in > *,
+  .hero-photo,
+  a:hover .mark-figure,
+  a:focus-visible .mark-figure,
+  .js .markbig.reveal.in .mark-figure,
+  .status.is-open .dot {
+    animation: none !important;
+  }
+  .card,
+  .menushot img,
+  .menujump a,
+  .hdr-nav a,
+  .hdr-icon {
+    transition: none !important;
+  }
+}
+
+/* The big mark on the homepage is centred in a text-align:center block, and an
+   inline-block does not centre from that alone once it has an explicit width. */
+.markhero {
+  display: block;
+  margin: 0 auto 18px;
 }

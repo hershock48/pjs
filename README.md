@@ -27,6 +27,7 @@ node tools/flow-checks.mjs --base http://127.0.0.1:4495
 node tools/scrim-check.mjs  --base http://127.0.0.1:4495
 node tools/sticky-check.mjs --base http://127.0.0.1:4495
 node tools/contrast-sweep.mjs
+node tools/motion-check.mjs --base http://127.0.0.1:4495
 node ../glazedweb/glaze/scripts/audit.mjs --base http://127.0.0.1:4495 \
   --routes "/,/menu,/menu?at=marshall,/menu?at=battle-creek,/specials,/order,/catering,/locations,/locations/marshall,/locations/battle-creek,/about,/jobs,/charity,/contact"
 ```
@@ -67,6 +68,9 @@ components/
   Reveal                        copied verbatim. Re-arms on navigation.
 public/
   assets/pjs/             their logo and photography, lifted from their site
+    logo.svg              the whole mark. Favicon, JSON-LD, anywhere static
+    logo-plate.svg        the disc and lettering. Never moves
+    logo-figure.svg       the man. The only thing that moves
   og.jpg                  the demo's link card, theirs
   pitch/pjs/index.html    the proposal, standalone, no build step
   pitch/pjs/og.jpg        the proposal's link card, Glazed Web's argument
@@ -75,6 +79,7 @@ tools/
   scrim-check.mjs         hero text vs the photograph, measured on the composite
   sticky-check.mjs        the two sticky bars, measured against each other
   contrast-sweep.mjs      every element's computed colour vs its painted ground
+  motion-check.mjs        transient overflow during animation, and reduced motion
 ```
 
 ---
@@ -181,6 +186,50 @@ correct because it is their whole board, but the only way to the bottom half was
 scrolling past the top half. It has a sticky section index and a filter now, and
 their own photography inside it, which was already in `lib/menu.js` on the items
 and rendered nowhere.
+
+### Motion
+
+The rule in `app/globals.css` is that the un-animated state is the finished
+state. Everything is either a transition on an interaction the visitor started
+or a one-shot entrance that ends. There is exactly one loop on the site: a 2.8s
+opacity pulse on the open/closed dot, which is the only element whose job is to
+say the value was computed now.
+
+`tools/motion-check.mjs` checks the two things that actually break:
+
+- **Transient horizontal overflow.** The hero photograph scales to 1.055 on
+  load. The route audit measures a settled page, so a scrollbar that exists for
+  1.6s is invisible to it. Sampling `scrollWidth` every 100ms through the
+  entrance found a real 40px overflow at 320 — not from the animation, from the
+  hours strip's two columns, at a width the audit never visits.
+- **That reduced motion is really no motion.** It loads the page with the media
+  feature forced and asserts every element reports `animation-name: none`. A
+  reduced-motion block that a later rule overrides is worse than none, because
+  it looks handled.
+
+### The mascot
+
+`components/Mark.jsx` renders their mark as two layered images so the man can
+move and the badge cannot:
+
+- `logo-plate.svg` — disc, inner field, and the "Pastrami" and "Joe's" scripts
+- `logo-figure.svg` — him: his silhouette plus the thirty-three white paths that
+  draw his cap, glasses, beard and hands
+
+The first version animated `logo.svg` whole, and rotating it rotated the
+lettering too, which read as a wobbling badge rather than a nod.
+
+**Not one coordinate changed in the split.** Both files keep the original
+`viewBox` and `<defs>`, with the original elements in the original order,
+partitioned. Composited back together they are pixel-identical to `logo.svg`: a
+600px render diffs to a maximum channel difference of 1 and zero pixels
+differing by more than 8. **If you edit either file, redo that diff.**
+
+**He leans; he does not wave.** In their artwork the whole figure is a single
+green path with `fill-rule="evenodd"` — head, cap, shoulders and both folded
+forearms are one 3,998-character `d` string. There is no arm to raise. A wave
+means drawing a new arm, which is redrawing part of a client's logo, and that is
+theirs to approve rather than something to ship quietly.
 
 ### Forms have no mailbox
 
