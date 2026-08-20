@@ -1,6 +1,7 @@
 import OrderClient from "@/components/ordering/OrderClient";
 import { getStore } from "@/lib/ordering/store";
 import { guestMenu } from "@/lib/ordering/catalog";
+import { schedule } from "@/lib/hours";
 import { site } from "@/lib/site";
 
 export const metadata = {
@@ -59,6 +60,15 @@ export default async function Order() {
           <OrderClient
             sections={sections}
             locations={site.locations.map((l) => ({ slug: l.slug, name: l.name, open: false, until: "" }))}
+            hours={Object.fromEntries(
+              site.locations.map((l) => [
+                l.slug,
+                schedule(l)
+                  .filter((r) => !r.closed)
+                  .map((r) => `${r.label} ${r.value}`)
+                  .join(", "),
+              ])
+            )}
           />
         </div>
       </section>

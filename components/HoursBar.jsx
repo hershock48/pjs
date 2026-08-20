@@ -6,7 +6,7 @@ import { site } from "@/lib/site";
  * Both stores, open or shut, on every page of the site.
  *
  * This strip is the single biggest change between this build and the site it
- * replaces. Eleven live pages there publish no hours at all, which is why six
+ * replaces. Ten live pages there publish no hours at all, which is why six
  * third-party listings publish six different answers and three of them say the
  * Marshall store opens at 11am when it opens at 7.
  *

@@ -1641,3 +1641,10 @@ textarea:focus {
   border-color: var(--green);
   background: var(--green-pale);
 }
+
+/* The counter's door hours under its ordering status. Two different times, and
+   the difference matters: ordering closes twenty minutes before the door. */
+.counterhours {
+  font-size: 12.5px;
+  line-height: 1.4;
+}

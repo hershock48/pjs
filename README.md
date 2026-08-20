@@ -413,6 +413,48 @@ Reuben Race really is co-hosted with The Fountain Clinic of Marshall
 which their own charity page does not mention. Their page does confirm the 2012
 start and the 30% figure.
 
+### The proposal audited against the demo
+
+Every checkable promise in `public/pitch/pjs/index.html`, against what the demo
+actually does. Eight were wrong, and the two worst were both created by adding
+Jelly without re-reading the document.
+
+**The proposal contradicted itself about ordering.** Build item 5 still said the
+ordering page "hands off to your Heartland ordering", and the closing note still
+said online ordering was "not in this quote" and "a separate conversation" —
+three sections after the ordering section says it is built, and next to a price
+card that lists it. Both rewritten. The later-note now points at card-present
+checkout, which genuinely is the next conversation.
+
+**"On the demo those slots say 'price to come'."** They say an em rule; that
+changed in the design pass and the proposal was never updated.
+
+**"Full hours tables on the homepage, both location pages, the ordering page and
+the footer."** The rebuilt ordering page had no hours table at all. Rather than
+weaken the claim, the counter picker now carries each store's opening hours,
+which a person collecting food wants anyway. Note that the door time and the
+ordering window are different: ordering stops twenty minutes earlier.
+
+**"Nine pages", twice.** The sitemap has twelve, plus `/kitchen`.
+
+**"All eleven pages of pastramijoes.com", three times.** Their `page-sitemap.xml`
+lists **ten**. Fetched every one on 20 Aug 2026: all returned 200, and none
+matched an hours pattern. The finding is stronger than the number was — ten
+pages, zero hours — but a number an owner can check has to be right.
+
+**"Elementor is patched to June."** Not verified this session. Their generator
+meta says `Elementor 4.1.3`, which is, so the claim is now the version.
+
+**One thing this audit cleared rather than broke.** The `week.updated` date the
+specials page prints is not invented: it is the `<lastmod>` their own sitemap
+publishes for `/weekly-features/`. It still needs an owner from launch, and it
+is on the checklist.
+
+**Not re-verified this session, and named rather than assumed:** "six other
+websites publish six different answers", and the individual listing findings
+about Yelp, Tripadvisor and the Visitors Bureau. They were checked when the
+proposal was written; they have not been re-checked since.
+
 ### Forms have no mailbox
 
 `InquiryForm` composes a `mailto:` with every field prefilled and says on the
@@ -493,6 +535,20 @@ Nothing on this list is code. All of it is facts we do not have.
       certainly right and they have not been read.
 - [ ] **Google reviews.** The 4.5/380 and 4.8/18 figures came through Wanderlog's
       aggregation, not from Google. Nothing in the proposal uses them.
+- [ ] **Who sets the specials date.** `week.updated` in `lib/menu.js` prints as
+      "Last updated ..." on `/specials`. The value is real, their sitemap's
+      lastmod, but from launch it has to move when the soups move or it becomes
+      a date claiming the page is current when it is not.
+- [ ] **A real `KITCHEN_PIN`.** It falls back to `0105`, their street number,
+      which is in this repo and in the proposal's demo instructions. Set it in
+      Vercel before any staff use `/kitchen`.
+- [ ] **`DATABASE_URL`.** Without it, ordering runs in memory and the counter
+      screen can miss tickets. It says so in a red box; that is not a substitute.
+- [ ] **Remove `ORDERING_DEMO_ALWAYS_OPEN`** at go-live. Left on, it takes
+      orders for counters that are dark.
+- [ ] **Re-verify the listing findings by eye** before sending: the six
+      conflicting hour sources, Yelp, Tripadvisor, the Visitors Bureau entries.
+      They were checked when the proposal was written and not since.
 - [ ] **Mobile performance.** Never measured. No claim is made about theirs or
       ours.
 - [ ] Swap the footer credit to **Double Dipped by** on signature.

@@ -23,7 +23,9 @@ function lineKey(itemId, options) {
   return `${itemId}::${[...options].sort().join("|")}`;
 }
 
-export default function OrderClient({ sections, locations }) {
+export default function OrderClient({ sections, locations, hours }) {
+  const hoursOf = (slug) => hours?.[slug] ?? "";
+
   const [at, setAt] = useState(locations[0]?.slug ?? "");
   const [state, setState] = useState(null);
   const [cart, setCart] = useState([]);
@@ -205,6 +207,11 @@ export default function OrderClient({ sections, locations }) {
               <span className={`small ${l.open ? "isopen" : "isshut"}`}>
                 {l.open ? `Taking orders until ${l.until}` : "Not taking orders"}
               </span>
+              {/* The counter's actual opening hours, which are NOT the ordering
+                  window: ordering stops twenty minutes before the door does.
+                  Somebody collecting food needs the door time, and the proposal
+                  says this page shows it. */}
+              <span className="small counterhours">{hoursOf(l.slug)}</span>
             </button>
           ))}
         </div>

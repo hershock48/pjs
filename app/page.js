@@ -62,7 +62,7 @@ export default function Home() {
           {/* The two open/closed badges that used to sit here are the same two
               badges in the strip at the very top of every page. One idea, one
               screen, twice. The strip is the one that stays, because it is on
-              all eleven routes rather than only this one. */}
+              every route rather than only this one. */}
         </div>
       </section>
 
