@@ -18,7 +18,16 @@
 <meta property="og:image:alt" content="Can somebody tell when you are open? A proposal from Glazed Web.">
 <meta name="twitter:card" content="summary_large_image">
 
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='42' fill='%23E84D8A'/%3E%3Ccircle cx='50' cy='50' r='11' fill='%23FDF6EC'/%3E%3C/svg%3E">
+<!-- THE STUDIO'S REAL MARK, NOT A REDRAWN ONE.
+     This was a two-circle data URI approximating the donut: a pink disc with a
+     cream dot punched in it. glaze/brand.md is explicit that the mark is never
+     redrawn, and glaze.md carries the story of the studio credit shipping to
+     four live footers with a donut drawn from scratch while the real one sat in
+     the repo. The favicon was the same mistake at 16px.
+     These three are copied from glazedweb/public/ unchanged. -->
+<link rel="icon" href="/pitch/pjs/glazed-favicon.svg" type="image/svg+xml">
+<link rel="alternate icon" href="/pitch/pjs/glazed-favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/pitch/pjs/glazed-apple-touch-icon.png">
 
 <style>
 /* Palette and type lifted from glazedweb app/globals.css. Three pinks on
@@ -179,6 +188,23 @@ h2.sec-title { font-size: clamp(30px, 4vw, 42px); font-weight: 800; letter-spaci
 /* The two sections run together as one dark band, so the second one's title
    needs air above it rather than the full section padding twice. */
 #ordering .inner { padding-top: 20px; }
+.moneybox { margin-top: 34px; background: rgba(243,234,225,0.05); border: 1px solid rgba(243,234,225,0.14); border-radius: 18px; padding: 26px 24px; }
+.moneybox h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .12em; color: var(--slime); margin-bottom: 16px; }
+.moneybox p { margin-top: 18px; font-size: 14.5px; color: #C3B2A2; line-height: 1.65; }
+.moneybox p strong { color: #F3EAE1; }
+.moneytable { width: 100%; border-collapse: collapse; }
+.moneytable th, .moneytable td { text-align: left; vertical-align: top; padding: 11px 14px 11px 0; border-bottom: 1px solid rgba(243,234,225,0.12); font-size: 14.5px; color: #C3B2A2; font-weight: 400; }
+.moneytable th { color: #F3EAE1; font-weight: 700; white-space: nowrap; }
+.moneytable td b { color: #F3EAE1; }
+.moneytable .src { font-size: 12.5px; color: #9C8B7B; }
+.moneytable .src a { color: var(--slime); }
+.moneytable tr.ours th, .moneytable tr.ours td { border-bottom: 0; }
+.moneytable tr.ours td b { color: var(--slime); }
+@media (max-width: 720px) {
+  .moneytable, .moneytable tbody, .moneytable tr, .moneytable th, .moneytable td { display: block; width: 100%; }
+  .moneytable tr { padding-bottom: 12px; margin-bottom: 12px; border-bottom: 1px solid rgba(243,234,225,0.12); }
+  .moneytable th, .moneytable td { border-bottom: 0; padding: 2px 0; white-space: normal; }
+}
 /* The vendor's ordering hostname is 38 unbreakable characters and it pushed
    the document to 360px wide at a 320px viewport. overflow-wrap on the text
    elements does not reach inside a <code>, so it is set here, on the element
@@ -618,6 +644,35 @@ footer .inner { max-width: 1100px; margin: 0 auto; padding: 56px 24px 36px; }
         <b>You edit your own menu</b>
         <p>Prices and items live in a text field you own, not in a vendor's back office. Change a price at 6am and the site has it at 6am. <strong>Send us the sandwich prices and the whole board turns on the same day.</strong></p>
       </div>
+    </div>
+
+    <div class="moneybox reveal">
+      <h3>What this costs, as far as we can prove it</h3>
+      <table class="moneytable">
+        <tbody>
+          <tr>
+            <th scope="row">Heartland, published</th>
+            <td><b>$89 a month</b> and up, for the point of sale</td>
+            <td class="src"><a href="https://www.heartland.us/pricing/restaurant-pos" rel="noopener">their own pricing page</a></td>
+          </tr>
+          <tr>
+            <th scope="row">Heartland online ordering</th>
+            <td><b>Not published.</b> Quoted per restaurant, like the card rates</td>
+            <td class="src">nowhere public, checked 20 Aug 2026</td>
+          </tr>
+          <tr>
+            <th scope="row">Your card processing</th>
+            <td><b>Not published.</b> Negotiated per merchant</td>
+            <td class="src">on your statement, not on any website</td>
+          </tr>
+          <tr class="ours">
+            <th scope="row">Ordering with us</th>
+            <td><b>$0 a month.</b> The guest pays 99&cent; and <b>50&cent; of it comes back to you</b></td>
+            <td class="src">every order, no tiers, no minimum</td>
+          </tr>
+        </tbody>
+      </table>
+      <p><strong>We are not going to tell you what you would save, because we do not know.</strong> Heartland does not publish what it charges for the ordering channel or for processing, and we are not going to invent a number and put it in a proposal. What we can say is that our side is $0 a month and pays you 50&cent; an order. The other half of that sentence is on a statement in your office, and it takes about a minute to read together.</p>
     </div>
 
     <p class="lede reveal" style="margin-top:26px"><strong>What is live on the demo today:</strong> catering, soup and the seasonal board, because those are the only prices you publish anywhere. Every number on it came off your own pages. We did not guess a single sandwich price, and we would rather show you an honest half than a made-up whole. <a href="/demo/order">Try it</a>.</p>

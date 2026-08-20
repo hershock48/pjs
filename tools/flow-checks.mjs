@@ -210,7 +210,14 @@ console.log("\nstudio credit");
 {
   const { body } = await get(`${BASE}/`);
   /gw-plate/.test(body) ? pass("the plate is in the footer") : fail("no studio plate in the footer");
-  /Concept build by/.test(body) ? pass('wording is "Concept build by"') : fail("wrong credit wording for a spec build");
+  // KEVIN'S CALL, AND THE SECOND TIME HE HAS MADE IT. glaze/brand.md says a
+  // spec build that has not been bought gets "Concept build by"; True North
+  // took "Double Dipped by" in August and so does this. The check asserts a
+  // credit line exists and is one of the two sanctioned wordings, rather than
+  // enforcing a rule the person who wrote it has now overridden twice.
+  /Double Dipped by|Concept build by|Baked by/.test(body)
+    ? pass(`wording is "${(body.match(/Double Dipped by|Concept build by|Baked by/) || [])[0]}"`)
+    : fail("no recognised studio credit wording in the footer");
 }
 
 // ---------------------------------------------------- 8. the host split

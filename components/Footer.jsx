@@ -80,7 +80,7 @@ export default function Footer() {
       {/* Last child of <footer>, outside .wrap so the drip is full bleed. The
           client's copyright stays in their own bar above; only the credit moves
           onto the plate. */}
-      <GlazedPlate line="Concept build by" />
+      <GlazedPlate line="Double Dipped by" />
     </footer>
   );
 }

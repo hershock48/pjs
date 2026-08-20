@@ -4,9 +4,13 @@ A concept rebuild of [pastramijoes.com](https://pastramijoes.com/) plus the
 proposal that goes with it, for Pastrami Joe's Deli of Marshall and Battle
 Creek, Michigan. Built by [Glazed Web](https://glazedweb.com).
 
-Nothing here has been bought yet. The footer credit reads **Concept build by**,
-which is the spec-build wording, and it changes to **Double Dipped by** the day
-they sign.
+Nothing here has been bought yet. The footer credit still reads **Double Dipped
+by**, at Kevin's direction.
+
+`glaze/brand.md` says a spec build that has not been bought gets **Concept build
+by**. This is the second time that rule has been overridden by the person who
+wrote it: True North took "Double Dipped by" the same way in August. Worth
+retiring the rule in `brand.md` rather than overriding it a third time.
 
 Read `glaze.md` in the `glazedweb` repo before working on this.
 
@@ -90,6 +94,12 @@ public/
   og.jpg                  the demo's link card, theirs
   pitch/pjs/index.html    the proposal, standalone, no build step
   pitch/pjs/og.jpg        the proposal's link card, Glazed Web's argument
+  pitch/pjs/glazed-favicon.svg / .ico / glazed-apple-touch-icon.png
+                          THE STUDIO'S REAL MARK, copied from glazedweb/public
+                          unchanged. It was a hand-drawn two-circle data URI
+                          before, which is the one thing brand.md says never to
+                          do. The demo keeps Pastrami Joe's own mark, because
+                          the demo is their site and the proposal is ours.
 tools/
   flow-checks.mjs         the checks that would otherwise be somebody remembering
   scrim-check.mjs         hero text vs the photograph, measured on the composite
@@ -578,6 +588,34 @@ measuring on the composite the way `tools/scrim-check.mjs` does the hero.
 
 Verified by disabling the tool's own `.hero` exclusion and confirming it then
 flags the hero's four text elements over `IMG.hero-photo`.
+
+### What Heartland costs, and what the proposal is allowed to say about it
+
+Asked and answered, 20 Aug 2026: **$89 a month and up is the only figure
+Heartland publishes**, and it is for the point of sale, on
+[their own pricing page](https://www.heartland.us/pricing/restaurant-pos). The
+online ordering module is not priced anywhere public, and neither are the card
+rates. Both are quoted per merchant, which is normal for a Global Payments
+company and is exactly what makes a savings claim unprovable.
+
+Third-party sources agree there is nothing more to find: TrustRadius carries no
+plans for it at all, and the review sites that do quote a number quote the same
+$89.
+
+**So the proposal states the four things it can prove and refuses the fifth.**
+The money box in the ordering section lists Heartland's published $89, says
+plainly that the ordering and processing numbers are not published, and puts our
+side next to them: $0 a month, and 50¢ of the guest's 99¢ comes back to them. It
+then says, in as many words, that we are not going to tell them what they would
+save because we do not know, and that the other half of the sentence is on a
+statement in their office.
+
+That is the strongest honest version. A savings figure would be the single most
+persuasive line in the document and there is no way to write one that survives
+being checked.
+
+**Until that statement is read, do not let anyone add a savings number to this
+proposal.**
 
 ### Forms have no mailbox
 
