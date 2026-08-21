@@ -994,3 +994,52 @@ tick over a check that has quietly stopped exercising anything.
    started failing on a bread description. The leak list is regexes now, with the
    vendor names case-sensitive and word-bounded. A check that cries wolf is a
    check somebody switches off, and this one guards a real rule.
+
+### The claims audit, and the one open question it left
+
+Every falsifiable claim in the proposal was re-checked against the live site.
+Most held. These did not, and are now corrected:
+
+| Claim as written | What is actually true |
+|---|---|
+| "no location cards" on the homepage | **Wrong.** Both addresses and both phone numbers are in the site-wide footer, on the homepage like every other page. A client would have spotted this in ten seconds. |
+| "the addresses are typed by hand onto ten separate pages" | **Wrong shape.** One global footer block on all 12 URLs, then typed *again* in the body of both contact pages. The rewritten version is stronger, because those two hand copies have already drifted. |
+| "the only prices are soup and five add-ons" (Marshall menu) | **Undercounted.** Ten price instances: 3 soup, 5 extras, a bagel upcharge, the Choose Two. The load-bearing part — no sandwich, wrap, salad or pizza priced — is intact. |
+| "every sandwich, wrap, salad and pizza is unpriced" (Battle Creek) | Battle Creek has **no pizza section**. Wording fixed. |
+| "the catering page prices everything down to the cookie tray" | **Nearly.** Garden salad has no price, appetizers say "Contact Us", and the Buffet heading has nothing under it. Now named. |
+| "32 script tags and 28 stylesheets" | **Unverifiable today.** WebFetch returns rendered markdown; PageSpeed's anonymous quota is exhausted; every raw-HTML proxy is blocked. **Cut**, and the cut is disclosed in "What we could not check". |
+| homepage images have no alt text | **Not provable** the same way — the converter preserves `<head>` metadata but not body attributes. Softened out. |
+| homepage schema "types are only WebPage, ImageObject, BreadcrumbList, WebSite, Organization" | Those are the five top-level nodes; the graph also holds ListItem, SearchAction, EntryPoint, PropertyValueSpecification. Reworded to "no Restaurant node, no LocalBusiness node, and no address, telephone or opening hours anywhere in the graph" — which is exactly true and not refutable by anyone who opens the source. Confirmed via `/wp-json/wp/v2/pages/361` (`page_on_front`). |
+| "fifty-five of your sixty-five items" | 54. Matches `missingPrices()` before the printed menu landed. |
+
+**The find that changed a whole section.** Hours DO exist on their domain — inside
+`/wp-content/uploads/2023/03/InStore_Menu_web.pdf`, which nothing links to and no
+sitemap lists: *Mon-Fri 11am-7pm, Sat 11am-3pm, Closed Sunday*. Saying flatly
+"your hours are nowhere on your site" is refutable with one search, and it is the
+proposal's headline claim. It now reads that the hours are there the way a
+receipt is in a drawer.
+
+Better still, it explains the eleven o'clock finding. Tripadvisor, Yellowpages
+and Sirved all publish 11:00am — **because that is what their own PDF says**. The
+card used to read as three third parties inventing a number; it now reads as one
+stale document propagating, which is both true and a much better argument for
+one authoritative source.
+
+**OPEN QUESTION, and it is on the meeting agenda in the proposal.** Their 2023
+PDF says Marshall opens at **11am** on weekdays. `lib/site.js` says **7am**,
+sourced from the Second Wave interview and corroborated by a breakfast board the
+2023 PDF predates. Saturday agrees in both (11-3). The demo publishes 7am and the
+proposal now asks the owner to confirm it outright rather than asserting it
+quietly. **Do not let this ship to a real domain unconfirmed** — a wrong opening
+hour on a site whose entire pitch is "publish your hours" is the worst possible
+own goal.
+
+**New findings worth having, now in the proposal:** "Rueben" is misspelled on the
+homepage and /battlecreek/ (the flagship sandwich, on the two most-read pages);
+`/contact/` drops "Suite 2" from the Battle Creek address and switches the street
+punctuation; the Battle Creek menu prints "WRAPS" as a heading twice; robots.txt
+carries `Disallow: /*?` and `Crawl-delay: 3`, both worse than the dead calendar
+rule already cited; the 2020 job application PDF is a scan with no extractable
+text; the Battle Creek ordering host is `pastramijoesbc.hrpos.heartland.us` and
+is absent from the main nav; and /battlecreek/ has a hand-written *social*
+description but no meta description, so the field was open and got skipped.

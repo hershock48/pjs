@@ -514,16 +514,17 @@ footer .inner { max-width: 1100px; margin: 0 auto; padding: 56px 24px 36px; }
   <div class="inner">
     <p class="sec-kicker reveal">What we found</p>
     <h2 class="sec-title reveal">We read your website the way a hungry person does, then the way Google does.</h2>
-    <p class="sec-sub reveal">Your site is not neglected. You are on Elementor 4.1.3, and somebody updated the specials page three days before we wrote this. The problem is not that nobody is looking after it. The problem is what it cannot do.</p>
+    <p class="sec-sub reveal">Your site is not neglected. It runs on Elementor, the copyright line reads 2026, and somebody updated the specials page on 17 August, four days before we wrote this. The problem is not that nobody is looking after it. The problem is what it cannot do.</p>
 
     <div class="find-grid">
 
       <article class="fcard urgent reveal">
         <span class="tag">Fix this today</span>
-        <h3>Your hours are not on your website.</h3>
+        <h3>Your hours are on no page of your website.</h3>
         <p>We fetched all ten pages in your sitemap. Zero of them publish an opening hour for either store. Not the homepage, not <b>/contact/</b>, not <b>/contact-battle-creek/</b>, not the Marshall menu, not the Battle Creek menu.</p>
+        <p>They do exist in one place on your own domain, and this is the part worth sitting with: a <b>PDF uploaded in March 2023</b>, reading <i>Mon-Fri 11am-7pm, Sat 11am-3pm, Closed Sunday</i>. Nothing links to it. It is not on your menu page and it is not in your sitemap, and the only way anybody reaches it is a Google result. <b>Your hours are on your website the way a receipt is in a drawer.</b></p>
         <p>For a deli that opens at seven with a full breakfast board and closes at seven, and a lunch counter that runs ten to three on weekdays, that is the single most expensive gap on the site. It is also the question every phone search is asking.</p>
-        <span class="proof"><a href="https://pastramijoes.com/contact/">Your contact page</a> &middot; <a href="https://pastramijoes.com/battlecreek/">Your Battle Creek page</a></span>
+        <span class="proof"><a href="https://pastramijoes.com/contact/">Your contact page</a> &middot; <a href="https://pastramijoes.com/battlecreek/">Your Battle Creek page</a> &middot; <a href="https://pastramijoes.com/wp-content/uploads/2023/03/InStore_Menu_web.pdf">The PDF nothing links to</a></span>
       </article>
 
       <article class="fcard urgent reveal">
@@ -547,9 +548,10 @@ footer .inner { max-width: 1100px; margin: 0 auto; padding: 56px 24px 36px; }
       </article>
 
       <article class="fcard reveal">
-        <h3>Three listings say you open at eleven. You open at seven.</h3>
-        <p>Tripadvisor, Yellowpages and Sirved all publish 11:00am for Marshall. You told Second Wave in February that it is 7am, and you sell biscuits and gravy, breakfast burritos, breakfast pizza and NYC bagels to prove it.</p>
-        <p>Sirved also says you are closed on Saturday. Six sources, six answers, and no authoritative one to correct them against, because your own site publishes none.</p>
+        <h3>Three listings say you open at eleven. They got it from you.</h3>
+        <p>Tripadvisor, Yellowpages and Sirved all publish 11:00am for Marshall. So does the 2023 PDF sitting on your own server, and that is almost certainly where they got it. It was true when it was written. Then you added a breakfast board and nothing that says 11:00am was ever corrected.</p>
+        <p>You told Second Wave it is 7am, and you sell biscuits and gravy, breakfast burritos, breakfast pizza and NYC bagels to prove it. <b>So the whole breakfast daypart is invisible to anybody who searches before deciding where to go.</b></p>
+        <p>Sirved also says you are closed on Saturday. Six sources, six answers, and no authoritative one to correct them against, because the only version you publish is one nobody can find and no longer true.</p>
         <div class="split">
           <div><b>What you told Second Wave</b><span>Marshall 7am to 7pm, Saturday 10 to 3. Battle Creek 10 to 3, weekdays.</span></div>
           <div><b>What Tripadvisor tells searchers</b><span>11:00am to 7:00pm. The entire breakfast daypart, gone.</span></div>
@@ -559,7 +561,8 @@ footer .inner { max-width: 1100px; margin: 0 auto; padding: 56px 24px 36px; }
 
       <article class="fcard reveal">
         <h3>Google does not know you are a restaurant.</h3>
-        <p>Your homepage carries structured data, and all of it is generic. WebPage, ImageObject, BreadcrumbList, WebSite, Organization. There is no Restaurant type, no LocalBusiness, no address, no telephone and no opening hours anywhere in it.</p>
+        <p>Your homepage carries structured data and all of it is generic: WebPage, ImageObject, BreadcrumbList, WebSite, Organization. <b>There is no Restaurant node, no LocalBusiness node, and no address, telephone or opening hours anywhere in the graph.</b> We read it out of your own WordPress, not off a scan.</p>
+        <p>This is not neglect, which is what makes it worth fixing. Your homepage has a proper meta description somebody wrote. The SEO plugin is installed and configured. It has simply never been told that you are a restaurant with two addresses.</p>
         <p>That is the machine-readable half of the hours problem. Even if you typed the hours onto a page tomorrow, nothing on the site tells a search engine they are opening hours.</p>
         <span class="proof"><a href="https://pastramijoes.com/">Your homepage source</a></span>
       </article>
@@ -567,48 +570,49 @@ footer .inner { max-width: 1100px; margin: 0 auto; padding: 56px 24px 36px; }
       <article class="fcard reveal">
         <h3>Your Battle Creek page is titled &ldquo;battlecreek&rdquo;.</h3>
         <p>The browser tab, the Google result and every shared link for that page read <b>battlecreek - Pastrami Joe&rsquo;s</b>. Lowercase, no space, the URL slug used as a title.</p>
-        <p>It also has no meta description, so Google writes its own from whatever text it finds. Your catering page has no description either.</p>
+        <p>It also has no meta description, so Google writes its own snippet from whatever text it finds &mdash; and somebody did write a social description for that page, so the field was open and got skipped. Your catering page has no description either.</p>
         <span class="proof"><a href="https://pastramijoes.com/battlecreek/">The Battle Creek page</a> &middot; <a href="https://pastramijoes.com/catering/">The catering page</a></span>
       </article>
 
       <article class="fcard reveal">
         <h3>Two names, two navigations, one unexplained relationship.</h3>
         <p>The Battle Creek section is branded <b>Little Joe&rsquo;s</b>, runs a different menu bar from the rest of the site, has its own contact form and its own menu page, and nothing anywhere explains how the two names relate.</p>
-        <p>Its body copy is a word for word duplicate of the homepage paragraph. The addresses are typed by hand onto ten separate pages, so a correction is ten edits and one of them always gets missed.</p>
+        <p>Its body copy is a word for word duplicate of the homepage paragraph. Both addresses ride along in one footer block on every URL on the site, and then get typed out <i>again</i> in the body of both contact pages &mdash; where they have already drifted: <b>/contact/ drops &ldquo;Suite 2&rdquo;</b> from the Battle Creek address, and writes both streets with commas where the footer uses periods. That is the exact inconsistency a search engine uses to decide it is not sure which address is real.</p>
         <span class="proof"><a href="https://pastramijoes.com/battlecreek/">Little Joe&rsquo;s</a> &middot; <a href="https://pastramijoes.com/">The homepage it copies</a></span>
       </article>
 
       <article class="fcard reveal">
         <h3>There is no page on your site where somebody can order.</h3>
-        <p>The nav sends people straight off to <b>pastramijoesmarshall.hrpos.heartland.us</b>, Battle Creek goes to a different Heartland subdomain, and <b>pastramijoes.com/online-ordering/</b> is a 404.</p>
+        <p>The nav sends people straight off to <b>pastramijoesmarshall.hrpos.heartland.us</b>, Battle Creek goes to <b>pastramijoesbc.hrpos.heartland.us</b>, and <b>pastramijoes.com/online-ordering/</b> is a 404. The Battle Creek link is not in the main nav at all &mdash; it is in the footer, or inside the Little Joe&rsquo;s sub-site.</p>
         <p>So there is nowhere on your own domain that answers &ldquo;can I order right now, and from which counter&rdquo;. The customer leaves your brand at the exact moment they decide to spend money.</p>
         <span class="proof"><a href="https://pastramijoes.com/online-ordering/">The 404</a> &middot; <a href="https://pastramijoes.com/">The nav that skips it</a></span>
       </article>
 
       <article class="fcard reveal">
         <h3>Your menus publish no prices. Your catering menu publishes all of them.</h3>
-        <p>On the Marshall menu the only prices are soup and five add-ons. On the Battle Creek menu there is exactly one price on the whole page. Every sandwich, wrap, salad and pizza is unpriced.</p>
-        <p>The catering page, meanwhile, prices everything down to the cookie tray. So the site can do it. The retail menus just do not.</p>
+        <p>The Marshall menu carries ten prices: three for soup, five extras, a bagel upcharge and the Choose Two. <b>Not one sandwich, wrap, salad or pizza has a price on it.</b> The Battle Creek menu has exactly one price on the whole page &mdash; &ldquo;Select any 2 Deli Sides &ndash; 4.00&rdquo; &mdash; and nothing else.</p>
+        <p>The catering page, meanwhile, prices almost everything, down to the cookie tray at $2.25 a head. So the site can do it. The retail menus just do not. (Catering has its own small gaps while we are here: the garden salad carries no price, and the Buffet heading has nothing underneath it at all.)</p>
         <span class="proof"><a href="https://pastramijoes.com/menu/">Marshall menu</a> &middot; <a href="https://pastramijoes.com/battlecreek/menu-battle-creek/">Battle Creek menu</a> &middot; <a href="https://pastramijoes.com/catering/">Catering, fully priced</a></span>
       </article>
 
       <article class="fcard reveal">
         <h3>The one page you keep current does not look current.</h3>
-        <p>Weekly Features was edited three days before we wrote this. It carries no date, so a visitor cannot tell whether the soup rotation is this week&rsquo;s or from 2019. A line reading &ldquo;week of&rdquo; costs nothing and is the difference.</p>
-        <p>Two small things in the live copy while we are here: the pizza is listed as <b>HOT HONEY bACON</b>, and the panini as <b>CHIP0TLE</b> with a zero.</p>
+        <p>Weekly Features was edited on 17 August, four days before we wrote this. It carries no date, so a visitor cannot tell whether the soup rotation is this week&rsquo;s or from 2019. A line reading &ldquo;week of&rdquo; costs nothing and is the difference.</p>
+        <p>Three small things in the live copy while we are here: the pizza is listed as <b>HOT HONEY bACON</b>, the panini as <b>CHIP0TLE</b> with a digit zero, and the Battle Creek menu prints the heading <b>WRAPS</b> twice, once under Cold and once under Hot. None of these is a crisis. All of them are the kind of thing a customer notices and a competitor does not have.</p>
         <span class="proof"><a href="https://pastramijoes.com/weekly-features/">Weekly Features</a></span>
       </article>
 
       <article class="fcard reveal">
         <h3>Your homepage is one paragraph and one photograph.</h3>
-        <p>A deli people drive to Marshall for has a single food picture on its front page, and that picture has no alt text. Neither does your logo. No hours, no location cards, no menu preview, no map, no reviews.</p>
-        <p>Underneath, the homepage loads <b>32 script tags</b> and <b>28 stylesheets</b> to render that paragraph and that photograph.</p>
+        <p>A deli people drive to Marshall for has a single food picture on its front page. No hours, no menu preview, no map, no reviews, nothing about the counters except the addresses in the footer, and no reason given to anybody who has not already decided to come.</p>
+        <p>The paragraph itself is the same one that appears word for word on your Battle Creek page, and it spells your flagship sandwich <b>&ldquo;Rueben&rdquo;</b>. Your 2020 blog post spells it correctly. The error is on the two pages the most people read.</p>
         <span class="proof"><a href="https://pastramijoes.com/">Your homepage</a></span>
       </article>
 
       <article class="fcard reveal">
         <h3>2020 is still live in three places.</h3>
-        <p>The only blog post on the site is the 7th Annual Reuben Race from March 2020, still listed in your sitemap. The Jobs page hands out an application PDF uploaded in March 2020. And your robots.txt still blocks a calendar plugin that is not installed.</p>
+        <p>The only blog post on the site is the 7th Annual Reuben Race from March 2020, still listed in your sitemap, and it still carries the notice that the race was <i>rescheduled to June 13th</i>. The Jobs page hands out an application PDF uploaded in March 2020, and it is a scan rather than a document, so a screen reader gets nothing from it. And your robots.txt still blocks a calendar plugin that is not installed.</p>
+        <p>While we were in that file: it also carries <b>Disallow: /*?</b>, which tells every search engine to ignore any address with a question mark in it, and <b>Crawl-delay: 3</b>, which asks them to slow down. Neither is doing you any good and the first one is actively costing you.</p>
         <p>One more, small but worth closing: Yoast is publishing an author sitemap that hands out a valid WordPress username, <b>kmaurer</b>, to anyone who asks for it.</p>
         <span class="proof"><a href="https://pastramijoes.com/2020/03/31/the-7th-annual-reuben-race/">The 2020 post</a> &middot; <a href="https://pastramijoes.com/robots.txt">robots.txt</a> &middot; <a href="https://pastramijoes.com/author-sitemap.xml">The author sitemap</a></span>
       </article>
@@ -627,6 +631,7 @@ footer .inner { max-width: 1100px; margin: 0 auto; padding: 56px 24px 36px; }
       <p>Both Heartland ordering pages refuse automated access, so we have not seen the ordering experience itself, what it looks like, or what it charges. Everything above about ordering is about your website, not about Heartland.</p>
       <p>Facebook, Instagram and Yelp all block automated reading. We know the accounts exist and we know @pastramijoes is linked from nowhere on your site, and that is all we know. The Yelp review counts and the CLOSED flag come from search result titles, not from the pages.</p>
       <p>We have not measured your site on a real phone for speed, and the Google star ratings we saw came through an aggregator rather than from Google. We are not making a claim about either.</p>
+      <p>An earlier draft of this page counted the script and stylesheet tags your homepage loads. We could not re-verify those two numbers today, so they are out rather than sitting here as figures we cannot stand behind. Same for whether your two homepage images carry alt text: it looks like they do not, and looking like it is not knowing it.</p>
     </div>
   </div>
 </section>
@@ -641,11 +646,11 @@ footer .inner { max-width: 1100px; margin: 0 auto; padding: 56px 24px 36px; }
     <div class="wcards">
       <div class="wcard reveal">
         <b>What two stores cost you</b>
-        <p>Ten hand-typed copies of two addresses. Two menus that have already drifted apart in small ways nobody intended. Two ordering links and no page that offers both. One brand with <strong>two names</strong> and no explanation.</p>
+        <p>Two addresses in a footer block plus a second hand-typed copy on each contact page, already out of step over &ldquo;Suite 2&rdquo;. Two menus that have drifted apart in small ways nobody intended. Two ordering links and no page that offers both. One brand with <strong>two names</strong> and no explanation.</p>
       </div>
       <div class="wcard reveal">
         <b>What a third would cost</b>
-        <p>On this architecture, a third clone. A third nav, a third form, a third menu to keep in step with the other two, and fifteen copies of three addresses. Every hour change becomes a hunt. <strong>The work grows with every store you open.</strong></p>
+        <p>On this architecture, a third clone. A third nav, a third form, a third menu to keep in step with the other two, and a third address to type into the footer and then again onto its own contact page. Every hour change becomes a hunt. <strong>The work grows with every store you open.</strong></p>
       </div>
       <div class="wcard reveal">
         <b>What we build instead</b>
@@ -659,12 +664,12 @@ footer .inner { max-width: 1100px; margin: 0 auto; padding: 56px 24px 36px; }
   <div class="inner">
     <p class="sec-kicker reveal">The second thing that matters</p>
     <h2 class="sec-title reveal">Right now, ordering online means leaving your website.</h2>
-    <p class="lede reveal">Tap <strong>Order Online Marshall</strong> on your site and you land on <code>pastramijoesmarshall.hrpos.heartland.us</code>. Battle Creek goes somewhere else again. Neither address has your name in it, neither page has your hours on it, and there is no page anywhere that offers both counters. <strong>The one thing your website is for hands the customer to somebody else's domain.</strong></p>
+    <p class="lede reveal">Tap <strong>Order Online Marshall</strong> on your site and you land on <code>pastramijoesmarshall.hrpos.heartland.us</code>. Battle Creek goes to <code>pastramijoesbc.hrpos.heartland.us</code>, which is not even in your main navigation. Neither address has your name in it, neither page has your hours on it, and there is no page anywhere that offers both counters. <strong>The one thing your website is for hands the customer to somebody else's domain.</strong></p>
 
     <div class="wcards">
       <div class="wcard reveal">
         <b>Where your prices actually live</b>
-        <p>Inside Heartland. That is why your own menu page has none: fifty-five of your sixty-five items show no price on pastramijoes.com. Your prices are real, they are just somewhere a customer has to go looking for them, on a page you do not control.</p>
+        <p>Inside Heartland. That is why your own menu page has none: fifty-four of your sixty-five items show no price on pastramijoes.com. Your prices are real, they are just somewhere a customer has to go looking for them, on a page you do not control.</p>
       </div>
       <div class="wcard reveal">
         <b>What we built instead</b>
@@ -888,7 +893,7 @@ footer .inner { max-width: 1100px; margin: 0 auto; padding: 56px 24px 36px; }
 <div class="ctaband">
   <div class="inner">
     <h2>Give us thirty minutes.</h2>
-    <p>Your hours and your prices are already in it. Bring the eight prices your board leaves off and tell us where we got something wrong. That is the whole meeting &mdash; everything else is built and sitting at the link above.</p>
+    <p>Your hours and your prices are already in it. Bring two things: the eight prices your board leaves off, and a yes or no on the weekday hours &mdash; we have Marshall at 7am to 7pm from your breakfast board and your own interview, and your 2023 PDF says 11am. One of those is out of date and only you know which. That is the whole meeting; everything else is built and sitting at the link above.</p>
     <a class="btn big" href="mailto:kevin@glazedweb.com?subject=Pastrami%20Joe%27s%20website%20proposal">Email Kevin</a>
     <p class="after">Kevin Hershock, Glazed Web, Marshall Michigan.</p>
   </div>
@@ -905,7 +910,7 @@ footer .inner { max-width: 1100px; margin: 0 auto; padding: 56px 24px 36px; }
     </div>
     <div class="foot-bottom">
       <span>Prepared for Pastrami Joe's Deli, August 2026.</span>
-      <span>Findings verified against pastramijoes.com on August 20, 2026.</span>
+      <span>Findings verified against pastramijoes.com on August 21, 2026.</span>
     </div>
   </div>
 </footer>
