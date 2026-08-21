@@ -1043,3 +1043,63 @@ rule already cited; the 2020 job application PDF is a scan with no extractable
 text; the Battle Creek ordering host is `pastramijoesbc.hrpos.heartland.us` and
 is absent from the main nav; and /battlecreek/ has a hand-written *social*
 description but no meta description, so the field was open and got skipped.
+
+### The final pass, and what it caught
+
+A last walk of every page at 1440 and 390, the order flow end to end on a phone
+viewport, the kitchen screen, and one slow read of the proposal. Nine faults,
+all fixed, three of them the kind an owner catches in the first minute:
+
+1. **The Jomama's photograph was captioned as three other sandwiches.** The
+   marble-rye/swiss/coleslaw shot — identifiably the Jomama, the slaw's carrot
+   shreds are visible at card size — was attached to the Grilled Cheese Pleaser
+   in the menu, the chicken bacon chipotle panini in ordering, and the Reuben
+   card on the homepage. The one person guaranteed to notice a photo of the
+   wrong sandwich is the owner it was built to impress. It now sits on the
+   Jomama everywhere; the panini has no photo rather than a wrong one; the
+   homepage card became the Jomama (the Reuben still leads the hero lede).
+   A photo is a claim like a price is.
+2. **The demo was selling a garden salad price their catering page does not
+   print.** $40/$75 — the Caesar's numbers, copied up a row in the original
+   transcription. Their page prints NO price for the garden salad (re-fetched
+   and confirmed). Off the ordering board, "call for a price" on the catering
+   page, and the proposal's orderable count moved 73 → 72 with the reason
+   stated. The invented-price failure, caught in our own build by our own
+   claims audit.
+3. **A mixed pickup/catering cart was an ambush.** The server refuses mixing
+   (different print, different day) but the page let a guest stack a sub tray
+   on a hot pastrami, fill in name and phone, and THEN read the refusal.
+   Refused now at the moment of mixing, in the sheet, in a sentence.
+4. **Sheet errors rendered in a component that was not mounted.** The shared
+   `error` state displayed only inside the checkout form — three screens down
+   with a cart, nonexistent without one. Tapping Add with no size picked did,
+   visibly, nothing. Errors now render in the sheet, and clear on open/close.
+5. **A soup order never said which soup.** Three pots going (chicken noodle,
+   the chili, today's pot) and the ticket read "1 x Cup, 8 ounce". Required
+   choice now, on cup, bowl and the catering gallon ("today's pot or the
+   chili", per their page). Verified on a placed order: the kitchen ticket
+   prints "1 x Soup, cup — The chili".
+6. **The Dine to Donate form promised a catering callback.** The shared
+   InquiryForm's footnote said "somebody calls you back to go through the
+   menu" under all three kinds. Per-kind sentences now.
+7. **Proposal heading said catering "publishes all of them" two paragraphs
+   before the body listed what it does not publish.** Heading and proof-link
+   label now match the body.
+8. **The price card still said "priced when you send prices"** — stale since
+   the printed menu landed. And item 4's list of the eight blanks named the
+   wrong items; it now names them exactly.
+9. "russian" lowercased on the About page against the documented
+   capitalisation decision in lib/menu.js.
+
+Also verified on this pass: every proposal anchor resolves; all 28 external
+citation links enumerated, the three newest fetched live (the paymentpop link
+403s bare curl but loads for real browsers — checked, not assumed); reveal
+animations fire correctly on scroll (an earlier "empty homepage" scare was the
+capture harness fighting `scroll-behavior: smooth`, not the site — instant-jump
+walks with 220ms dwell are what trigger IO reliably); full tool suite clean;
+proposal clean at 320/390/768/1440.
+
+One caution for whoever screenshots this site next: `scroll-behavior: smooth`
+plus programmatic scrollTo means a scripted walk can sail past every reveal
+trigger without firing it. Use `behavior: 'instant'` steps with a dwell, or
+you will file a bug against a page that is fine.

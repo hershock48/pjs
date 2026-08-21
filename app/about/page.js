@@ -47,7 +47,7 @@ export default function About() {
           </p>
           <p style={{ marginTop: 14 }}>
             The rest follows from that. Turkey is Michigan raised. The chicken salad, egg
-            salad, coleslaw, pasta salad, russian and ranch are made here. The rye is
+            salad, coleslaw, pasta salad, Russian and ranch are made here. The rye is
             marbled and it gets grilled, because a Reuben that has not been on the grill is
             just a sandwich.
           </p>

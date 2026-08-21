@@ -5,7 +5,7 @@ import { site } from "@/lib/site";
 export const metadata = {
   title: "Catering",
   description:
-    "Sub and wrap trays at $7.00 a head, boxed lunches, salads, soup by the gallon and breakfast. Full catering prices for Marshall and Battle Creek.",
+    "Sub and wrap trays at $7.00 a head, boxed lunches, salads, soup by the gallon and breakfast. Catering prices for Marshall and Battle Creek.",
   alternates: { canonical: "/catering" },
 };
 
@@ -68,7 +68,13 @@ export default function Catering() {
                     <li key={it.name} className="mitem">
                       <span className="mname">{it.name}</span>
                       <span className="mprice">
-                        {it.prices.map((p, i) => (
+                        {/* Their page prints no price for one item (the garden
+                            salad), and an invented number is worse than the
+                            truth. Same rule as the menu page's em rule. */}
+                        {it.prices.length === 0 && (
+                          <span className="msize" title="Price not published by the restaurant">call for a price</span>
+                        )}
+                        {it.prices.map((p) => (
                           <span key={p.label} style={{ display: "block", fontSize: 15 }}>
                             <span style={{ color: "var(--muted)", fontWeight: 500 }}>{p.label} </span>
                             {priceLine(p)}

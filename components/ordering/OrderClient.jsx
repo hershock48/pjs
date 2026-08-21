@@ -159,6 +159,9 @@ export default function OrderClient({ sections, locations, hours }) {
   function beginAdd(item, section) {
     setOpen({ ...item, section });
     setChosen([]);
+    // A sheet error from the last item must not greet this one, and must not
+    // sit in the checkout form after the sheet closes.
+    setError("");
     // A "per person" or "serves 10" item defaults to 1 and reads as one tray.
     // Nobody caters for one person. Two is still a number they will change, but
     // it is not a number that silently books a $7 lunch for a party of forty.
@@ -192,6 +195,7 @@ export default function OrderClient({ sections, locations, hours }) {
       if (e.key === "Escape") {
         e.preventDefault();
         setOpen(null);
+        setError("");
         return;
       }
       if (e.key !== "Tab") return;
@@ -228,6 +232,23 @@ export default function OrderClient({ sections, locations, hours }) {
 
   function confirmAdd() {
     const item = open;
+
+    /* A pickup order and a catering order cannot share a cart: the server
+       refuses the mix outright, because one is made in minutes for opening
+       hours and the other is booked days ahead. This check used to live only
+       on the server, which meant the page happily let a guest stack a sub
+       tray on a hot pastrami, fill in their name and phone, and THEN read a
+       refusal. A rule the guest can hit has to be stated at the moment they
+       hit it, not after the form. */
+    if (cart.length > 0 && isCatering(item.section) !== isCatering(cart[0].section)) {
+      setError(
+        isCatering(item.section)
+          ? "Catering books as its own order, since it is made for a date rather than for pickup now. Finish this pickup order first, or empty the cart to book catering."
+          : "This cart is a catering booking. Finish it first, or empty the cart to order pickup."
+      );
+      return;
+    }
+
     for (const g of item.options) {
       const picked = g.choices.filter((c) => chosen.includes(c.name));
       if (g.required && picked.length === 0) {
@@ -564,7 +585,7 @@ export default function OrderClient({ sections, locations, hours }) {
             // Only a click that both starts AND ends on the backdrop closes it.
             // Using onClick alone closes the dialog when a drag inside it
             // happens to finish on the backdrop, which loses the guest's picks.
-            if (e.target === e.currentTarget) setOpen(null);
+            if (e.target === e.currentTarget) { setOpen(null); setError(""); }
           }}
         >
           <div className="sheet-in card" ref={sheetRef} onMouseDown={(e) => e.stopPropagation()}>
@@ -617,11 +638,23 @@ export default function OrderClient({ sections, locations, hours }) {
                 <b>{money(sheetUnitCents * qty)}</b>
               </p>
             </div>
+            {/* IN the sheet, because this is where the mistake happens. The
+                shared `error` state used to render only inside the checkout
+                form, which is three screens below the sheet when the cart has
+                anything in it and NOT MOUNTED AT ALL when the cart is empty.
+                So tapping Add with no size picked did, visibly, nothing: the
+                message went to a component that did not exist. Same state,
+                rendered where the person who caused it is looking. */}
+            {error && (
+              <p className="small" role="alert" style={{ color: "var(--red)", marginTop: 12 }}>
+                {error}
+              </p>
+            )}
             <div className="btnrow" style={{ marginTop: 16 }}>
               <button className="btn" type="button" onClick={confirmAdd}>
                 Add {money(sheetUnitCents * qty)}
               </button>
-              <button className="btn ghost" type="button" onClick={() => setOpen(null)}>
+              <button className="btn ghost" type="button" onClick={() => { setOpen(null); setError(""); }}>
                 Cancel
               </button>
             </div>

@@ -112,13 +112,19 @@ export default function Home() {
                 </p>
               </div>
             </article>
+            {/* The Jomama, not the Reuben, because the photograph is the
+                Jomama: the coleslaw with shredded carrot in the middle of it is
+                visible at card size, and the sauerkraut sandwich this card used
+                to be named for is the one thing the owner would know it is not.
+                The Reuben still leads the hero lede; the photo now sits under
+                the sandwich it actually shows. */}
             <article className="card reveal card-lift">
-              <img src="/assets/pjs/grilled.webp" width="1400" height="934" alt="A grilled sandwich cut in half on green checkered deli paper." style={{ aspectRatio: "4/3", objectFit: "cover", width: "100%" }} />
+              <img src="/assets/pjs/grilled.webp" width="1400" height="934" alt="The Jomama cut in half on green checkered deli paper: corned beef, swiss and coleslaw on grilled marble rye." style={{ aspectRatio: "4/3", objectFit: "cover", width: "100%" }} />
               <div style={{ padding: 20 }}>
-                <h3>PJ&rsquo;s Reuben</h3>
+                <h3>Jomama</h3>
                 <p className="small" style={{ marginTop: 8 }}>
-                  Gold Label corned beef, swiss, sauerkraut and house russian on grilled
-                  marble rye. Turkey if you want it.
+                  Sy Ginsberg corned beef, swiss, coleslaw and house Russian on grilled
+                  marble rye. &ldquo;Turkey Mama&rdquo; if you want it.
                 </p>
               </div>
             </article>

@@ -138,9 +138,18 @@ export default function InquiryForm({ kind = "catering", to = site.email }) {
         <textarea name="message" rows={4} />
       </label>
 
+      {/* One footnote per kind, because this line is a promise about what
+          happens next and the three forms promise different things. The
+          catering sentence sat under all three for a while, telling somebody
+          requesting a Dine to Donate date that a call would "go through the
+          menu", which is not what that call is. */}
       <p className="small" style={{ margin: "14px 0 16px" }}>
-        Sending this does not place an order. Somebody calls you back to go through the
-        menu and confirm it.
+        {kind === "catering" &&
+          "Sending this does not place an order. Somebody calls you back to go through the menu and confirm it."}
+        {kind === "charity" &&
+          "Sending this does not book the date. Somebody calls you back to pick a day that works for both of us."}
+        {kind === "general" &&
+          "If it is about an order for today, call the counter instead. This inbox is read between rushes."}
       </p>
 
       <button className="btn big" type="submit">
