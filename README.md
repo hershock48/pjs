@@ -77,8 +77,9 @@ lib/
     config.js             the fee, the tax, the pickup quote, the PIN fallback
     window.js             is this counter taking orders, per location
     store.js              Postgres, or memory with a loud warning
-    seed.js               the starting menu. Every price off one of their pages
-    catalog.js            the live menu document and its validation
+    board.js              the counter board, GENERATED from lib/menu.js
+    seed.js               catering + weekly features, plus the composed document
+    catalog.js            the live menu document, location filtering, validation
     auth.js  email.js  printing.js
 components/
   HoursBar, Header, Footer, Status, LocationCard, MenuList, InquiryForm
@@ -147,13 +148,19 @@ surfaces where a missing field shows up as a gap rather than an error.
 filters. Their two menu pages have already drifted apart in small ways nobody
 intended, which is what two copies of a list always do.
 
-### The prices are deliberately missing
+### Eight prices are missing, and none has ever been invented
 
-**54 of 65 items have no price, and none has been invented.**
+**57 of 65 items are priced. The other 8 are blank on their own printed board.**
 
-Their retail menus publish prices for soup, five add-ons and two seasonal items,
-and nothing else. Catering is fully priced and is transcribed complete. Every
-number in this repo is either from their own live page or absent.
+This started at 54 of 65 missing. Their *website* publishes prices for soup, five
+add-ons and two seasonal items and nothing else, and the real numbers lived
+inside Heartland. Then **the owner photographed the printed in-store menu** and
+those prices were transcribed into `lib/menu.js`. What is still absent — the
+pastries, the bagels, the cold drinks — is absent from their printed board too.
+
+Every number in this repo is either from their own live page, their own printed
+menu, or absent. Nothing is interpolated and nothing is carried over from a
+third-party listing.
 
 A null price renders as an em rule with the reason on its `title`, and the menu
 page carries a counted notice saying how many are missing. It was the words
@@ -161,6 +168,11 @@ page carries a counted notice saying how many are missing. It was the words
 as a broken one, so the loud version of the fact lives once, at the top, where
 the count is. The count is computed by `missingPrices()`, so it cannot go stale,
 and `flow-checks.mjs` fails if prices are missing and the notice stops saying so.
+
+**Getting the photos was not the end of the job and nearly was.** The prices went
+into `lib/menu.js` and the ordering catalogue was left behind, so for a whole
+round of work the site showed a $13.75 Reuben the order page could not sell. See
+the section on the ordering board below.
 
 **Those em rules are the one place this repo knowingly breaks a house rule.**
 `glaze.md` says no em dashes. That rule is about prose, and this is a table's
@@ -821,3 +833,164 @@ Nothing on this list is code. All of it is facts we do not have.
 ## Retired
 
 Nothing yet.
+
+### The ordering board was stale for a whole build, and the fix was to stop typing it twice
+
+**The failure.** The Jelly catalogue in `lib/ordering/seed.js` was written when
+their retail prices genuinely did not exist in public: 55 of 65 items were blank
+on pastramijoes.com and the real numbers lived inside Heartland. So the board
+shipped with catering, soup, six counter sides and the two weekly features —
+25 orderable items — and the proposal said so honestly.
+
+Then the owner photographed the printed in-store menu. Those prices went into
+`lib/menu.js`, the menu page started showing a $13.75 Reuben, and **the ordering
+catalogue did not follow**. For an entire round of work the demo could show you
+a sandwich it could not sell you. The client found it, not the tooling.
+
+**Why the obvious fix was the wrong one.** Typing the sandwiches into `seed.js`
+as well would have rebuilt precisely the drift this proposal accuses their
+current site of — the same fact in two files, one of them going stale. It is the
+central argument of the pitch and the build was violating it.
+
+**What was done instead.** `lib/ordering/board.js` generates the counter board
+from `lib/menu.js`. A price changes in one file and it changes on the menu page,
+the ordering page and the kitchen ticket, or it changes nowhere. 25 orderable
+items became **73**.
+
+Decisions inside the generator, each of which has a reason worth keeping:
+
+- **Sizes are options with positive deltas.** Their menu prices a sandwich
+  whole/half/wrap and a pizza 14"/9". Base is always the CHEAPEST size and every
+  other size is an upcharge, because `validateMenuDoc` rejects negative choice
+  prices — and should, since a menu whose options subtract is a menu where a
+  crafted cart reaches zero. Deltas computed in integer cents off both dollar
+  figures, never by subtracting floats.
+- **Blank stays blank.** The eight items their board leaves unpriced (pastries,
+  bagels, cold drinks) are off the ordering board entirely rather than guessed.
+- **Modifiers are not items.** "Cheese", "Extra dressing", "Extra meat" and "Add
+  a cup to any entrée" come back as option groups on the things they modify. A
+  ticket line reading `1 x Extra dressing` tells the kitchen nothing.
+- **Two hand-written escapes, both documented in the file.** "Pasta salad or
+  coleslaw" splits into two items, because a human reads the "or" on a menu and
+  a kitchen ticket cannot. The Grilled Burritos items are renamed to carry the
+  word "burrito", because the section heading supplies it on the page and an
+  order line has no heading — `1 x Sausage` next to a "Sausage, egg & cheese"
+  sammy is a mis-made sandwich.
+- **The combo lists are transcribed, not parsed.** A first version split the
+  section note on commas; Battle Creek's note names two tiers in one sentence
+  and the machine produced a choice called "Bottled water. Premium sides: side
+  salad". The item is "any two *deli* sides", so only the deli list belongs.
+
+**Location filtering stopped being cosmetic the moment this landed.** Pizza,
+breakfast and one panini are Marshall only, and the two stores print different
+combo deals. `at` on an item (null = both counters) is now filtered in exactly
+one place, `toOrderable` in `catalog.js`. The order page calls `guestMenu(store)`
+without a location and ships the whole board so switching counters needs no
+round trip; the order route calls `guestMenu(store, location.slug)` so a
+Marshall pizza on a Battle Creek ticket is not in the index and cannot be
+priced. Verified live against the running server:
+
+    battle-creek + pizza-lots-o-roni  -> "Lots-o-roni is not served at Battle
+                                          Creek. Take it out, or switch counters."
+    battle-creek + nope-nope          -> "An item in the cart is no longer on
+                                          the menu."
+
+Those are deliberately two different sentences. The route reads the unnarrowed
+board purely to tell them apart, because a guest given "no longer on the menu"
+for a pizza that is plainly on the menu goes looking for a bug that is not there.
+`OrderClient` prunes the cart on a counter switch and names what it removed,
+rather than letting the server refuse the whole order at checkout.
+
+### What actually fixes a listing after a relocation, and what does not
+
+The client asked the fair question about the Battle Creek CLOSED listings: *they
+moved — what are they supposed to do?* The proposal was accusing them of a
+problem with no cause and no remedy attached. Researched from primary platform
+documentation:
+
+- **The three platforms disagree with each other**, which is why this looks like
+  negligence and is not. **Google**: never create a new profile, edit the address
+  on the existing one, reviews transfer automatically. **Tripadvisor**: a move
+  *within the same city* should be an address edit on the existing listing — so
+  their CLOSED entry at 80 W. Michigan is Tripadvisor's own error against their
+  own policy, and is a Management Centre support ticket. **Yelp**: a moved
+  *restaurant* deliberately gets a new page with the old one marked moved, and
+  reviews "generally won't be moved".
+- **So the thirty-one Yelp reviews are probably gone.** The proposal now says
+  that in those words. Earlier phrasing implied a cleanup that recovers them.
+- **A correct website does not correct any of these listings.** Yelp licenses
+  from data brokers and its own users and does not list websites as an ingestion
+  source at all; Tripadvisor's owner flows are entirely manual. Only Google names
+  crawled web content as an input. What the site does is win the *arguments*:
+  every platform's human reviewer checks the business's own website, and
+  Tripadvisor states outright that it will refuse a relocation request if the
+  business's own site still shows the old details. **Do not sell schema markup as
+  a listings fix.**
+- **allmenus.com is a Grubhub property, not Tripadvisor/SinglePlatform.** Easy to
+  get wrong: Tripadvisor does own SinglePlatform, which is a different company. A
+  correction goes through the public contact form; there is no owner login and no
+  documented removal path. Allmenus does name restaurant websites as a source,
+  so a current priced menu on their own domain is the one place in this
+  engagement where "fix the website" plausibly propagates on its own.
+
+### The steam was a WCAG failure for four rounds and nothing caught it until now
+
+`tools/scrim-check.mjs` started reporting the hero headline at **3.55 against a
+4.5 requirement** at 1440 — and only sometimes. That intermittency is the whole
+story: the plumes peak 1.0-1.4s after load and the measurement sometimes landed
+inside that window. It had presumably been failing since the steam shipped.
+
+**Cause.** `.steam` was `z-index: 0`, above `.hero::after` at -1, so white vapour
+was painted on top of the layer whose only job is to darken the backdrop behind
+white text. At 1440 the steam box (720-1120 x 105-480) and the h1 box
+(410-1029 x 306-494) overlapped by roughly 309x174px, and the plume's densest
+region sits 61% down its own box — squarely on "PASTRAMI," and "ORDER.".
+
+**Two fixes were built, measured, and thrown away before the third:**
+
+1. `z-index: -2`, under the scrim. Contrast-perfect, visually useless — the
+   0.52 flat scrim plus gradient swallowed the vapour entirely. Verified by
+   screenshot, not by reasoning. A fix that deletes the feature is not a fix.
+2. Moving it into the band above the headline. Geometrically clean at all five
+   desktop widths, and it just moved the failure: the kicker sits at y160-175
+   and went 5.27 → 4.28. **There is no horizontal band in this hero containing
+   the sandwich and no text.**
+
+**What shipped: horizontal separation.** The text column is left-aligned, so the
+steam is anchored to the hero's right edge and sized to the strip beside it:
+`right: 4px; top: 13%; width: clamp(105px, 15.5vw, 320px)`. Clearance measured
+at nine widths; 768 is the binding case at 10px, which is why the coefficient is
+15.5vw and not 17. Below 700px the steam does not render at all, which is why
+the mobile measurement was never affected by any of this.
+
+Five consecutive scrim runs now hold at 6.74 where the old value wandered
+between 3.55 and 5.34.
+
+**The lesson for the tooling, not the CSS.** An intermittent contrast failure is
+worse than a constant one, because it does not reproduce on demand and it reads
+as flake. Anything animated over hero text needs measuring *at the animation's
+peak*, and `scrim-check` gets there by luck rather than by design. If another
+transient overlay lands on this hero, pin the measurement to its peak instead of
+running the tool four times and squinting at the spread.
+
+### Two checks were passing while testing nothing
+
+Both found while re-running the suite after the ordering board was regenerated,
+and both worth recording because they are the failure mode that matters: a green
+tick over a check that has quietly stopped exercising anything.
+
+1. **The price-integrity check.** `flow-checks.mjs` posted `itemId: "soup-cup"`
+   with `unitCents: 1` and asserted the server re-priced it to 449. Generating
+   the board renamed that id to `soup-cup-8-ounce`, so the POST started being
+   refused as an unknown item — and the `else` branch, which exists to accept
+   "the counter is closed" as a legitimate answer, read the refusal as a real
+   sentence and **passed**. The probe now reads a live optionless item and its
+   price off the order page's own payload, and an unknown-item or wrong-counter
+   refusal is now an explicit `fail`, never a pass.
+2. **The business-model leak check.** It substring-matched `"toast"`
+   case-insensitively, which was fine while the board was catering and soup. Two
+   of their cold sandwiches are served on a "toasted sub roll" and a "toasted
+   pretzel bun", so the moment the sandwich board became orderable the check
+   started failing on a bread description. The leak list is regexes now, with the
+   vendor names case-sensitive and word-bounded. A check that cries wolf is a
+   check somebody switches off, and this one guards a real rule.

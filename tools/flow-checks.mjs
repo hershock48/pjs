@@ -166,28 +166,69 @@ console.log("\nordering");
 
   // The server is the till. Send a line with a made-up unit price and confirm
   // the total comes back at the menu price rather than the one we sent.
-  const r = await fetch(`${BASE}/api/ordering/order`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      guestName: "Flow Check",
-      guestPhone: "2695551234",
-      locationSlug: "marshall",
-      tipCents: 0,
-      lines: [{ itemId: "soup-cup", qty: 1, options: [], unitCents: 1 }],
-    }),
-  });
-  const d = await r.json().catch(() => ({}));
-  if (r.ok) {
-    d.totals?.subtotalCents === 449
-      ? pass("the server re-prices every line and ignores the client's numbers")
-      : fail(`the server accepted a client price: subtotal ${d.totals?.subtotalCents}`);
+  //
+  // THE ITEM AND ITS PRICE ARE READ OFF THE LIVE BOARD, NEVER HARD-CODED. They
+  // used to be `soup-cup` at 449. Then the counter board started being generated
+  // from lib/menu.js, that id became `soup-cup-8-ounce`, and this check began
+  // posting an item that does not exist — which the server correctly refused,
+  // and which the `else` branch below correctly read as "a real sentence", so
+  // the check went on PASSING while testing nothing at all. A price-integrity
+  // check that silently stops exercising the price is worse than no check.
+  const probe = await (async () => {
+    // Taken out of the RSC payload the order page already ships, so this needs
+    // no extra endpoint. Unescaped first, because the payload is a JSON string
+    // inside a JSON string and matching through two levels of backslash is how
+    // a check like this rots.
+    const flat = (await fetch(`${BASE}/order`).then((x) => x.text())).replace(/\\"/g, '"');
+    const re = /"id":"([a-z0-9-]+)","section":"[^"]*","name":"([^"]+)","desc":"[^"]*","priceCents":(\d+)[^}]*?"options":\[\]/g;
+    for (const m of flat.matchAll(re)) {
+      // Marshall is the location this posts to, so skip anything Battle Creek
+      // only. `"at":null` and a Marshall list both qualify.
+      const at = flat.slice(m.index, m.index + m[0].length).match(/"at":(\[[^\]]*\]|null)/)?.[1];
+      if (at && at !== "null" && !at.includes("marshall")) continue;
+      // The name comes out of a JSON string, so "&" arrives as &. Decoded
+      // for the message only; nothing depends on it.
+      let name = m[2];
+      try {
+        name = JSON.parse(`"${m[2]}"`);
+      } catch {
+        /* keep the raw form rather than losing the check to a quote */
+      }
+      return { id: m[1], name, cents: Number(m[3]) };
+    }
+    return null;
+  })();
+
+  if (!probe) {
+    fail("could not find an optionless item on the guest board to price-check");
   } else {
-    // A closed counter is a legitimate answer here, and it must be a real
-    // sentence rather than a bare status.
-    typeof d.error === "string" && d.error.length > 20
-      ? pass(`ordering closed, and it says why: "${d.error.slice(0, 60)}..."`)
-      : fail("ordering refused the order without an explanation");
+    const r = await fetch(`${BASE}/api/ordering/order`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        guestName: "Flow Check",
+        guestPhone: "2695551234",
+        locationSlug: "marshall",
+        tipCents: 0,
+        lines: [{ itemId: probe.id, qty: 1, options: [], unitCents: 1 }],
+      }),
+    });
+    const d = await r.json().catch(() => ({}));
+    if (r.ok) {
+      d.totals?.subtotalCents === probe.cents
+        ? pass(`the server re-prices every line and ignores the client's numbers (${probe.name} at ${probe.cents}c)`)
+        : fail(`the server accepted a client price: subtotal ${d.totals?.subtotalCents}, menu says ${probe.cents}`);
+    } else if (/no longer on the menu|not served at/i.test(d.error ?? "")) {
+      // This is the failure the hard-coded id used to hide behind. It is never
+      // a legitimate answer to an id read off the live board.
+      fail(`the price probe used an item the server does not have: "${d.error}"`);
+    } else {
+      // A closed counter IS a legitimate answer here, and it must be a real
+      // sentence rather than a bare status.
+      typeof d.error === "string" && d.error.length > 20
+        ? pass(`ordering closed, and it says why: "${d.error.slice(0, 60)}..."`)
+        : fail("ordering refused the order without an explanation");
+    }
   }
 
   // The counter's screen is not public.
@@ -198,8 +239,26 @@ console.log("\nordering");
 
   // Nothing on the guest side may carry the business model. glaze.md's rule,
   // and the easiest one to break by pasting from a proposal.
-  const leaks = ["fee split", "50/50", "Toast", "Heartland", "middleman", "our own website"];
-  const found = leaks.filter((t) => orderPage.body.toLowerCase().includes(t.toLowerCase()));
+  //
+  // THESE ARE REGEXES AND THE VENDOR NAMES ARE CASE-SENSITIVE AND ANCHORED,
+  // because the first version substring-matched "toast" case-insensitively and
+  // started failing the moment the sandwich board became orderable: two of
+  // their own cold sandwiches are served on a "toasted sub roll" and a "toasted
+  // pretzel bun". A check that cries wolf about a bread description is a check
+  // somebody switches off, and this one is guarding a real rule.
+  //
+  // A POS vendor appears as a capitalised standalone word. `\bToast\b` matches
+  // the company and not the bread; `toasted` fails the word boundary anyway,
+  // and the capital fails on "toast" in a menu description regardless.
+  const leaks = [
+    /fee split/i,
+    /50\/50/,
+    /\bToast\b/,
+    /\bHeartland\b/i,
+    /middleman/i,
+    /our own website/i,
+  ];
+  const found = leaks.filter((re) => re.test(orderPage.body)).map(String);
   found.length === 0
     ? pass("the guest ordering page carries no business-model copy")
     : fail(`the ordering page leaks the pitch: ${found.join(", ")}`);

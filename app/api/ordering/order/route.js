@@ -65,7 +65,14 @@ export async function POST(req) {
 
   const store = getStore();
   const state = effectiveState(await store.getState());
-  const { index: ITEM_INDEX, sections } = await guestMenu(store);
+  // Narrowed to the counter being ordered from, so a Marshall-only pizza on a
+  // Battle Creek ticket is simply not in the index and cannot be priced. The
+  // unnarrowed board is read as well, purely so the refusal can name the real
+  // reason: "we do not make that at this counter" and "that is off the menu"
+  // are different sentences, and a guest given the wrong one goes looking for a
+  // bug that is not there.
+  const { index: ITEM_INDEX, sections } = await guestMenu(store, location.slug);
+  const { index: ANY_COUNTER } = await guestMenu(store);
 
   // Which sections a line belongs to decides whether this is a pickup order,
   // which has to happen inside opening hours, or a catering order, which is a
@@ -79,7 +86,13 @@ export async function POST(req) {
 
   for (const raw of body.lines) {
     const item = ITEM_INDEX.get(String(raw.itemId));
-    if (!item) return bad("An item in the cart is no longer on the menu.");
+    if (!item) {
+      const elsewhere = ANY_COUNTER.get(String(raw.itemId));
+      if (elsewhere) {
+        return bad(`${elsewhere.name} is not served at ${location.name}. Take it out, or switch counters.`);
+      }
+      return bad("An item in the cart is no longer on the menu.");
+    }
     if (state.unavailable.includes(item.id)) {
       return bad(`${item.name} just sold out. Take it out of the cart and the rest can go through.`, 409);
     }

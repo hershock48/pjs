@@ -1822,12 +1822,61 @@ a[href^="tel:"] {
    words themselves and follow them when the headline rewraps. */
 /* Anchored to the hero and sitting over the sandwich, which is where steam
    would actually come from and, not coincidentally, the only part of this
-   photograph dark enough for white vapour to read against. */
+   photograph dark enough for white vapour to read against.
+
+   IT LIVES IN THE BAND ABOVE THE HEADLINE, AND THAT IS A CONTRAST CONSTRAINT
+   RATHER THAN A COMPOSITION CHOICE.
+
+   The first version was `top: -2%; width: clamp(190px, 30vw, 400px)`, which at
+   1440 put a 400x375 box at y105-480 while the h1 box sits at y306-494. The
+   plume's dense region is 61% down its own box, so the brightest part of the
+   vapour was landing squarely on "PASTRAMI," and "ORDER." — and white vapour
+   behind white text does exactly what it sounds like. `tools/scrim-check.mjs`
+   caught the headline's worst backdrop pixel falling to 3.55 against the 4.5
+   requirement, INTERMITTENTLY, because the plumes peak 1.0-1.4s after load and
+   the measurement sometimes landed inside that window. Five consecutive runs
+   now hold at 6.74.
+
+   Two fixes were tried and rejected before this one:
+
+     z-index: -2, painting the steam under `.hero::after`. Contrast-perfect and
+     visually useless: the scrim is 0.52 flat plus a gradient, and it swallowed
+     the vapour completely. A fix that deletes the effect is not a fix.
+
+     Right-anchoring it past the h1's right edge. Only fits at 1400+; at 1200
+     the clear strip beside the headline is 291px and the steam is 360.
+
+     Dropping it into the band ABOVE the headline. Geometrically clean and it
+     simply moved the failure: the kicker sits at y160-175, the only text higher
+     than the h1, and it went from 5.27 to 4.28. There is no horizontal band in
+     this hero that has both the sandwich and no text.
+
+   So the separation is HORIZONTAL. The hero's text column is left-aligned and
+   its right edge is the widest of the kicker, h1, lede and buttons; the steam
+   is anchored to the right edge of the hero and sized to fit the strip beside
+   that column. Measured, at every width where it renders at all:
+
+     width   text column right   steam    clear by
+      1440              1029     1213-1436     184
+      1280               949     1077-1276     128
+      1200               909     1010-1196     101
+      1024               821      861-1020      40
+       900               728      756-896       28
+       768               634      645-764       11
+
+   768 is the binding case and it is why the vw coefficient is 15.5 rather than
+   17. Below 768 the steam does not render at all, which is why the mobile
+   measurement was never affected by any of this.
+
+   `.hero` is `overflow: hidden`, so a negative `top` buys no height; it clips
+   the source end of the plume. If the headline's type scale or `.wrap`'s
+   max-width changes, that table is wrong and scrim-check will say so. */
 .steam {
   position: absolute;
-  left: 50%;
-  top: -2%;
-  width: clamp(190px, 30vw, 400px);
+  right: 4px;
+  left: auto;
+  top: 13%;
+  width: clamp(105px, 15.5vw, 320px);
   pointer-events: none;
   z-index: 0;
 }

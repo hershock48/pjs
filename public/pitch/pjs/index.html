@@ -287,6 +287,14 @@ h2.sec-title { font-size: clamp(30px, 4vw, 42px); font-weight: 800; letter-spaci
 .bitem h4 { font-size: 17.5px; font-weight: 800; letter-spacing: -0.3px; }
 .bitem .sub { font-size: 12px; text-transform: uppercase; letter-spacing: .12em; color: var(--fern); font-weight: 700; margin: 4px 0 10px; }
 .bitem p { font-size: 14.5px; color: #5A4A3A; line-height: 1.6; }
+/* The per-platform breakdown inside build item 6. A list rather than a
+   paragraph because the reader is checking one platform at a time, and the
+   marker is a rule rather than a bullet so it does not read as a feature list
+   in a card whose siblings have no lists at all. */
+.bitem .fixlist { list-style: none; margin: 12px 0 0; padding: 0; }
+.bitem .fixlist li { font-size: 14.5px; color: #5A4A3A; line-height: 1.6; padding: 8px 0 8px 14px; border-left: 2px solid rgba(43,30,22,0.14); margin-bottom: 6px; }
+.bitem .fixlist li b { color: var(--chocolate); }
+.bitem .fixlist + p { margin-top: 12px; }
 .later { margin-top: 28px; font-size: 14.5px; color: var(--taupe); line-height: 1.65; max-width: 700px; }
 .later b { color: var(--chocolate); }
 
@@ -521,19 +529,21 @@ footer .inner { max-width: 1100px; margin: 0 auto; padding: 56px 24px 36px; }
       <article class="fcard urgent reveal">
         <span class="tag">Fix this today</span>
         <h3>Google is quoting your hot pastrami at $10.50.</h3>
-        <p>Because your menus publish no prices, a third party filled the gap. allmenus.com carries a complete, fully priced, obsolete Pastrami Joe&rsquo;s menu, and it ranks. It lists Joe&rsquo;s Hot Pastrami at <b>$10.50</b>. A February 2025 review put the real price at &ldquo;slightly over $13&rdquo;.</p>
+        <p>Because your menus publish no prices, a third party filled the gap. allmenus.com carries a complete, fully priced, obsolete Pastrami Joe&rsquo;s menu, and it ranks. It lists Joe&rsquo;s Hot Pastrami at <b>$10.50</b>.</p>
+        <p>Your printed board says <b>$13.75</b>. That is the gap a customer walks in carrying: <b>$3.25</b>, or <b>thirty-one percent</b>, and they did not get it from you.</p>
         <p>That page also lists seven sandwiches you no longer make, a whole take-out market section, and a phone number that is not yours: <b>(269) 248-7172</b>.</p>
-        <p>Now read your reviews. The most consistent complaint about Pastrami Joe&rsquo;s is price. People are being quoted ten fifty and charged thirteen, and then they write about it.</p>
-        <span class="proof"><a href="https://www.allmenus.com/mi/marshall/291143-pastrami-joes/menu/">The stale menu ranking for you</a> &middot; <a href="https://swmichigandining.com/2025/02/04/pastrami-joes-battle-creek-3/">The review with the real price</a></span>
+        <p>Now read your reviews. The most consistent complaint about Pastrami Joe&rsquo;s is price. People are being quoted ten fifty and charged thirteen seventy-five, and then they write about it.</p>
+        <span class="proof"><a href="https://www.allmenus.com/mi/marshall/291143-pastrami-joes/menu/">The stale menu ranking for you</a> &middot; your printed in-store menu</span>
       </article>
 
       <article class="fcard urgent reveal">
         <span class="tag">Fix this today</span>
         <h3>Battle Creek reads as closed, at an address you left in 2021.</h3>
+        <p><b>This one is not your fault, and we want to say that before anything else.</b> You moved a block. Neither platform follows a business that moves; each one leaves the old address standing and waits for somebody to file the right form. Nobody did, so five years later the old store is still the one people find.</p>
         <p>There are two Yelp listings for Battle Creek. One is the current store. The other is <b>80 W. Michigan Ave.</b>, flagged CLOSED, holding thirty-one reviews and seventeen photos of a place you rebuilt somewhere else.</p>
-        <p>Tripadvisor is worse. Its only Battle Creek entry is still at 80 W. Michigan, five years after that store shut and two years after you reopened a block away.</p>
+        <p>Tripadvisor&rsquo;s only Battle Creek entry is still at 80 W. Michigan. <b>By Tripadvisor&rsquo;s own written policy that is their error, not yours</b> &mdash; they say a restaurant moving within the same city gets its address updated on the existing listing, which is not what happened to you. It is a support ticket, and we will file it.</p>
         <p>Somebody searching for Pastrami Joe&rsquo;s in Battle Creek is being told you are out of business.</p>
-        <span class="proof"><a href="https://www.tripadvisor.com/Restaurants-g42423-Battle_Creek_Michigan.html">Tripadvisor, Battle Creek</a> &middot; <a href="https://www.yelp.com/search?find_desc=Pastrami+Joes&find_loc=Battle+Creek%2C+MI">The two Yelp listings</a></span>
+        <span class="proof"><a href="https://www.tripadvisorsupport.com/en-US/hc/owner/articles/414">Tripadvisor&rsquo;s moved-listing policy</a> &middot; <a href="https://www.tripadvisor.com/Restaurants-g42423-Battle_Creek_Michigan.html">Tripadvisor, Battle Creek</a> &middot; <a href="https://www.yelp.com/search?find_desc=Pastrami+Joes&find_loc=Battle+Creek%2C+MI">The two Yelp listings</a></span>
       </article>
 
       <article class="fcard reveal">
@@ -677,7 +687,7 @@ footer .inner { max-width: 1100px; margin: 0 auto; padding: 56px 24px 36px; }
       </div>
       <div class="wcard reveal">
         <b>You edit your own menu</b>
-        <p>Prices and items live in a text field you own, not in a vendor's back office. Change a price at 6am and the site has it at 6am. <strong>Send us the sandwich prices and the whole board turns on the same day.</strong></p>
+        <p>Prices and items live in a text field you own, not in a vendor&rsquo;s back office. Change a price at 6am and the site has it at 6am &mdash; on the menu page, on the ordering page and on the kitchen ticket at once, because they all read the same list. <strong>You already proved it: you sent a photo of the board and the whole thing went live.</strong></p>
       </div>
     </div>
 
@@ -746,7 +756,7 @@ footer .inner { max-width: 1100px; margin: 0 auto; padding: 56px 24px 36px; }
       <p>The other half of it is not on this table. The channel moves onto <strong>your own name</strong>, with your hours and your prices on it, on a page you own. That is the part we would argue for even if the money were a wash. <strong>And if you would rather your customer never saw a 99&cent; fee, we can switch it off and price it as a flat monthly instead</strong> &mdash; that changes the table above, so we would work it against your actual statement before you decided anything.</p>
     </div>
 
-    <p class="lede reveal" style="margin-top:26px"><strong>What is live on the demo today:</strong> catering, soup and the seasonal board, because those are the only prices you publish anywhere. Every number on it came off your own pages. We did not guess a single sandwich price, and we would rather show you an honest half than a made-up whole. <a href="/demo/order">Try it</a>.</p>
+    <p class="lede reveal" style="margin-top:26px"><strong>What is live on the demo today:</strong> the whole board. Every hot and cold sandwich at whole, half and wrap prices, salads, both pizza sizes, breakfast, soup, sides and all of catering &mdash; <b>seventy-three orderable items</b>, and Marshall and Battle Creek each show only what that counter actually makes. Every number came off your printed menu or your own catering page. We did not guess one. <a href="/demo/order">Try it</a>.</p>
   </div>
 </section>
 
@@ -780,8 +790,8 @@ footer .inner { max-width: 1100px; margin: 0 auto; padding: 56px 24px 36px; }
       <div class="bitem reveal">
         <div class="num" aria-hidden="true">4</div>
         <h4>Prices, published by you</h4>
-        <p class="sub">And the stale menu buried</p>
-        <p>Send the price list and every item on the site carries a price. Then the top result for your menu is your menu, at your prices, and the 2019 copy quoting ten fifty stops being the one people read. On the demo those slots are blank, marked with a dash, because we are not going to invent a number and put it in front of your customers.</p>
+        <p class="sub">Fifty-seven of sixty-five, already on</p>
+        <p>Already done. You sent the printed board and it went in: <b>fifty-seven of your sixty-five items are priced on the demo right now</b>, off your own menu, and they are orderable at those prices. Eight are still blank &mdash; the pastries, the bagels, the cold drinks &mdash; marked with a dash, because we are not going to invent a number and put it in front of your customers. Send those eight and the page is complete. Then the top result for your menu is your menu, at your prices, and the copy quoting ten fifty stops being the one people read.</p>
       </div>
       <div class="bitem reveal">
         <div class="num" aria-hidden="true">5</div>
@@ -805,8 +815,16 @@ footer .inner { max-width: 1100px; margin: 0 auto; padding: 56px 24px 36px; }
       <div class="bitem reveal">
         <div class="num" aria-hidden="true">8</div>
         <h4>The listings cleaned up</h4>
-        <p class="sub">Battle Creek, off 80 W. Michigan</p>
-        <p>We fix the duplicate Yelp entry, get Tripadvisor moved to 32 W. Michigan, correct the eleven o&rsquo;clock openings, and fill in the two empty Visitors Bureau listings and the Choose Marshall entry that will not load. This is not code, it is an afternoon of paperwork, and it is included.</p>
+        <p class="sub">Named forms, real timescales, one honest loss</p>
+        <p>Not code. Paperwork, and it is included. What that actually means, platform by platform, because &ldquo;we will fix your listings&rdquo; is easy to say:</p>
+        <ul class="fixlist">
+          <li><b>Google.</b> Their own rule for a business that moves is to edit the address on the existing profile, never make a new one, and reviews follow automatically. Roughly ten minutes to show, up to thirty days at worst.</li>
+          <li><b>Tripadvisor.</b> A Management Centre support ticket citing their same-city relocation policy, to get the one entry moved to 32 W. Michigan instead of sitting at 80. They quote one to two days on address edits.</li>
+          <li><b>Yelp.</b> The duplicate gets reported and the live page corrected. <b>The thirty-one reviews on the old page almost certainly do not come with it</b> &mdash; Yelp&rsquo;s written policy is that a moved restaurant gets a new page and that reviews &ldquo;generally won&rsquo;t be moved&rdquo;. We will ask. We are not going to promise it.</li>
+          <li><b>allmenus.</b> No owner login exists; it is a public correction form, and the menu they hold came off the web in the first place. A current, priced menu on your own domain is both the evidence we attach and the thing most likely to make it self-correct.</li>
+          <li><b>The rest.</b> The eleven o&rsquo;clock openings on Tripadvisor, Yellowpages and Sirved, the two empty Visitors Bureau listings, and the Choose Marshall entry that answers with a redirect loop.</li>
+        </ul>
+        <p><b>One thing we will not claim.</b> Building you a correct website does not, by itself, correct any of these. Yelp and Tripadvisor do not read your site; they read forms. What the new site does is win the arguments &mdash; every one of these platforms checks the business&rsquo;s own website before approving a change, and Tripadvisor says outright that it will refuse a relocation request if your own site still shows the old details.</p>
       </div>
       <div class="bitem reveal">
         <div class="num" aria-hidden="true">9</div>
@@ -870,7 +888,7 @@ footer .inner { max-width: 1100px; margin: 0 auto; padding: 56px 24px 36px; }
 <div class="ctaband">
   <div class="inner">
     <h2>Give us thirty minutes.</h2>
-    <p>Bring your real hours and your price list. That is the whole meeting. Everything else is already built and sitting at the link above.</p>
+    <p>Your hours and your prices are already in it. Bring the eight prices your board leaves off and tell us where we got something wrong. That is the whole meeting &mdash; everything else is built and sitting at the link above.</p>
     <a class="btn big" href="mailto:kevin@glazedweb.com?subject=Pastrami%20Joe%27s%20website%20proposal">Email Kevin</a>
     <p class="after">Kevin Hershock, Glazed Web, Marshall Michigan.</p>
   </div>

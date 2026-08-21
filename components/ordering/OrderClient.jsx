@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 
 /**
@@ -72,6 +72,49 @@ export default function OrderClient({ sections, locations, hours }) {
 
   const here = state?.locations.find((l) => l.slug === at) ?? null;
   const unavailable = new Set(state?.unavailable ?? []);
+
+  /* ---------------------------- one board per counter ----------------------
+   * Marshall makes pizza and breakfast and Battle Creek does not, and the two
+   * stores print different combo deals. The server sends the whole board with
+   * an `at` on every item and this filters it, so switching counters is instant
+   * and needs no round trip. The order route filters again from the same field
+   * before it prices anything: this is the convenience, not the enforcement.
+   * An item with no `at` is served at both. */
+  const servedHere = (i) => !i.at || i.at.includes(at);
+
+  const visible = useMemo(
+    () =>
+      sections
+        .map((s) => ({ ...s, items: s.items.filter(servedHere) }))
+        .filter((s) => s.items.length > 0),
+    [sections, at]
+  );
+
+  const atOf = useMemo(
+    () => new Map(sections.flatMap((s) => s.items.map((i) => [i.id, i.at ?? null]))),
+    [sections]
+  );
+
+  /* Switching counters with a Marshall pizza in the cart used to leave it
+   * there, invisible on a board that no longer lists it, until the server
+   * refused the whole order at checkout with a message about an item that is
+   * "no longer on the menu". Prune on the switch and say what went, which is
+   * the difference between a rule and an ambush. */
+  const [dropped, setDropped] = useState([]);
+  useEffect(() => {
+    const gone = cart.filter((l) => {
+      const a = atOf.get(l.itemId);
+      return a && !a.includes(at);
+    });
+    if (!gone.length) return;
+    setCart((c) => c.filter((l) => !gone.includes(l)));
+    setDropped(gone.map((l) => l.name));
+  }, [at, cart, atOf]);
+
+  const chooseCounter = (slug) => {
+    setDropped([]);
+    setAt(slug);
+  };
   const isCatering = (name) => name.toLowerCase().startsWith("catering");
   const cartIsCatering = cart.length > 0 && cart.every((l) => isCatering(l.section));
   const cartIsCounter = cart.length > 0 && cart.every((l) => !isCatering(l.section));
@@ -266,7 +309,7 @@ export default function OrderClient({ sections, locations, hours }) {
               type="button"
               className={`counterbtn ${at === l.slug ? "on" : ""}`}
               aria-pressed={at === l.slug}
-              onClick={() => setAt(l.slug)}
+              onClick={() => chooseCounter(l.slug)}
             >
               <b>{l.name}</b>
               <span className={`small ${l.open ? "isopen" : "isshut"}`}>
@@ -292,7 +335,14 @@ export default function OrderClient({ sections, locations, hours }) {
           </div>
         )}
 
-        {sections.map((s) => (
+        {dropped.length > 0 && (
+          <div className="notice" style={{ marginTop: 16 }} role="status">
+            <b>{dropped.length === 1 ? "One item came out of your cart." : `${dropped.length} items came out of your cart.`}</b>{" "}
+            {dropped.join(", ")} {dropped.length === 1 ? "is" : "are"} not served at this counter.
+          </div>
+        )}
+
+        {visible.map((s) => (
           <section key={s.name} className="tight" style={{ paddingBottom: 0 }}>
             <h2 style={{ fontSize: 26 }}>{s.name}</h2>
             <div className="orderitems">
@@ -323,8 +373,8 @@ export default function OrderClient({ sections, locations, hours }) {
         ))}
 
         <p className="small" style={{ marginTop: 26 }}>
-          Not seeing a sandwich? The full board is on the{" "}
-          <Link href="/menu">menu page</Link>, and the counter takes it by phone.
+          Bakery, pastries and the cold drinks are counter only for now. Everything
+          else on the <Link href="/menu">menu page</Link> can be ordered here.
         </p>
       </div>
 
