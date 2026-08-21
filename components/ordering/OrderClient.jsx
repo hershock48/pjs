@@ -23,6 +23,25 @@ function lineKey(itemId, options) {
   return `${itemId}::${[...options].sort().join("|")}`;
 }
 
+/**
+ * Does this item's listed price buy the smallest version of it?
+ *
+ * Their board prices a sandwich whole, half and wrap, and the generated
+ * catalogue makes the CHEAPEST size the base with every other size as an
+ * upcharge, because option prices cannot be negative. That is correct
+ * arithmetic and it was a lie on the page: the hot pastrami listed at "$8.99",
+ * which is the half, with nothing saying so. A guest scanning the board reads
+ * that as the price of a sandwich and finds out at the sheet that it is not —
+ * which is precisely the quoted-one-price-charged-another complaint the whole
+ * proposal is about, reproduced by us.
+ *
+ * True when a REQUIRED group has any choice that costs more, which is exactly
+ * the case where the number below the name is not the whole story. An optional
+ * "add extra cheese" group does not make a price a starting price.
+ */
+const startsAt = (item) =>
+  (item.options ?? []).some((g) => g.required && g.choices.some((c) => c.priceCents > 0));
+
 export default function OrderClient({ sections, locations, hours }) {
   const hoursOf = (slug) => hours?.[slug] ?? "";
 
@@ -361,6 +380,7 @@ export default function OrderClient({ sections, locations, hours }) {
                       {off && <span className="tag">Sold out</span>}
                     </span>
                     <span className="oi-price">
+                      {startsAt(i) && <span className="oi-from">from </span>}
                       {money(i.priceCents)}
                       {i.unit ? <span className="oi-unit"> {i.unit}</span> : null}
                     </span>

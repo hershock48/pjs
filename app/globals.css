@@ -1520,6 +1520,12 @@ textarea:focus {
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
+/* "from", where the listed price buys the smallest size. Lighter than the
+   number so the price still scans first, but it is the same --muted that every
+   other secondary label on this page uses and it measures 7.08 on cream. This
+   is not decoration: without it the hot pastrami reads as $8.99 when $8.99 is
+   the half. */
+.oi-from,
 .oi-unit {
   font-weight: 500;
   color: var(--muted);
