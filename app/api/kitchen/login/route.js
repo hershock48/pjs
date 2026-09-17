@@ -46,7 +46,17 @@ export async function POST(req) {
         { status: 429, headers: { "Retry-After": "600" } },
       );
     }
-  } catch {
+  } catch (err) {
+    // Two different 503s on purpose. No database in production is the
+    // operator's setting to fix, so it is named; a database that is down is a
+    // wait, so it is not. The memory throttle never runs in production: see
+    // the header of lib/workroom/login-limit.js for why.
+    if (err?.reason === "database_required") {
+      return NextResponse.json(
+        { error: "Sign-in is off until DATABASE_URL is set on this deployment.", reason: "database_required" },
+        { status: 503 },
+      );
+    }
     return NextResponse.json({ error: "Sign-in storage is unavailable. Please try again later." }, { status: 503 });
   }
 

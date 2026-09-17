@@ -370,6 +370,27 @@ serverless, memory storage means orders land on whichever lambda answered and
 the screen can simply miss them. A demo that half-works silently is worse than
 one that says what is wrong.
 
+**Sign-in needs the database and a readable address, and says which is missing.**
+The login throttle counts wrong guesses per connecting address in Postgres.
+In production without `DATABASE_URL` the sign-in form answers 503 and names the
+variable, because a memory count on a fleet of lambdas resets on every deploy
+and can be jammed by one address flood (development still counts in memory).
+The server also has to know the connecting address before it lets anyone try.
+On Vercel, turn on **Automatically expose System Environment Variables** under
+the project's Environment Variables settings and redeploy. That gives the
+server `VERCEL=1`, and it then reads the `x-vercel-forwarded-for` header Vercel
+writes at its edge. Leave `KITCHEN_TRUSTED_IP_HEADER` unset on Vercel. On
+another host, put the app behind a proxy that overwrites one of
+`x-forwarded-for`, `x-real-ip` or `x-vercel-forwarded-for`, block direct access
+to the app, and set `KITCHEN_TRUSTED_IP_HEADER` to that header name. If the
+toggle is off or the header is missing, sign-in answers 503 with
+`reason: trusted_address_unavailable` and the message "Sign-in is off until the
+hosting settings let the site see your connection address." A database outage
+is a different 503 that says sign-in storage is unavailable. Neither case skips
+the throttle or trusts an unconfigured header. After deploying, sign in once
+from one network and confirm a second network is not locked out by the first.
+The local tests do not exercise the Vercel toggle or the real edge header.
+
 **Guest-facing copy never carries the business model.** No fee-split story, no
 vendor comparison, no "our own website". A guest gets a menu, a pickup time and
 a plainly labelled 99¢ fee like any checkout. `tools/flow-checks.mjs` greps the
@@ -817,12 +838,22 @@ Nothing on this list is code. All of it is facts we do not have.
       a date claiming the page is current when it is not.
 - [ ] **A real `KITCHEN_PIN`.** It falls back to `0105`, their street number,
       which is in this repo and in the proposal's demo instructions. Set it in
-      Vercel before any staff use `/kitchen`.
+      Vercel before any staff use `/kitchen`. The demo PIN `0105` is live in
+      production until `KITCHEN_PIN` is set.
 - [ ] **`KITCHEN_SESSION_SECRET`.** Signs the counter's session cookie. In
       production the site refuses every sign-in until it is set: 32 or more
       random characters, in Vercel, never in this repo.
 - [ ] **`DATABASE_URL`.** Without it, ordering runs in memory and the counter
       screen can miss tickets. It says so in a red box; that is not a substitute.
+      In production, `/kitchen` sign-in refuses until it is set, because the
+      login throttle counts in Postgres only.
+- [ ] **Vercel: "Automatically expose System Environment Variables" ON.** The
+      login throttle keys on the address Vercel writes in
+      `x-vercel-forwarded-for`, and it only reads that header when the server
+      sees `VERCEL=1`, which that setting provides. With it off, every
+      `/kitchen` sign-in answers 503 (see "Sign-in needs the database and a
+      readable address" above). Not readable through the project API, so
+      confirm it on the project and sign in once after deploying.
 - [ ] **Remove `ORDERING_DEMO_ALWAYS_OPEN`** at go-live. Left on, it takes
       orders for counters that are dark.
 - [ ] **Re-verify the listing findings by eye** before sending: the six

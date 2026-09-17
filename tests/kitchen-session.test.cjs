@@ -5,8 +5,8 @@
  * Run with `npm test` (node --test). Each module is transpiled to CommonJS
  * and run in its own vm context with a mocked `next/headers` cookie jar and
  * a mocked `NextResponse`, so the tests need no server, no browser and no
- * database. The memory throttle is what runs when DATABASE_URL is unset,
- * which is the state these tests pin.
+ * database. Production tests count in a fake pg module; the memory throttle,
+ * which only development may use, is pinned under NODE_ENV=development.
  */
 const fs = require("node:fs");
 const path = require("node:path");
@@ -19,6 +19,48 @@ const assert = require("node:assert/strict");
 const SECRET = "fixture-secret-".repeat(4);
 const PIN = "2468";
 const PROD = { NODE_ENV: "production", KITCHEN_PIN: PIN, KITCHEN_SESSION_SECRET: SECRET, VERCEL: "1" };
+// The memory throttle runs outside production only, so the tests that pin it
+// use a development environment, and the production tests go through a fake
+// pg module that plays back the limiter's four statements against a Map.
+const DEV = { ...PROD, NODE_ENV: "development" };
+const PROD_DB = { ...PROD, DATABASE_URL: "postgres://fixture@db.example/pjs" };
+
+/** A stand-in for pg: one table, the limiter's statements, every call logged. */
+function fakePg() {
+  const rows = new Map();
+  const log = [];
+  class Pool {
+    constructor(options) {
+      log.push(["pool", options]);
+    }
+    async query(sql, values = []) {
+      log.push([sql, values]);
+      const text = sql.trim();
+      if (text.startsWith("CREATE TABLE")) return { rows: [] };
+      if (text.startsWith("DELETE FROM kitchen_login_attempts WHERE started<=")) {
+        for (const [id, row] of rows) if (row.started <= values[0]) rows.delete(id);
+        return { rows: [] };
+      }
+      if (text.startsWith("DELETE FROM kitchen_login_attempts WHERE id=")) {
+        rows.delete(values[0]);
+        return { rows: [] };
+      }
+      if (text.startsWith("INSERT INTO kitchen_login_attempts")) {
+        // The upsert: a fresh window restarts at one, a live one clamps and adds.
+        const [id, now, cutoff, limit] = values;
+        const old = rows.get(id);
+        const row =
+          old && old.started > cutoff
+            ? { started: old.started, attempts: Math.min(old.attempts, limit) + 1 }
+            : { started: now, attempts: 1 };
+        rows.set(id, row);
+        return { rows: [{ attempts: row.attempts }] };
+      }
+      throw new Error("unexpected statement: " + text);
+    }
+  }
+  return { module: { Pool }, rows, log };
+}
 
 /** Transpile one repo file to CJS and run it with the given mocks and env. */
 function load(file, mocks = {}, env = {}, cryptoImpl = crypto) {
@@ -153,7 +195,7 @@ test("a wrong PIN is rejected on the constant-time path, whatever its length", a
   assert.equal(calls.length, 4);
   for (const [a, b] of calls) assert.deepEqual([a, b], [32, 32]);
 
-  const limiter = load("lib/workroom/login-limit.js", {}, PROD);
+  const limiter = load("lib/workroom/login-limit.js", { pg: fakePg().module }, PROD_DB);
   const route = routeWith(auth, limiter);
   const res = await route.POST(post("9999"));
   assert.equal(res.status, 401);
@@ -164,7 +206,7 @@ test("a wrong PIN is rejected on the constant-time path, whatever its length", a
 test("the correct PIN sets a signed, expiring, httpOnly cookie that never carries the PIN, and rotates on every login", async () => {
   const j = jar();
   const auth = authWith(j);
-  const limiter = load("lib/workroom/login-limit.js", {}, PROD);
+  const limiter = load("lib/workroom/login-limit.js", { pg: fakePg().module }, PROD_DB);
   const route = routeWith(auth, limiter);
 
   const res = await route.POST(post(PIN));
@@ -189,7 +231,8 @@ test("the correct PIN sets a signed, expiring, httpOnly cookie that never carrie
 });
 
 test("the eleventh attempt from one address is refused while another address still signs in", async () => {
-  const limiter = load("lib/workroom/login-limit.js", {}, PROD);
+  // The memory map, which only development gets to use.
+  const limiter = load("lib/workroom/login-limit.js", {}, DEV);
   const t = 1_700_000_000_000;
   for (let i = 0; i < 10; i++) assert.equal(await limiter.allowLogin("a", t), true, "try " + (i + 1));
   assert.equal(await limiter.allowLogin("a", t), false, "try 11 is refused");
@@ -198,10 +241,12 @@ test("the eleventh attempt from one address is refused while another address sti
   await limiter.clearLoginAttempts("b");
   assert.equal(await limiter.allowLogin("b", t), true);
 
-  // The same rule through the route, keyed on the address Vercel writes.
+  // The same rule through the route in production, counted in rows and keyed
+  // on the address Vercel writes.
+  const pg = fakePg();
   const j = jar();
   const auth = authWith(j);
-  const route = routeWith(auth, load("lib/workroom/login-limit.js", {}, PROD));
+  const route = routeWith(auth, load("lib/workroom/login-limit.js", { pg: pg.module }, PROD_DB));
   for (let i = 0; i < 10; i++) {
     const res = await route.POST(post("0000", "198.51.100.7"));
     assert.equal(res.status, 401, "wrong PIN " + (i + 1));
@@ -214,6 +259,48 @@ test("the eleventh attempt from one address is refused while another address sti
   const other = await route.POST(post(PIN, "198.51.100.8"));
   assert.equal(other.status, 200, "another address signs in");
   assert.equal(await auth.isKitchenAuthed(), true);
+  assert.equal(pg.rows.size, 1, "the successful address was cleared, the throttled one still counts");
+  assert.equal([...pg.rows.values()][0].attempts, 11);
+});
+
+test("production without a database refuses to sign anyone in, and names the missing variable", async () => {
+  // No DATABASE_URL, no POSTGRES_URL, NODE_ENV production: the memory map is
+  // never consulted, so a fleet cannot be reset by a deploy or jammed by 4096
+  // spoofed addresses. Both calls throw the same tagged reason.
+  const limiter = load("lib/workroom/login-limit.js", {}, PROD);
+  await assert.rejects(limiter.allowLogin("a"), {
+    message: "Persistent login throttling needs a database.",
+    reason: "database_required",
+  });
+  await assert.rejects(limiter.clearLoginAttempts("a"), { reason: "database_required" });
+
+  const j = jar();
+  const auth = authWith(j);
+  const route = routeWith(auth, limiter);
+  const res = await route.POST(post(PIN));
+  assert.equal(res.status, 503);
+  assert.equal(res.body.reason, "database_required");
+  assert.equal(res.body.error, "Sign-in is off until DATABASE_URL is set on this deployment.");
+  assert.equal(j.state.last, null, "the right PIN still sets no cookie");
+
+  // POSTGRES_URL is the other accepted name, and either one counts in rows.
+  const pg = fakePg();
+  const counted = load("lib/workroom/login-limit.js", { pg: pg.module }, { ...PROD, POSTGRES_URL: PROD_DB.DATABASE_URL });
+  assert.equal(await counted.allowLogin("a"), true);
+  assert.equal(pg.rows.size, 1, "one row per address");
+
+  // A database that is down is the other 503: a wait, not a setting, so the
+  // variable is not named.
+  const down = load(
+    "lib/workroom/login-limit.js",
+    { pg: { Pool: class { async query() { throw new Error("connect ECONNREFUSED"); } } } },
+    PROD_DB,
+  );
+  const outage = await routeWith(auth, down).POST(post(PIN));
+  assert.equal(outage.status, 503);
+  assert.equal(outage.body.reason, undefined);
+  assert.equal(outage.body.error, "Sign-in storage is unavailable. Please try again later.");
+  assert.equal(j.state.last, null);
 });
 
 test("production fails closed without a session secret, and without a trusted address", async () => {
