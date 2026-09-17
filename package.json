@@ -5,12 +5,19 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start -p 4491"
+    "start": "next start -p 4491",
+    "test": "node --test tests/kitchen-session.test.cjs"
   },
   "dependencies": {
     "next": "16.3.1",
     "pg": "^8.23.0",
     "react": "19.1.1",
     "react-dom": "19.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.43",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "typescript": "^5.9.3"
   }
 }

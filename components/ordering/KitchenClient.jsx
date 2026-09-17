@@ -103,7 +103,11 @@ export default function KitchenClient({ locations, initialAuthed = false }) {
       body: JSON.stringify({ pin }),
     });
     if (!r.ok) {
-      setError("Wrong PIN.");
+      // The server now has more than one reason to say no (throttled, not set
+      // up on this deployment, storage down). Show its sentence when it sends
+      // one; a wrong PIN still reads "Wrong PIN." as before.
+      const d = await r.json().catch(() => ({}));
+      setError(typeof d?.error === "string" && d.error ? d.error : "Wrong PIN.");
       return;
     }
     setPin("");

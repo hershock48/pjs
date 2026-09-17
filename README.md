@@ -818,6 +818,9 @@ Nothing on this list is code. All of it is facts we do not have.
 - [ ] **A real `KITCHEN_PIN`.** It falls back to `0105`, their street number,
       which is in this repo and in the proposal's demo instructions. Set it in
       Vercel before any staff use `/kitchen`.
+- [ ] **`KITCHEN_SESSION_SECRET`.** Signs the counter's session cookie. In
+      production the site refuses every sign-in until it is set: 32 or more
+      random characters, in Vercel, never in this repo.
 - [ ] **`DATABASE_URL`.** Without it, ordering runs in memory and the counter
       screen can miss tickets. It says so in a red box; that is not a substitute.
 - [ ] **Remove `ORDERING_DEMO_ALWAYS_OPEN`** at go-live. Left on, it takes
