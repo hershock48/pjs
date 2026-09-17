@@ -15,6 +15,9 @@ import { NextResponse } from "next/server";
 import { kitchenSessionReady, pinMatches, setKitchenCookie } from "@/lib/ordering/auth";
 import { allowLogin, clearLoginAttempts, loginClient } from "@/lib/workroom/login-limit";
 
+// Stated, not changed: nodejs is Next's default for route handlers, and this
+// one needs node:crypto, node:net and pg, none of which the edge runtime has.
+// Pinning it keeps a future config change from moving the door to the edge.
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
