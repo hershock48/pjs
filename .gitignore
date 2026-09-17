@@ -3,3 +3,5 @@ node_modules/
 .vercel
 .env*.local
 mascot-lean.gif
+next-env.d.ts
+*.tsbuildinfo
